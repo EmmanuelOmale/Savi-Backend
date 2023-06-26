@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32811.315
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Savi.Api", "Savi.Api\Savi.Api.csproj", "{3987B41F-0B93-4F24-A10B-D61BA59C5D5D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3987B41F-0B93-4F24-A10B-D61BA59C5D5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3987B41F-0B93-4F24-A10B-D61BA59C5D5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3987B41F-0B93-4F24-A10B-D61BA59C5D5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3987B41F-0B93-4F24-A10B-D61BA59C5D5D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {96F634B7-1D2C-463C-AC25-04749242F579}
+	EndGlobalSection
+EndGlobal
