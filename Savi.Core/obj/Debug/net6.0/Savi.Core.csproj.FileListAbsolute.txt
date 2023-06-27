@@ -1,0 +1,12 @@
+C:\Users\Decagon\Documents\Projects\Savi.Api\Savi.Core\bin\Debug\net6.0\Savi.Core.deps.json
+C:\Users\Decagon\Documents\Projects\Savi.Api\Savi.Core\bin\Debug\net6.0\Savi.Core.dll
+C:\Users\Decagon\Documents\Projects\Savi.Api\Savi.Core\bin\Debug\net6.0\Savi.Core.pdb
+C:\Users\Decagon\Documents\Projects\Savi.Api\Savi.Core\obj\Debug\net6.0\Savi.Core.csproj.AssemblyReference.cache
+C:\Users\Decagon\Documents\Projects\Savi.Api\Savi.Core\obj\Debug\net6.0\Savi.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Decagon\Documents\Projects\Savi.Api\Savi.Core\obj\Debug\net6.0\Savi.Core.AssemblyInfoInputs.cache
+C:\Users\Decagon\Documents\Projects\Savi.Api\Savi.Core\obj\Debug\net6.0\Savi.Core.AssemblyInfo.cs
+C:\Users\Decagon\Documents\Projects\Savi.Api\Savi.Core\obj\Debug\net6.0\Savi.Core.csproj.CoreCompileInputs.cache
+C:\Users\Decagon\Documents\Projects\Savi.Api\Savi.Core\obj\Debug\net6.0\Savi.Core.dll
+C:\Users\Decagon\Documents\Projects\Savi.Api\Savi.Core\obj\Debug\net6.0\refint\Savi.Core.dll
+C:\Users\Decagon\Documents\Projects\Savi.Api\Savi.Core\obj\Debug\net6.0\Savi.Core.pdb
+C:\Users\Decagon\Documents\Projects\Savi.Api\Savi.Core\obj\Debug\net6.0\ref\Savi.Core.dll

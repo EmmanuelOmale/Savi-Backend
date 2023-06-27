@@ -1,0 +1,12 @@
+C:\Users\Decagon\Documents\Projects\Savi.Api\Savi.Data\bin\Debug\net6.0\Savi.Data.deps.json
+C:\Users\Decagon\Documents\Projects\Savi.Api\Savi.Data\bin\Debug\net6.0\Savi.Data.dll
+C:\Users\Decagon\Documents\Projects\Savi.Api\Savi.Data\bin\Debug\net6.0\Savi.Data.pdb
+C:\Users\Decagon\Documents\Projects\Savi.Api\Savi.Data\obj\Debug\net6.0\Savi.Data.csproj.AssemblyReference.cache
+C:\Users\Decagon\Documents\Projects\Savi.Api\Savi.Data\obj\Debug\net6.0\Savi.Data.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Decagon\Documents\Projects\Savi.Api\Savi.Data\obj\Debug\net6.0\Savi.Data.AssemblyInfoInputs.cache
+C:\Users\Decagon\Documents\Projects\Savi.Api\Savi.Data\obj\Debug\net6.0\Savi.Data.AssemblyInfo.cs
+C:\Users\Decagon\Documents\Projects\Savi.Api\Savi.Data\obj\Debug\net6.0\Savi.Data.csproj.CoreCompileInputs.cache
+C:\Users\Decagon\Documents\Projects\Savi.Api\Savi.Data\obj\Debug\net6.0\Savi.Data.dll
+C:\Users\Decagon\Documents\Projects\Savi.Api\Savi.Data\obj\Debug\net6.0\refint\Savi.Data.dll
+C:\Users\Decagon\Documents\Projects\Savi.Api\Savi.Data\obj\Debug\net6.0\Savi.Data.pdb
+C:\Users\Decagon\Documents\Projects\Savi.Api\Savi.Data\obj\Debug\net6.0\ref\Savi.Data.dll
