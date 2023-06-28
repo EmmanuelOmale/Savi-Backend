@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Savi.Data.Context
+namespace Savi.Data.Domains
 {
-    internal class Class1
+    internal class GroupTransaction
     {
     }
 }
