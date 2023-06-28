@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Savi.Core.Utilities
+namespace Savi.Data.Repositories
 {
-    public class Class1
+    internal class Class1
     {
     }
 }
