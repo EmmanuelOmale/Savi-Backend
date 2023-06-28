@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace Savi.Data.Domains
 {
-    internal class OTP
+    public class OTP : BaseEntity
     {
+
+        public string UserId { get; set; }
+        public User User { get; set; }
+        public string Value { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public bool IsUsed { get; set; }
     }
 }
