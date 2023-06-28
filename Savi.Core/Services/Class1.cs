@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Savi.Core.Interfaces
+namespace Savi.Core.Services
 {
     internal class Class1
     {
