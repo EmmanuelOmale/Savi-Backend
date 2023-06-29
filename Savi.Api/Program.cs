@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Savi.Api.Extensions;
+using Serilog;
+using Serilog.Extensions.Logging;
 
 public class Program
 {
@@ -12,6 +15,8 @@ public class Program
 
         // Add services to the container.
         // New Comments
+        Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.File("log/SaviLogs.txt", rollingInterval: RollingInterval.Day).CreateLogger();
+        builder.Host.UseSerilog();
 
         builder.Services.AddControllers();
 
@@ -21,7 +26,12 @@ public class Program
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "Savi.Api", Version = "v1" });
         });
 
+        var loggerFactory = new SerilogLoggerFactory(Log.Logger);
+        builder.Services.AddSingleton<ILoggerFactory>(loggerFactory);
+
         var app = builder.Build();
+        var logger = app.Services.GetRequiredService<ILogger<Program>>();
+        app.ConfigureExceptionHandler(logger);
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
