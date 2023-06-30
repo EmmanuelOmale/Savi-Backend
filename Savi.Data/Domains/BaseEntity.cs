@@ -16,10 +16,5 @@ namespace Savi.Data.Domains
 
         public DateTime CreatedAt { get; set; }
         public DateTime ModifiedAt { get; set; }
-        public ICollection<UserTransaction> UserTransactions { get; set; }
-        public ICollection<GroupTransaction> GroupTransactions { get; set; }
-        public ICollection<Saving> Savings { get; set; }
-        public ICollection<CardDetail> CardDetails { get; set; }
-        public OTP OTP { get; set; }
     }
 }
