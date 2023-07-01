@@ -11,7 +11,6 @@ namespace Savi.Data.Domains
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Username { get; set; }
         public DateTime CreatedAt { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime DateOfBirth { get; set; }

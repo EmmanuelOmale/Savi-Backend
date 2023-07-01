@@ -37,6 +37,7 @@ public class Program
         builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SaviContext")));
         builder.Services.AddTransient<IEmailService, SmtpEmailService>();
         builder.Services.AddAppSettingsConfig(builder.Configuration, builder.Environment);
+        builder.Services.AddHttpContextAccessor();
         var app = builder.Build();
         var logger = app.Services.GetRequiredService<ILogger<Program>>();
         app.ConfigureExceptionHandler(logger);
