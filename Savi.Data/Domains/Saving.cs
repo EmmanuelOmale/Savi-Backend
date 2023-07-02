@@ -1,10 +1,16 @@
-﻿namespace Savi.Data.Domains
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Savi.Data.Domains
 {
     public class Saving : BaseEntity
     {
 
         public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
+        public User User { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public decimal GoalAmount { get; set; }
