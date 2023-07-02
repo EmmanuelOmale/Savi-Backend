@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Savi.Data.Domains
+﻿namespace Savi.Data.Domains
 {
     public class Group : BaseEntity
     {
@@ -20,7 +14,10 @@ namespace Savi.Data.Domains
         public DateTime CashoutDate { get; set; }
         public DateTime NextDueDate { get; set; }
 
-        
+
+
+        public ICollection<ApplicationUser> applicationUsers { get; set; }
+
         public ICollection<GroupTransaction> GroupTransactions { get; set; }
     }
 }

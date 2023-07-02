@@ -1,12 +1,13 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Savi.Data.Context;
+using Savi.Data.Domains;
+using Savi.Data.IRepositories;
+using Savi.Data.Repositories;
 using Savi.Api.Extensions;
 using Serilog;
 using Serilog.Extensions.Logging;
-
 public class Program
 {
     public static void Main(string[] args)
@@ -18,7 +19,17 @@ public class Program
         Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.File("log/SaviLogs.txt", rollingInterval: RollingInterval.Day).CreateLogger();
         builder.Host.UseSerilog();
 
+        //for entityframework
+        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("SaviBackEnd")));
+        builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+
         builder.Services.AddControllers();
+
+
+        builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+        .AddEntityFrameworkStores<ApplicationDbContext>()
+         .AddDefaultTokenProviders();
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(c =>
