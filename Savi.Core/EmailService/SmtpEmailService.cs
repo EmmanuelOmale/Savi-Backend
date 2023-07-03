@@ -81,13 +81,15 @@ namespace Savi.Data.EmailService
             return template!;
         }
 
-        public async Task AddEmailTemplate(string subject, string body)
+        public async Task AddEmailTemplate(string subject, string body, EmailPurpose purpose)
         {
             var template = new EmailTemplate
             {
                 Subject = subject,
                 Body = body,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                Purpose = purpose
+                
             };
 
             _dbContext.EmailTemplates.Add(template);

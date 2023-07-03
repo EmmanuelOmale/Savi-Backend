@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Savi.Core.Interfaces;
+using Savi.Data.Enums;
 
 namespace Savi.Api.Controllers
 {
@@ -16,9 +17,9 @@ namespace Savi.Api.Controllers
         }
 
         [HttpPost]
-        public async Task AddEmailTemplate(string subject, string body)
+        public async Task AddEmailTemplate(string subject, string body, EmailPurpose purpose)
         {
-           await _emailService.AddEmailTemplate(subject, body);
+           await _emailService.AddEmailTemplate(subject, body, purpose);
         }
     }
 }

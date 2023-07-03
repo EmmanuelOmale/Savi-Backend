@@ -16,6 +16,6 @@ namespace Savi.Core.Interfaces
     public interface IEmailService
     {
         public Task SendMail(UserAction userAction);
-        Task AddEmailTemplate(string subject, string body);
+        Task AddEmailTemplate(string subject, string body, EmailPurpose purpose);
     }
 }
