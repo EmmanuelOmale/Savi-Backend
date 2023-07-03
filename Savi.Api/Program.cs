@@ -1,9 +1,11 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Savi.Api.Extensions;
+using Savi.Core.Interfaces;
+using Savi.Core.Services;
+using Savi.Data.Context;
+using Savi.Data.Domains;
 using Serilog;
 using Serilog.Extensions.Logging;
 
@@ -27,7 +29,15 @@ public class Program
         });
 
         var loggerFactory = new SerilogLoggerFactory(Log.Logger);
-        builder.Services.AddSingleton<ILoggerFactory>(loggerFactory);
+
+        //Entityframework
+        builder.Services.AddDbContext<SaviDbContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("SAVIBackEnd")));
+        builder.Services.AddScoped<IAuthService, AuthService>();
+
+        builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+       .AddEntityFrameworkStores<SaviDbContext>()
+        .AddDefaultTokenProviders();
 
         var app = builder.Build();
         var logger = app.Services.GetRequiredService<ILogger<Program>>();
