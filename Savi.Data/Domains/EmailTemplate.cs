@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Savi.Data.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ namespace Savi.Data.Domains
         public string ToMail { get; set; } = string.Empty;
         public string Subject { get; set; } = string.Empty;
         public string Body { get; set; } = string.Empty;
-
+        public EmailPurpose Purpose { get; set; }
     }
+
 }

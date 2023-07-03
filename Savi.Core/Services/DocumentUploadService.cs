@@ -20,17 +20,19 @@ namespace Savi.Core.Services
             _cloudinary = cloudinary;
         }
 
-        public async Task<DocumentUploadResult> UploadFileAsync(IFormFile file, string fileType)
+        public async Task<DocumentUploadResult> UploadFileAsync(string documentContent)
         {
-            if (file == null || file.Length == 0)
+            if (string.IsNullOrEmpty(documentContent))
             {
-                throw new ArgumentException("Invalid file");
+                throw new ArgumentException("Invalid document content");
             }
+
+            byte[] documentBytes = Encoding.UTF8.GetBytes(documentContent);
+            using var documentStream = new MemoryStream(documentBytes);
 
             var uploadParams = new RawUploadParams
             {
-                File = new FileDescription(file.FileName, file.OpenReadStream()),
-                Type = fileType,
+                File = new FileDescription("document.txt", documentStream),
                 UseFilename = true,
                 UniqueFilename = false
             };
@@ -53,9 +55,9 @@ namespace Savi.Core.Services
                 Url = uploadResult.Url.ToString(),
                 SecureUrl = uploadResult.SecureUrl.ToString(),
                 Format = uploadResult.Format,
-                Length = file.Length
+                Length = documentBytes.Length
             };
         }
-        
+
     }
 }
