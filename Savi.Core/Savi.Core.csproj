@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Savi.Data\Savi.Data.csproj" />
+  </ItemGroup>
+
 </Project>
