@@ -8,6 +8,7 @@ using Savi.Core.Interfaces;
 using Savi.Data.Context;
 using Savi.Data.Domains;
 using Savi.Data.Enums;
+using System.ComponentModel;
 using System.Security.Claims;
 
 namespace Savi.Data.EmailService
@@ -41,14 +42,14 @@ namespace Savi.Data.EmailService
                     .FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
 
                 var purpose = GetPurposeFromUserAction(userAction);
-                var template = await GetEmailTemplateByPurpose(purpose);
+                var template = await GetEmailTemplateByPurpose(purpose.ToString());
 
                 var request = new MailRequest
                 {
                     ToMail = userEmail!,
                     Subject = template.Subject,
                     Body = template.Body,
-                    Purpose = template.Purpose,
+                    Purpose = template.Purpose.ToString(),
                 };
 
                 var email = new MimeMessage();
@@ -74,28 +75,20 @@ namespace Savi.Data.EmailService
                 throw;
             }
         }
-        private async Task<EmailTemplate> GetEmailTemplateByPurpose(EmailPurpose purpose)
+        private async Task<EmailTemplate> GetEmailTemplateByPurpose(string purpose)
         {
-            var template = await _dbContext.EmailTemplates.FirstOrDefaultAsync(t => t.Purpose == purpose);
+            var template = await _dbContext.EmailTemplates.FirstOrDefaultAsync(t => t.Purpose.ToString() == purpose);
 
             return template!;
         }
 
-        public async Task AddEmailTemplate(string subject, string body, EmailPurpose purpose)
+        public async Task AddEmailTemplate(EmailTemplate template)
         {
-            var template = new EmailTemplate
-            {
-                Subject = subject,
-                Body = body,
-                CreatedAt = DateTime.UtcNow,
-                Purpose = purpose
-                
-            };
-
+           
             _dbContext.EmailTemplates.Add(template);
             await _dbContext.SaveChangesAsync();
         }
-
+        
         private EmailPurpose GetPurposeFromUserAction(UserAction userAction)
         {
             switch (userAction)
