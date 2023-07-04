@@ -15,12 +15,16 @@ using Savi.Data.Domains;
 using Serilog;
 using Serilog.Extensions.Logging;
 using Savi.Data.EmailService;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 public class Program
 {
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+        var configuration = builder.Configuration;
 
         // Add services to the container.
         // New Comments
@@ -52,6 +56,55 @@ public class Program
        .AddEntityFrameworkStores<SaviDbContext>()
         .AddDefaultTokenProviders();
 
+        // Adding Authentication
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            options.SaveToken = true;
+            options.RequireHttpsMetadata = false;
+            options.TokenValidationParameters = new TokenValidationParameters()
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidAudience = configuration["JWT:ValidAudience"],
+                ValidIssuer = configuration["JWT:ValidIssuer"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
+            };
+        });
+
+        builder.Services.AddSwaggerGen(option =>
+        {
+            
+            option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Please enter a valid token",
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "Bearer"
+            });
+            option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+        });
+
+
         var app = builder.Build();
         var logger = app.Services.GetRequiredService<ILogger<Program>>();
         app.ConfigureExceptionHandler(logger);
@@ -69,6 +122,7 @@ public class Program
         app.UseHttpsRedirection();
 
         app.UseRouting();
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.UseEndpoints(endpoints =>

@@ -35,5 +35,24 @@ namespace Savi.Api.Controllers
 
 
         }
+
+        [HttpPost]
+        [Route("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequestDTO loginModel)
+        {
+            var response = await _authenticationService.Login(loginModel);
+
+            if (response.StatusCode == "Success")
+            {
+                return Ok(response);
+            }
+            else if (response.StatusCode == "Error")
+            {
+                return Unauthorized(response);
+            }
+
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
     }
 }
