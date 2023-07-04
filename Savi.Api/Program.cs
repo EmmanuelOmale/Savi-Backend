@@ -14,6 +14,7 @@ using Savi.Data.Context;
 using Savi.Data.Domains;
 using Serilog;
 using Serilog.Extensions.Logging;
+using Savi.Data.EmailService;
 
 public class Program
 {
@@ -37,7 +38,7 @@ public class Program
         var loggerFactory = new SerilogLoggerFactory(Log.Logger);
         builder.Services.AddSingleton<ILoggerFactory>(loggerFactory);
         builder.Services.AddCloudinaryExtension(builder.Configuration);
-        builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SaviContext")));
+        builder.Services.AddDbContext<SaviDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SaviContext")));
         builder.Services.AddTransient<IEmailService, SmtpEmailService>();
         builder.Services.AddAppSettingsConfig(builder.Configuration, builder.Environment);
         builder.Services.AddHttpContextAccessor();

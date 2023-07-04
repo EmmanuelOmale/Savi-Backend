@@ -293,6 +293,33 @@ namespace Savi.Data.Migrations
                     b.ToTable("CardDetails");
                 });
 
+            modelBuilder.Entity("Savi.Data.Domains.EmailTemplate", b =>
+                {
+                    b.Property<string>("Body")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Purpose")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Subject")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable("EmailTemplates");
+                });
+
             modelBuilder.Entity("Savi.Data.Domains.Group", b =>
                 {
                     b.Property<string>("Id")

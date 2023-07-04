@@ -24,7 +24,7 @@ namespace Savi.Api.Extensions
             }
             else
             {
-                config.Bind(nameof(mailSettings), mailSettings);
+                config.GetSection("EmailSettings").Bind(mailSettings);
                 config.Bind(nameof(cloudinarySettings), cloudinarySettings);
             }
 

@@ -1,4 +1,5 @@
-﻿using MailKit.Net.Smtp;
+﻿using MailKit;
+using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -19,11 +20,11 @@ namespace Savi.Data.EmailService
         private readonly string _host;
         private readonly int _port;
         private readonly string _password;
-        private readonly ApplicationDbContext _dbContext;
+        private readonly SaviDbContext _dbContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogger<SmtpEmailService> _logger;
 
-        public SmtpEmailService(EmailSettings mailSettings, ApplicationDbContext dbContext, IHttpContextAccessor contextAccessor, ILogger<SmtpEmailService> logger)
+        public SmtpEmailService(EmailSettings mailSettings, SaviDbContext dbContext, IHttpContextAccessor contextAccessor, ILogger<SmtpEmailService> logger)
         {
             _fromMail = mailSettings.Username!;
             _host = mailSettings.Host!;
@@ -34,12 +35,11 @@ namespace Savi.Data.EmailService
             _logger = logger;
         }
 
-        public async Task SendMail(UserAction userAction)
+        public async Task SendMail(UserAction userAction, string userEmail)
         {
             try
             {
-                var userEmail = _httpContextAccessor.HttpContext!.User.Claims
-                    .FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+              
 
                 var purpose = GetPurposeFromUserAction(userAction);
                 var template = await GetEmailTemplateByPurpose(purpose.ToString());
@@ -77,9 +77,12 @@ namespace Savi.Data.EmailService
         }
         private async Task<EmailTemplate> GetEmailTemplateByPurpose(string purpose)
         {
-            var template = await _dbContext.EmailTemplates.FirstOrDefaultAsync(t => t.Purpose.ToString() == purpose);
+            var template = await _dbContext.EmailTemplates
+                        .ToListAsync();
 
-            return template!;
+            var filteredTemplate = template.FirstOrDefault(t => t.Purpose.ToString() == purpose.ToString());
+            return filteredTemplate!;
+
         }
 
         public async Task AddEmailTemplate(EmailTemplate template)

@@ -93,7 +93,8 @@ namespace Savi.Data.Context
                 .HasForeignKey(gt => gt.GroupId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+          
 
-    }
+        }
     }
 }
