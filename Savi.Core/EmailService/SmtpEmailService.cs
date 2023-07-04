@@ -5,12 +5,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MimeKit;
+using Org.BouncyCastle.Pqc.Crypto.Lms;
 using Savi.Core.Interfaces;
 using Savi.Data.Context;
 using Savi.Data.Domains;
 using Savi.Data.Enums;
 using System.ComponentModel;
 using System.Security.Claims;
+using System.Text;
 
 namespace Savi.Data.EmailService
 {
@@ -43,14 +45,26 @@ namespace Savi.Data.EmailService
 
                 var purpose = GetPurposeFromUserAction(userAction);
                 var template = await GetEmailTemplateByPurpose(purpose.ToString());
+                string registrationLink = GenerateRegistrationLink(userAction);
+
+                string emailBody = template.Body.Replace(template.Body, registrationLink);
+
 
                 var request = new MailRequest
                 {
                     ToMail = userEmail!,
                     Subject = template.Subject,
-                    Body = template.Body,
                     Purpose = template.Purpose.ToString(),
                 };
+                if (userAction == UserAction.Registration || userAction == UserAction.PasswordReset)
+                {
+
+                    request.Body = GenerateEmailBody(emailBody, userAction);
+                }
+                else
+                {
+                    request.Body = template.Body;
+                }
 
                 var email = new MimeMessage();
                 email.Sender = MailboxAddress.Parse(_fromMail);
@@ -88,10 +102,11 @@ namespace Savi.Data.EmailService
         public async Task AddEmailTemplate(EmailTemplate template)
         {
            
+          
             _dbContext.EmailTemplates.Add(template);
             await _dbContext.SaveChangesAsync();
         }
-        
+       
         private EmailPurpose GetPurposeFromUserAction(UserAction userAction)
         {
             switch (userAction)
@@ -105,6 +120,48 @@ namespace Savi.Data.EmailService
                 default:
                     throw new InvalidOperationException("Unable to determine the email purpose.");
             }
+        }
+
+        private string GenerateEmailBody(string body, UserAction userAction)
+        {
+            string registrationLink = GenerateRegistrationLink(userAction);
+
+            string emailBody = body.Replace("{registrationLink}", registrationLink);
+
+            return emailBody;
+        }
+
+        private string GenerateRegistrationLink(UserAction userAction)
+        {
+            
+            string userId = GetUserIdFromHttpContext();
+            string token = GenerateUniqueToken();
+
+            string registrationLink = $"https://example.com/register?userId={userId}&token={token}";
+
+            return registrationLink;
+        }
+        private string GetUserIdFromHttpContext()
+        {
+            var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return userId;
+        }
+        private string GenerateUniqueToken()
+        {
+            const int tokenLength = 10;
+            const string allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+            var random = new Random();
+            var token = new StringBuilder();
+
+            for (int i = 0; i < tokenLength; i++)
+            {
+                int randomIndex = random.Next(0, allowedChars.Length);
+                char randomChar = allowedChars[randomIndex];
+                token.Append(randomChar);
+            }
+
+            return token.ToString();
         }
     }
 }
