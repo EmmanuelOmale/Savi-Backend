@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -7,8 +9,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Savi.Api.Extensions;
 using Savi.Core.Interfaces;
+using Savi.Core.Services;
 using Savi.Data.Context;
-using Savi.Data.EmailService;
+using Savi.Data.Domains;
 using Serilog;
 using Serilog.Extensions.Logging;
 
@@ -38,6 +41,16 @@ public class Program
         builder.Services.AddTransient<IEmailService, SmtpEmailService>();
         builder.Services.AddAppSettingsConfig(builder.Configuration, builder.Environment);
         builder.Services.AddHttpContextAccessor();
+
+        //Entityframework
+        builder.Services.AddDbContext<SaviDbContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("SAVIBackEnd")));
+        builder.Services.AddScoped<IAuthService, AuthService>();
+
+        builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+       .AddEntityFrameworkStores<SaviDbContext>()
+        .AddDefaultTokenProviders();
+
         var app = builder.Build();
         var logger = app.Services.GetRequiredService<ILogger<Program>>();
         app.ConfigureExceptionHandler(logger);
