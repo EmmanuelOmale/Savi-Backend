@@ -15,6 +15,7 @@ namespace Savi.Data.Context
         public DbSet<CardDetail> CardDetails { get; set; }
         public DbSet<OTP> OTPs { get; set; }
         public DbSet<Group> Groups { get; set; }
+        public DbSet<EmailTemplate> EmailTemplates { get; set; }
 
         public SaviDbContext(DbContextOptions<SaviDbContext> Options) : base(Options)
         {
@@ -90,7 +91,10 @@ namespace Savi.Data.Context
                 .HasOne(gt => gt.Group)
                 .WithMany(g => g.GroupTransactions)
                 .HasForeignKey(gt => gt.GroupId)
-            .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade);
+
+          
+
         }
     }
 }

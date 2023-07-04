@@ -12,8 +12,8 @@ using Savi.Data.Context;
 namespace Savi.Data.Migrations
 {
     [DbContext(typeof(SaviDbContext))]
-    [Migration("20230703143638_First-Migration")]
-    partial class FirstMigration
+    [Migration("20230704093456_templateupdate")]
+    partial class templateupdate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -293,6 +293,33 @@ namespace Savi.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("CardDetails");
+                });
+
+            modelBuilder.Entity("Savi.Data.Domains.EmailTemplate", b =>
+                {
+                    b.Property<string>("Body")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Purpose")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Subject")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable("EmailTemplates");
                 });
 
             modelBuilder.Entity("Savi.Data.Domains.Group", b =>

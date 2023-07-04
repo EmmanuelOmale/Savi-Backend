@@ -2,6 +2,7 @@
 using Savi.Core.Interfaces;
 using Savi.Data.Domains;
 using Savi.Data.DTO;
+using Savi.Data.Enums;
 
 namespace Savi.Core.Services
 {
@@ -9,10 +10,12 @@ namespace Savi.Core.Services
     {
 
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IEmailService _emailService;
 
-        public AuthService(UserManager<ApplicationUser> userManager)
+        public AuthService(UserManager<ApplicationUser> userManager, IEmailService emailService)
         {
             _userManager = userManager;
+            _emailService = emailService;
         }
 
         public async Task<IdentityResult> RegisterAsync(SignUpDto signUpDto)
@@ -31,9 +34,12 @@ namespace Savi.Core.Services
                 LastName = signUpDto.LastName,
 
             };
+            var userAction = UserAction.Registration;
+            await _emailService.SendMail(userAction, user.Email);
             var regUser = await _userManager.CreateAsync(user, signUpDto.Password);
             if (regUser.Succeeded)
             {
+                
                 return regUser;
             }
             else

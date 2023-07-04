@@ -1,5 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Savi.Api.Extensions;
 using Savi.Core.Interfaces;
@@ -8,6 +14,7 @@ using Savi.Data.Context;
 using Savi.Data.Domains;
 using Serilog;
 using Serilog.Extensions.Logging;
+using Savi.Data.EmailService;
 
 public class Program
 {
@@ -29,6 +36,12 @@ public class Program
         });
 
         var loggerFactory = new SerilogLoggerFactory(Log.Logger);
+        builder.Services.AddSingleton<ILoggerFactory>(loggerFactory);
+        builder.Services.AddCloudinaryExtension(builder.Configuration);
+        builder.Services.AddDbContext<SaviDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SaviContext")));
+        builder.Services.AddTransient<IEmailService, SmtpEmailService>();
+        builder.Services.AddAppSettingsConfig(builder.Configuration, builder.Environment);
+        builder.Services.AddHttpContextAccessor();
 
         //Entityframework
         builder.Services.AddDbContext<SaviDbContext>(options =>

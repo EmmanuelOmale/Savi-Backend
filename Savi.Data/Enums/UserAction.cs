@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Savi.Core.Utilities
+namespace Savi.Data.Enums
 {
-    public class Class1
+    public enum UserAction
     {
+        Registration,
+        PasswordReset,
+        Newsletter
     }
 }
