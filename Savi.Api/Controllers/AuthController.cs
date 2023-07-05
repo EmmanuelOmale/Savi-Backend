@@ -19,18 +19,19 @@ namespace Savi.Api.Controllers
         public async Task<IActionResult> Register([FromBody] SignUpDto model)
         {
 
-            try
+            var result = await _authenticationService.RegisterAsync(model);
+
+            if (result.StatusCode == 200)
             {
-                var result = await _authenticationService.RegisterAsync(model);
-                if (result.Succeeded)
-                {
-                    return Ok(result.Succeeded);
-                }
-                return Unauthorized(result);
+                return Ok(result);
             }
-            catch (Exception ex)
+            else if (result.StatusCode == 404)
             {
-                return BadRequest(ex.Message);
+                return NotFound(result);
+            }
+            else
+            {
+                return BadRequest(result);
             }
 
 

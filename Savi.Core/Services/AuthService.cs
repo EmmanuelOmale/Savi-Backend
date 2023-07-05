@@ -4,7 +4,6 @@ using Microsoft.IdentityModel.Tokens;
 using Savi.Core.Interfaces;
 using Savi.Data.Domains;
 using Savi.Data.DTO;
-using Savi.Data.Enums;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -25,33 +24,56 @@ namespace Savi.Core.Services
             _configuration = configuration;
         }
 
-        public async Task<IdentityResult> RegisterAsync(SignUpDto signUpDto)
+        public async Task<ResponseDto<IdentityResult>> RegisterAsync(SignUpDto signUpDto)
         {
-            var findEmail = await _userManager.FindByEmailAsync(signUpDto.UserName);
-            if (findEmail != null)
+            try
             {
-                throw new Exception("UserName already exist");
-            }
+                var findEmail = await _userManager.FindByEmailAsync(signUpDto.Email);
+                if (findEmail != null)
+                {
+                    throw new Exception("UserName already exist");
+                }
 
-            ApplicationUser user = new ApplicationUser()
-            {
-                UserName = signUpDto.UserName,
-                Email = signUpDto.UserName,
-                FirstName = signUpDto.FirstName,
-                LastName = signUpDto.LastName,
+                ApplicationUser user = new ApplicationUser()
+                {
+                    UserName = signUpDto.Email,
+                    Email = signUpDto.Email,
+                    FirstName = signUpDto.FirstName,
+                    LastName = signUpDto.LastName,
 
-            };
-            var userAction = UserAction.Registration;
-            await _emailService.SendMail(userAction, user.Email);
-            var regUser = await _userManager.CreateAsync(user, signUpDto.Password);
-            if (regUser.Succeeded)
-            {
-                
-                return regUser;
+
+                };
+                //var userAction = UserAction.Registration;
+                //await _emailService.SendMail(userAction, user.Email);
+                var regUser = await _userManager.CreateAsync(user, signUpDto.Password);
+                if (regUser.Succeeded)
+                {
+                    return new ResponseDto<IdentityResult>()
+                    {
+                        Result = regUser,
+                        StatusCode = 200,
+                        DisplayMessage = "Your Savi Account Successfully Created, Check your Email for Confirmation."
+                    };
+                }
+
+                else
+                {
+                    return new ResponseDto<IdentityResult>()
+                    {
+                        Result = regUser,
+                        StatusCode = 404,
+                        DisplayMessage = "Error trying to Create Account",
+                    };
+                }
             }
-            else
+            catch (Exception)
             {
-                throw new Exception("Registration not completed");
+                return new ResponseDto<IdentityResult>()
+                {
+                    Result = null,
+                    StatusCode = 500,
+                    DisplayMessage = "Error trying to create account Check your parameters and try again"
+                };
             }
 
         }
