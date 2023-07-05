@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Savi.Data.DTO
 {
-    internal class Class1
+    public class LoginRequestDTO
     {
+        public string UserName { get; set; }
+        public string Password { get; set; }
+
     }
 }

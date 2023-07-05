@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Savi.Core.Utilities
+namespace Savi.Data.DTO
 {
-    public class Class1
+    public class LoginResponseDTO
     {
+
     }
 }
