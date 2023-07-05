@@ -7,7 +7,7 @@ namespace Savi.Core.Interfaces
 {
     public interface IAuthService
     {
-        public Task<IdentityResult> RegisterAsync(SignUpDto signUpDto);
+        public Task<ResponseDto<IdentityResult>> RegisterAsync(SignUpDto signUpDto);
         Task<APIResponse> Login(LoginRequestDTO loginModel);
         JwtSecurityToken GetToken(List<Claim> authClaims);
 
