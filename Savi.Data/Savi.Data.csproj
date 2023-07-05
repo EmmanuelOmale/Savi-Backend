@@ -20,7 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTO\" />
     <Folder Include="IRepositories\" />
     <Folder Include="Repositories\" />
     <Folder Include="Seeding\" />
