@@ -22,7 +22,7 @@ namespace Savi.Api.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetOccupations()
+        public ActionResult<APIResponse> GetOccupations()
         {
             var occupations = _unitOfWork.OccupationRepository.GetAll().ToList();
             var response = new APIResponse
@@ -36,7 +36,7 @@ namespace Savi.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddNewOccupation([FromBody] CreateOccupationDto newOccupation)
+        public async Task<ActionResult<APIResponse>> AddNewOccupation([FromBody] CreateOccupationDto newOccupation)
         {
             var occupation = _mapper.Map<Occupation>(newOccupation);
             _unitOfWork.OccupationRepository.Add(occupation);
@@ -53,7 +53,7 @@ namespace Savi.Api.Controllers
         }
 
         [HttpGet("{id}", Name = "GetOccupationById")]
-        public IActionResult GetOccupationById(string id)
+        public ActionResult<APIResponse> GetOccupationById(string id)
         {
             var occupation = _unitOfWork.OccupationRepository.Get(u => u.Id == id);
             if (occupation == null)
@@ -78,7 +78,7 @@ namespace Savi.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteOccupation(string id)
+        public ActionResult<APIResponse> DeleteOccupation(string id)
         {
             var occupationToDelete = _unitOfWork.OccupationRepository.Get(u => u.Id == id);
             if (occupationToDelete == null)
@@ -105,7 +105,7 @@ namespace Savi.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateOccupation(string id, [FromBody] UpdateOccupationDto updateOccupation)
+        public ActionResult<APIResponse> UpdateOccupation(string id, [FromBody] UpdateOccupationDto updateOccupation)
         {
             var existingOccupation = _unitOfWork.OccupationRepository.Get(u => u.Id == id);
             if (existingOccupation == null)
