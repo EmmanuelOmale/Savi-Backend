@@ -16,6 +16,8 @@ namespace Savi.Data.Context
         public DbSet<OTP> OTPs { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<EmailTemplate> EmailTemplates { get; set; }
+        public DbSet<Occupation> Occupations { get; set; }
+        public DbSet<IdentityType> IdentityTypes { get; set; }
 
         public SaviDbContext(DbContextOptions<SaviDbContext> Options) : base(Options)
         {
