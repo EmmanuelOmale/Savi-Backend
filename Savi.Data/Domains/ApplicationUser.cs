@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Savi.Data.Domains
 {
@@ -8,16 +9,16 @@ namespace Savi.Data.Domains
         public string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public bool Gender { get; set; }
-        public string Occupation { get; set; }
+        public string OccupationId { get; set; }
         public string Address { get; set; }
         public string BVN { get; set; }
-        public int IdentificationTypeId { get; set; }
-        public string IdentificationNumber { get; set; }
+        public string IdentityTypeId { get; set; }
         public string ImageUrl { get; set; }
         public string ProofOfAddressUrl { get; set; }
         public int KYCLevel { get; set; }
         public Saving Saving { get; set; }
         public OTP OTP { get; set; }
+                                               
 
         // Navigation properties
 
@@ -26,6 +27,9 @@ namespace Savi.Data.Domains
         public ICollection<Saving> Savings { get; set; }
         public ICollection<CardDetail> CardDetails { get; set; }
         public ICollection<OTP> OTPs { get; set; }
-
+        [ForeignKey("OccupationId")]
+        public Occupation Occupation { get; set; }
+        [ForeignKey("IdentityTypeId")]
+        public IdentityType IdentityType { get; set; }
     }
 }

@@ -1,14 +1,7 @@
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Savi.Api.Extensions;
 using Savi.Api.Service;
@@ -22,6 +15,9 @@ using Savi.Data.EmailService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Savi.Data.IRepositories;
+using Savi.Data.UnitOfWork;
+using Savi.Data.Seeding;
 
 public class Program
 {
@@ -58,6 +54,9 @@ public class Program
             options.ClientId = "443815310479-9rcoi66q352erfj1udd88au2tqgdmug0.apps.googleusercontent.com";
             options.ClientSecret = "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";
         });
+        builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+        builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        builder.Services.AddScoped<IDocumentUploadService, DocumentUploadService>();
         builder.Services.AddCloudinaryExtension(builder.Configuration);
         builder.Services.AddDbContext<SaviDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SaviContext")));
         builder.Services.AddTransient<IEmailService, SmtpEmailService>();
@@ -126,7 +125,14 @@ public class Program
         var app = builder.Build();
         var logger = app.Services.GetRequiredService<ILogger<Program>>();
         app.ConfigureExceptionHandler(logger);
+        // Create a scope and resolve the SaviDbContext
+        using (var scope = app.Services.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<SaviDbContext>();
 
+            // Seed the data
+            Seeder.SeedData(dbContext);
+        }
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {

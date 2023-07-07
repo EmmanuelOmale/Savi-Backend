@@ -11,5 +11,6 @@ namespace Savi.Core.Interfaces
     public interface IDocumentUploadService
     {
         Task<DocumentUploadResult> UploadFileAsync(string documentContent);
+        Task<DocumentUploadResult> UploadImageAsync(IFormFile image);
     }
 }
