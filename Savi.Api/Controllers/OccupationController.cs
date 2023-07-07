@@ -15,77 +15,122 @@ namespace Savi.Api.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public OccupationController(IUnitOfWork unitOfWork,IMapper mapper)
+        public OccupationController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
-
         [HttpGet]
         public IActionResult GetOccupations()
         {
-            List<Occupation> occupations = _unitOfWork.OccupationRepository.GetAll().ToList();
-            if (occupations != null)
+            var occupations = _unitOfWork.OccupationRepository.GetAll().ToList();
+            var response = new APIResponse
             {
-                return Ok(occupations);
-            }
-            else
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while retrieving occupations.");
-            }
+                StatusCode = StatusCodes.Status200OK.ToString(),
+                IsSuccess = true,
+                Message = "Occupations retrieved successfully",
+                Result = occupations
+            };
+            return Ok(response);
         }
-
 
         [HttpPost]
         public async Task<IActionResult> AddNewOccupation([FromBody] CreateOccupationDto newOccupation)
         {
-            Occupation occupation = _mapper.Map<Occupation>(newOccupation);
+            var occupation = _mapper.Map<Occupation>(newOccupation);
             _unitOfWork.OccupationRepository.Add(occupation);
             _unitOfWork.Save();
 
-            return StatusCode(StatusCodes.Status201Created, "New occupation added successfully");
+            var response = new APIResponse
+            {
+                StatusCode = StatusCodes.Status201Created.ToString(),
+                IsSuccess = true,
+                Message = "New occupation added successfully",
+                Result = occupation
+            };
+            return StatusCode(StatusCodes.Status201Created, response);
         }
-
 
         [HttpGet("{id}", Name = "GetOccupationById")]
         public IActionResult GetOccupationById(string id)
         {
-            Occupation occupation = _unitOfWork.OccupationRepository.Get(u => u.Id == id);
+            var occupation = _unitOfWork.OccupationRepository.Get(u => u.Id == id);
             if (occupation == null)
-                return NotFound();
+            {
+                var notFoundResponse = new APIResponse
+                {
+                    StatusCode = StatusCodes.Status404NotFound.ToString(),
+                    IsSuccess = false,
+                    Message = "Occupation not found"
+                };
+                return NotFound(notFoundResponse);
+            }
 
-            return Ok(occupation);
+            var response = new APIResponse
+            {
+                StatusCode = StatusCodes.Status200OK.ToString(),
+                IsSuccess = true,
+                Message = "Occupation retrieved successfully",
+                Result = occupation
+            };
+            return Ok(response);
         }
 
-
-        [HttpDelete()]
+        [HttpDelete("{id}")]
         public IActionResult DeleteOccupation(string id)
         {
             var occupationToDelete = _unitOfWork.OccupationRepository.Get(u => u.Id == id);
             if (occupationToDelete == null)
-                return NotFound();
+            {
+                var notFoundResponse = new APIResponse
+                {
+                    StatusCode = StatusCodes.Status404NotFound.ToString(),
+                    IsSuccess = false,
+                    Message = "Occupation not found"
+                };
+                return NotFound(notFoundResponse);
+            }
+
             _unitOfWork.OccupationRepository.Remove(occupationToDelete);
             _unitOfWork.Save();
+
+            var response = new APIResponse
+            {
+                StatusCode = StatusCodes.Status204NoContent.ToString(),
+                IsSuccess = true,
+                Message = "Occupation deleted successfully"
+            };
             return NoContent();
         }
-
 
         [HttpPut("{id}")]
         public IActionResult UpdateOccupation(string id, [FromBody] UpdateOccupationDto updateOccupation)
         {
-            Occupation existingOccupation = _unitOfWork.OccupationRepository.Get(u => u.Id == id);
+            var existingOccupation = _unitOfWork.OccupationRepository.Get(u => u.Id == id);
             if (existingOccupation == null)
             {
-                return NotFound();
+                var notFoundResponse = new APIResponse
+                {
+                    StatusCode = StatusCodes.Status404NotFound.ToString(),
+                    IsSuccess = false,
+                    Message = "Occupation not found"
+                };
+                return NotFound(notFoundResponse);
             }
 
             _mapper.Map(updateOccupation, existingOccupation);
-
             _unitOfWork.OccupationRepository.Update(existingOccupation);
             _unitOfWork.Save();
 
-            return Ok("Occupation updated successfully");
+            var response = new APIResponse
+            {
+                StatusCode = StatusCodes.Status200OK.ToString(),
+                IsSuccess = true,
+                Message = "Occupation updated successfully",
+                Result = existingOccupation
+            };
+            return Ok(response);
         }
     }
 }

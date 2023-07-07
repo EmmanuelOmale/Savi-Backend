@@ -15,37 +15,35 @@ namespace Savi.Api.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly IDocumentUploadService _Uploadservice;
+        private readonly IDocumentUploadService _uploadService;
 
-        public IdentityTypeController(IUnitOfWork unitOfWork, IMapper mapper, IDocumentUploadService Uploadservice)
+        public IdentityTypeController(IUnitOfWork unitOfWork, IMapper mapper, IDocumentUploadService uploadService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _Uploadservice = Uploadservice;
+            _uploadService = uploadService;
         }
-
 
         [HttpGet]
-        public IActionResult GetIdentityTypes()
+        public ActionResult<APIResponse> GetIdentityTypes()
         {
-            List<IdentityType> identityTypes = _unitOfWork.IdentityTypeRepository.GetAll().ToList();
-            if (identityTypes != null)
+            var identityTypes = _unitOfWork.IdentityTypeRepository.GetAll().ToList();
+            var response = new APIResponse
             {
-                return Ok(identityTypes);
-            }
-            else
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while retrieving identity types.");
-            }
+                StatusCode = StatusCodes.Status200OK.ToString(),
+                IsSuccess = true,
+                Message = "Identity types retrieved successfully",
+                Result = identityTypes
+            };
+            return Ok(response);
         }
 
-
         [HttpPost]
-        public async Task<IActionResult> AddNewIdentityType([FromForm] CreateIdentityDto newIdentityType)
+        public async Task<ActionResult<APIResponse>> AddNewIdentityType([FromForm] CreateIdentityDto newIdentityType)
         {
             if (newIdentityType.DocumentImage != null && newIdentityType.DocumentImage.Length > 0)
             {
-                var documentUploadResult = await _Uploadservice.UploadImageAsync(newIdentityType.DocumentImage);
+                var documentUploadResult = await _uploadService.UploadImageAsync(newIdentityType.DocumentImage);
                 string documentImageUrl = documentUploadResult.Url.ToString();
 
                 IdentityType identityType = _mapper.Map<IdentityType>(newIdentityType);
@@ -54,7 +52,14 @@ namespace Savi.Api.Controllers
                 _unitOfWork.IdentityTypeRepository.Add(identityType);
                 _unitOfWork.Save();
 
-                return StatusCode(StatusCodes.Status201Created, "New identification type created successfully");
+                var response = new APIResponse
+                {
+                    StatusCode = StatusCodes.Status201Created.ToString(),
+                    IsSuccess = true,
+                    Message = "New identification type created successfully",
+                    Result = identityType
+                };
+                return StatusCode(StatusCodes.Status201Created, response);
             }
             else
             {
@@ -63,61 +68,106 @@ namespace Savi.Api.Controllers
                 _unitOfWork.IdentityTypeRepository.Add(identityType);
                 _unitOfWork.Save();
 
-                return StatusCode(StatusCodes.Status201Created, "New identification type created successfully");
+                var response = new APIResponse
+                {
+                    StatusCode = StatusCodes.Status201Created.ToString(),
+                    IsSuccess = true,
+                    Message = "New identification type created successfully",
+                    Result = identityType
+                };
+                return StatusCode(StatusCodes.Status201Created, response);
             }
         }
 
-
-
-
         [HttpGet("{id}", Name = "GetIdentification")]
-        public IActionResult GetIdentificationById(string id)
+        public ActionResult<APIResponse> GetIdentificationById(string id)
         {
-            IdentityType identityType = _unitOfWork.IdentityTypeRepository.Get(u => u.Id == id);
+            var identityType = _unitOfWork.IdentityTypeRepository.Get(u => u.Id == id);
             if (identityType == null)
-                return NotFound();
+            {
+                var notFoundResponse = new APIResponse
+                {
+                    StatusCode = StatusCodes.Status404NotFound.ToString(),
+                    IsSuccess = false,
+                    Message = "Identity type not found"
+                };
+                return NotFound(notFoundResponse);
+            }
 
-            return Ok(identityType);
+            var response = new APIResponse
+            {
+                StatusCode = StatusCodes.Status200OK.ToString(),
+                IsSuccess = true,
+                Message = "Identity type retrieved successfully",
+                Result = identityType
+            };
+            return Ok(response);
         }
-
-
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
-        public IActionResult DeleteIdentificationType(string id)
+        public ActionResult<APIResponse> DeleteIdentificationType(string id)
         {
-            var IdentificationTypeToDelete = _unitOfWork.IdentityTypeRepository.Get(u => u.Id == id);
-            if (IdentificationTypeToDelete == null)
-                return NotFound();
-            _unitOfWork.IdentityTypeRepository.Remove(IdentificationTypeToDelete);
+            var identificationTypeToDelete = _unitOfWork.IdentityTypeRepository.Get(u => u.Id == id);
+            if (identificationTypeToDelete == null)
+            {
+                var notFoundResponse = new APIResponse
+                {
+                    StatusCode = StatusCodes.Status404NotFound.ToString(),
+                    IsSuccess = false,
+                    Message = "Identity type not found"
+                };
+                return NotFound(notFoundResponse);
+            }
+
+            _unitOfWork.IdentityTypeRepository.Remove(identificationTypeToDelete);
             _unitOfWork.Save();
+
+            var response = new APIResponse
+            {
+                StatusCode = StatusCodes.Status204NoContent.ToString(),
+                IsSuccess = true,
+                Message = "Identity type deleted successfully"
+            };
             return NoContent();
         }
 
-
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateIdentityType(string id, [FromForm] UpdateIdentityDto updatedIdentityType)
+        public async Task<ActionResult<APIResponse>> UpdateIdentityType(string id, [FromForm] UpdateIdentityDto updatedIdentityType)
         {
-            IdentityType existingIdentityType = _unitOfWork.IdentityTypeRepository.Get(u => u.Id == id);
+            var existingIdentityType = _unitOfWork.IdentityTypeRepository.Get(u => u.Id == id);
             if (existingIdentityType == null)
             {
-                return NotFound();
+                var notFoundResponse = new APIResponse
+                {
+                    StatusCode = StatusCodes.Status404NotFound.ToString(),
+                    IsSuccess = false,
+                    Message = "Identity type not found"
+                };
+                return NotFound(notFoundResponse);
             }
 
             _mapper.Map(updatedIdentityType, existingIdentityType);
 
             if (updatedIdentityType.DocumentImage != null && updatedIdentityType.DocumentImage.Length > 0)
             {
-                var documentUploadResult = await _Uploadservice.UploadImageAsync(updatedIdentityType.DocumentImage);
+                var documentUploadResult = await _uploadService.UploadImageAsync(updatedIdentityType.DocumentImage);
                 string documentImageUrl = documentUploadResult.Url.ToString();
 
                 existingIdentityType.DocumentImageUrl = documentImageUrl;
             }
+
             _unitOfWork.IdentityTypeRepository.Update(existingIdentityType);
             _unitOfWork.Save();
 
-            return StatusCode(StatusCodes.Status200OK, "Identification type updated successfully");
+            var response = new APIResponse
+            {
+                StatusCode = StatusCodes.Status200OK.ToString(),
+                IsSuccess = true,
+                Message = "Identity type updated successfully",
+                Result = existingIdentityType
+            };
+            return Ok(response);
         }
-
     }
 }
