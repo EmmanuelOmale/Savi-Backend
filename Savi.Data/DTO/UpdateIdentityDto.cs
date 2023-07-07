@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -14,5 +15,9 @@ namespace Savi.Data.DTO
         public string Name { get; set; }
 
         public string IdentificationNumber { get; set; }
+
+        public IFormFile DocumentImage { get; set; }
+
+        public string? DocumentImageUrl { get; set; } = string.Empty;
     }
 }

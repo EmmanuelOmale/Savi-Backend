@@ -23,12 +23,19 @@ namespace Savi.Api.Controllers
 
 
         [HttpGet]
-        //[Authorize]
         public IActionResult GetOccupations()
         {
             List<Occupation> occupations = _unitOfWork.OccupationRepository.GetAll().ToList();
-            return Ok(occupations);
+            if (occupations != null)
+            {
+                return Ok(occupations);
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while retrieving occupations.");
+            }
         }
+
 
         [HttpPost]
         public async Task<IActionResult> AddNewOccupation([FromBody] CreateOccupationDto newOccupation)
@@ -36,7 +43,8 @@ namespace Savi.Api.Controllers
             Occupation occupation = _mapper.Map<Occupation>(newOccupation);
             _unitOfWork.OccupationRepository.Add(occupation);
             _unitOfWork.Save();
-            return Ok("New occupation added successfully");
+
+            return StatusCode(StatusCodes.Status201Created, "New occupation added successfully");
         }
 
 
@@ -50,8 +58,8 @@ namespace Savi.Api.Controllers
             return Ok(occupation);
         }
 
+
         [HttpDelete()]
-       // [Authorize(Roles = "Admin")]
         public IActionResult DeleteOccupation(string id)
         {
             var occupationToDelete = _unitOfWork.OccupationRepository.Get(u => u.Id == id);
@@ -64,14 +72,15 @@ namespace Savi.Api.Controllers
 
 
         [HttpPut("{id}")]
-        public IActionResult UpdateOccupation(string id, [FromBody] UpdateOccupationDto UpdateOccupation)
+        public IActionResult UpdateOccupation(string id, [FromBody] UpdateOccupationDto updateOccupation)
         {
             Occupation existingOccupation = _unitOfWork.OccupationRepository.Get(u => u.Id == id);
             if (existingOccupation == null)
+            {
                 return NotFound();
+            }
 
-            // Map the updated data to the existing entity
-            _mapper.Map(UpdateOccupation, existingOccupation);
+            _mapper.Map(updateOccupation, existingOccupation);
 
             _unitOfWork.OccupationRepository.Update(existingOccupation);
             _unitOfWork.Save();

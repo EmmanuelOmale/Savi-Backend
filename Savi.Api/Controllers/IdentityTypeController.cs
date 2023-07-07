@@ -28,42 +28,18 @@ namespace Savi.Api.Controllers
         [HttpGet]
         public IActionResult GetIdentityTypes()
         {
-
             List<IdentityType> identityTypes = _unitOfWork.IdentityTypeRepository.GetAll().ToList();
-            return Ok(identityTypes);
+            if (identityTypes != null)
+            {
+                return Ok(identityTypes);
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while retrieving identity types.");
+            }
         }
 
-        /*[HttpPost]
-        public async Task<IActionResult> AddNewIdentityType([FromForm] CreateIdentityDto newIdentityType)
-        {
-            if(documentImage != null && documentImage.Length > 0)
-            {
-                
-                var documentUploadResult = await _Uploadservice.UploadImageAsync(documentImage);
-                string url = documentUploadResult.Url.ToString();
-                bool result = 
 
-            }
-             IdentityType IdentityType = _mapper.Map<IdentityType>(newIdentityType);
-            _unitOfWork.IdentityTypeRepository.Add(IdentityType);
-            _unitOfWork.Save();
-            return Ok("New identification type created successfully");
-        }*/
-        /* [HttpPost]
-         public async Task<IActionResult> AddNewIdentityType([FromForm] CreateIdentityDto newIdentityType)
-         {
-             if (newIdentityType.DocumentImage != null && newIdentityType.DocumentImage.Length > 0)
-             {
-                 var documentUploadResult = await _Uploadservice.UploadImageAsync(newIdentityType.DocumentImage);
-                 newIdentityType.DocumentImageUrl = documentUploadResult.Url.ToString();
-             }
-
-             IdentityType identityType = _mapper.Map<IdentityType>(newIdentityType);
-             _unitOfWork.IdentityTypeRepository.Add(identityType);
-             _unitOfWork.Save();
-
-             return Ok("New identification type created successfully");
-         }*/
         [HttpPost]
         public async Task<IActionResult> AddNewIdentityType([FromForm] CreateIdentityDto newIdentityType)
         {
@@ -77,6 +53,8 @@ namespace Savi.Api.Controllers
 
                 _unitOfWork.IdentityTypeRepository.Add(identityType);
                 _unitOfWork.Save();
+
+                return StatusCode(StatusCodes.Status201Created, "New identification type created successfully");
             }
             else
             {
@@ -84,9 +62,9 @@ namespace Savi.Api.Controllers
 
                 _unitOfWork.IdentityTypeRepository.Add(identityType);
                 _unitOfWork.Save();
-            }
 
-            return Ok("New identification type created successfully");
+                return StatusCode(StatusCodes.Status201Created, "New identification type created successfully");
+            }
         }
 
 
@@ -103,8 +81,9 @@ namespace Savi.Api.Controllers
         }
 
 
-        [HttpDelete()]
-        // [Authorize(Roles = "Admin")]
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteIdentificationType(string id)
         {
             var IdentificationTypeToDelete = _unitOfWork.IdentityTypeRepository.Get(u => u.Id == id);
@@ -115,20 +94,29 @@ namespace Savi.Api.Controllers
             return NoContent();
         }
 
+
         [HttpPut("{id}")]
-        public IActionResult UpdateIdentityType(string id, [FromBody] UpdateIdentityDto updatedIdentityType)
+        public async Task<IActionResult> UpdateIdentityType(string id, [FromForm] UpdateIdentityDto updatedIdentityType)
         {
             IdentityType existingIdentityType = _unitOfWork.IdentityTypeRepository.Get(u => u.Id == id);
             if (existingIdentityType == null)
+            {
                 return NotFound();
+            }
 
-            // Map the updated data to the existing entity
             _mapper.Map(updatedIdentityType, existingIdentityType);
 
+            if (updatedIdentityType.DocumentImage != null && updatedIdentityType.DocumentImage.Length > 0)
+            {
+                var documentUploadResult = await _Uploadservice.UploadImageAsync(updatedIdentityType.DocumentImage);
+                string documentImageUrl = documentUploadResult.Url.ToString();
+
+                existingIdentityType.DocumentImageUrl = documentImageUrl;
+            }
             _unitOfWork.IdentityTypeRepository.Update(existingIdentityType);
             _unitOfWork.Save();
 
-            return Ok("Identification type updated successfully");
+            return StatusCode(StatusCodes.Status200OK, "Identification type updated successfully");
         }
 
     }

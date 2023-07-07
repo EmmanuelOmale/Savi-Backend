@@ -19,6 +19,6 @@ namespace Savi.Data.DTO
         public string IdentificationNumber { get; set; }
         public IFormFile DocumentImage { get; set; }
         
-        public string DocumentImageUrl { get; set; }
+        public string? DocumentImageUrl { get; set; }
     }
 }
