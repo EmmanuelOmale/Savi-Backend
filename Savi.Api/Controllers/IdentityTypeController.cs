@@ -38,47 +38,6 @@ namespace Savi.Api.Controllers
             return Ok(response);
         }
 
-        /*[HttpPost]
-        public async Task<ActionResult<APIResponse>> AddNewIdentityType([FromForm] CreateIdentityDto newIdentityType)
-        {
-            if (newIdentityType.DocumentImage != null && newIdentityType.DocumentImage.Length > 0)
-            {
-                var documentUploadResult = await _uploadService.UploadImageAsync(newIdentityType.DocumentImage);
-                string documentImageUrl = documentUploadResult.Url.ToString();
-
-                IdentityType identityType = _mapper.Map<IdentityType>(newIdentityType);
-                identityType.DocumentImageUrl = documentImageUrl;
-
-                _unitOfWork.IdentityTypeRepository.Add(identityType);
-                _unitOfWork.Save();
-
-                var response = new APIResponse
-                {
-                    StatusCode = StatusCodes.Status201Created.ToString(),
-                    IsSuccess = true,
-                    Message = "New identification type created successfully",
-                    Result = identityType
-                };
-                return CreatedAtAction("GetIdentificationById", new { id = identityType.Id }, response);
-            }
-            else
-            {
-                IdentityType identityType = _mapper.Map<IdentityType>(newIdentityType);
-
-                _unitOfWork.IdentityTypeRepository.Add(identityType);
-                _unitOfWork.Save();
-
-                var response = new APIResponse
-                {
-                    StatusCode = StatusCodes.Status201Created.ToString(),
-                    IsSuccess = true,
-                    Message = "New identification type created successfully",
-                    Result = identityType
-                };
-                return CreatedAtAction("GetIdentificationById", new { id = identityType.Id }, response);
-                //return StatusCode(StatusCodes.Status201Created, response);
-            }
-        }*/
         [HttpPost]
         public async Task<ActionResult<APIResponse>> AddNewIdentityType([FromForm] CreateIdentityDto newIdentityType)
         {
