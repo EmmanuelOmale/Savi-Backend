@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Savi.Api.Models;
 using Savi.Core.Interfaces;
 using Savi.Data.DTO;
 
@@ -54,6 +55,42 @@ namespace Savi.Api.Controllers
 
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
+
+        
+
+        [HttpPost("InitiateResetPassword")]
+        public async Task<IActionResult> InitiateResetPassword(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+                return NotFound();
+
+            var result = await _authenticationService.InitiateResetPasswordAsync(email);
+
+            if (result.IsSuccess)
+                return Ok(result); // 200
+
+            return BadRequest(result); // 400
+        }
+
+        
+        [HttpPost("CompleteResetPassword")]
+        public async Task<IActionResult> CompletePasswordReset([FromForm] ResetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _authenticationService.CompletePasswordResetAsync(model);
+
+                if (result.IsSuccess)
+                    return Ok(result);
+
+                return BadRequest(result);
+            }
+
+            return BadRequest("Some properties are not valid");
+        }
+
+
+
 
     }
 }
