@@ -3,6 +3,7 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MimeKit;
 using Org.BouncyCastle.Pqc.Crypto.Lms;
@@ -10,9 +11,14 @@ using Savi.Core.Interfaces;
 using Savi.Data.Context;
 using Savi.Data.Domains;
 using Savi.Data.Enums;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 using System.ComponentModel;
+using System.Net.Mail;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
+using SmtpClient = MailKit.Net.Smtp.SmtpClient;
 
 namespace Savi.Data.EmailService
 {
@@ -25,8 +31,8 @@ namespace Savi.Data.EmailService
         private readonly SaviDbContext _dbContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogger<SmtpEmailService> _logger;
-
-        public SmtpEmailService(EmailSettings mailSettings, SaviDbContext dbContext, IHttpContextAccessor contextAccessor, ILogger<SmtpEmailService> logger)
+        private readonly IConfiguration _config;
+        public SmtpEmailService(EmailSettings mailSettings, SaviDbContext dbContext, IHttpContextAccessor contextAccessor, ILogger<SmtpEmailService> logger, IConfiguration config)
         {
             _fromMail = mailSettings.Username!;
             _host = mailSettings.Host!;
@@ -35,13 +41,14 @@ namespace Savi.Data.EmailService
             _dbContext = dbContext;
             _httpContextAccessor = contextAccessor;
             _logger = logger;
+            _config = config;
         }
 
         public async Task SendMail(UserAction userAction, string userEmail)
         {
             try
             {
-              
+
 
                 var purpose = GetPurposeFromUserAction(userAction);
                 var template = await GetEmailTemplateByPurpose(purpose.ToString());
@@ -101,12 +108,12 @@ namespace Savi.Data.EmailService
 
         public async Task AddEmailTemplate(EmailTemplate template)
         {
-           
-          
+
+
             _dbContext.EmailTemplates.Add(template);
             await _dbContext.SaveChangesAsync();
         }
-       
+
         private EmailPurpose GetPurposeFromUserAction(UserAction userAction)
         {
             switch (userAction)
@@ -133,7 +140,7 @@ namespace Savi.Data.EmailService
 
         private string GenerateRegistrationLink(UserAction userAction)
         {
-            
+
             string userId = GetUserIdFromHttpContext();
             string token = GenerateUniqueToken();
 
@@ -163,5 +170,32 @@ namespace Savi.Data.EmailService
 
             return token.ToString();
         }
+
+        public async Task SendPassWordResetEmailAsync(string toEmail, string subject, string content)
+        {
+            var emailSettings = _config.GetSection("EmailSettings");
+
+            var from = new MailAddress(emailSettings["Username"], "Savi");
+            var to = new MailAddress(toEmail);
+
+            using (var message = new MailMessage(from, to))
+            {
+                message.Subject = subject;
+                message.Body = content;
+                message.IsBodyHtml = true;
+
+                using (var client = new System.Net.Mail.SmtpClient(emailSettings["Host"], int.Parse(emailSettings["Port"])))
+                {
+                    client.EnableSsl = true;
+                    client.UseDefaultCredentials = false;
+                    client.Credentials = new NetworkCredential(emailSettings["Username"], emailSettings["Password"]);
+
+                    await client.SendMailAsync(message);
+                }
+            }
+        }
+
+
+
     }
 }
