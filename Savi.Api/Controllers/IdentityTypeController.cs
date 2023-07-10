@@ -59,7 +59,7 @@ namespace Savi.Api.Controllers
                     Message = "New identification type created successfully",
                     Result = identityType
                 };
-                return StatusCode(StatusCodes.Status201Created, response);
+                return CreatedAtAction("GetIdentificationById", new { id = identityType.Id }, response);
             }
             else
             {
@@ -75,9 +75,10 @@ namespace Savi.Api.Controllers
                     Message = "New identification type created successfully",
                     Result = identityType
                 };
-                return StatusCode(StatusCodes.Status201Created, response);
+                return CreatedAtAction("GetIdentificationById", new { id = identityType.Id }, response);
             }
         }
+
 
         [HttpGet("{id}", Name = "GetIdentification")]
         public ActionResult<APIResponse> GetIdentificationById(string id)

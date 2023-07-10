@@ -49,8 +49,10 @@ namespace Savi.Api.Controllers
                 Message = "New occupation added successfully",
                 Result = occupation
             };
-            return StatusCode(StatusCodes.Status201Created, response);
+
+            return CreatedAtAction("GetOccupationById", new { id = occupation.Id }, response);
         }
+
 
         [HttpGet("{id}", Name = "GetOccupationById")]
         public ActionResult<APIResponse> GetOccupationById(string id)
