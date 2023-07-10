@@ -120,6 +120,34 @@ namespace Savi.Core.Services
         }
 
 
+        //public async Task<APIResponse> InitiateResetPasswordAsync(string email)
+        //{
+        //    var user = await _userManager.FindByEmailAsync(email);
+        //    if (user == null)
+        //        return new APIResponse
+        //        {
+        //            IsSuccess = false,
+        //            Message = "No user associated with email",
+        //        };
+
+        //    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        //    var encodedToken = Encoding.UTF8.GetBytes(token);
+        //    var validToken = WebEncoders.Base64UrlEncode(encodedToken);
+
+        //    string url = $"{_configuration["AppUrl"]}/ResetPassword?email={email}&token={validToken}";
+
+        //    await _emailService.SendPassWordResetEmailAsync(email, "Reset Password", "<h1>Follow the instructions to reset your password</h1>" +
+        //        $"<p>To reset your password <a href='{url}'>Click here</a></p>");
+
+
+        //    return new APIResponse
+        //    {
+        //        IsSuccess = true,
+        //        Message = "Reset password URL has been sent to the email successfully!",
+        //        Token = validToken,
+
+        //    };
+        //}
         public async Task<APIResponse> InitiateResetPasswordAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -134,20 +162,19 @@ namespace Savi.Core.Services
             var encodedToken = Encoding.UTF8.GetBytes(token);
             var validToken = WebEncoders.Base64UrlEncode(encodedToken);
 
-            string url = $"{_configuration["AppUrl"]}/ResetPassword?email={email}&token={validToken}";
+            string url = $"{_configuration["AppUrl"]}/password-reset2?email={email}&token={validToken}";
 
             await _emailService.SendPassWordResetEmailAsync(email, "Reset Password", "<h1>Follow the instructions to reset your password</h1>" +
                 $"<p>To reset your password <a href='{url}'>Click here</a></p>");
-            
 
             return new APIResponse
             {
                 IsSuccess = true,
                 Message = "Reset password URL has been sent to the email successfully!",
                 Token = validToken,
-                
             };
         }
+
 
 
 
