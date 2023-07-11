@@ -120,42 +120,24 @@ namespace Savi.Core.Services
         }
 
 
-        //public async Task<APIResponse> InitiateResetPasswordAsync(string email)
-        //{
-        //    var user = await _userManager.FindByEmailAsync(email);
-        //    if (user == null)
-        //        return new APIResponse
-        //        {
-        //            IsSuccess = false,
-        //            Message = "No user associated with email",
-        //        };
 
-        //    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-        //    var encodedToken = Encoding.UTF8.GetBytes(token);
-        //    var validToken = WebEncoders.Base64UrlEncode(encodedToken);
-
-        //    string url = $"{_configuration["AppUrl"]}/ResetPassword?email={email}&token={validToken}";
-
-        //    await _emailService.SendPassWordResetEmailAsync(email, "Reset Password", "<h1>Follow the instructions to reset your password</h1>" +
-        //        $"<p>To reset your password <a href='{url}'>Click here</a></p>");
-
-
-        //    return new APIResponse
-        //    {
-        //        IsSuccess = true,
-        //        Message = "Reset password URL has been sent to the email successfully!",
-        //        Token = validToken,
-
-        //    };
-        //}
-        public async Task<APIResponse> InitiateResetPasswordAsync(string email)
+        public async Task<APIResponse> ForgotPasswordAsync(string email)
         {
+            if (string.IsNullOrEmpty(email))
+                return new APIResponse
+                {
+                    IsSuccess = false,
+                    StatusCode = "400",
+                    Message = "Email is required",
+                };
+
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
                 return new APIResponse
                 {
                     IsSuccess = false,
-                    Message = "No user associated with email",
+                    StatusCode = "404",
+                    Message = "No user associated with the provided email",
                 };
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
@@ -170,6 +152,7 @@ namespace Savi.Core.Services
             return new APIResponse
             {
                 IsSuccess = true,
+                StatusCode = "200",
                 Message = "Reset password URL has been sent to the email successfully!",
                 Token = validToken,
             };
@@ -179,7 +162,8 @@ namespace Savi.Core.Services
 
 
 
-        public async Task<APIResponse> CompletePasswordResetAsync(ResetPasswordViewModel model)
+
+        public async Task<APIResponse> ResetPasswordAsync(ResetPasswordViewModel model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
@@ -215,6 +199,7 @@ namespace Savi.Core.Services
               //  Errors = result.Errors.Select(e => e.Description),
             };
         }
+
 
 
     }
