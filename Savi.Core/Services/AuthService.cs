@@ -196,7 +196,7 @@ namespace Savi.Core.Services
             {
                 Message = "Something went wrong",
                 IsSuccess = false,
-              //  Errors = result.Errors.Select(e => e.Description),
+              
             };
         }
 
