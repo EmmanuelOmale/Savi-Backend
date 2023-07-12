@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Savi.Core.Interfaces;
 using Savi.Data.Domains;
 using Savi.Data.DTO;
+using Savi.Data.Enums;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -43,13 +44,15 @@ namespace Savi.Core.Services
 
 
                 };
-                //var userAction = UserAction.Registration;
-                //await _emailService.SendMail(userAction, user.Email);
+               
                 var regUser = await _userManager.CreateAsync(user, signUpDto.Password);
                 if (regUser.Succeeded)
                 {
+                    var userAction = UserAction.Registration;
+                    await _emailService.SendMail(userAction, user.Email);
                     return new ResponseDto<IdentityResult>()
                     {
+
                         Result = regUser,
                         StatusCode = 200,
                         DisplayMessage = "Your Savi Account Successfully Created, Check your Email for Confirmation."

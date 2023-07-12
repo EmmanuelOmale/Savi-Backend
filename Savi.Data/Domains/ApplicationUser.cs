@@ -15,6 +15,7 @@ namespace Savi.Data.Domains
         public string IdentityTypeId { get; set; }
         public string ImageUrl { get; set; }
         public string ProofOfAddressUrl { get; set; }
+        public bool  isKycComplete { get; set; }
         public int KYCLevel { get; set; }
         public Saving Saving { get; set; }
         public OTP OTP { get; set; }
