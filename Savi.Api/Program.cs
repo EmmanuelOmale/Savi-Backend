@@ -123,6 +123,15 @@ public class Program
     });
         });
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(builder =>
+            {
+                builder.WithOrigins("http://localhost:3000")
+                       .AllowAnyHeader()
+                       .AllowAnyMethod();
+            });
+        });
 
 
         var app = builder.Build();
@@ -147,7 +156,7 @@ public class Program
         }
 
         app.UseHttpsRedirection();
-
+        app.UseCors();
         
 
         app.UseRouting();

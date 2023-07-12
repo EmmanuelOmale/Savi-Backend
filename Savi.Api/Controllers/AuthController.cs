@@ -56,29 +56,33 @@ namespace Savi.Api.Controllers
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
-        
 
-        [HttpPost("InitiateResetPassword")]
-        public async Task<IActionResult> InitiateResetPassword(string email)
+
+        [HttpPost("ForgotPassword")]
+        public async Task<IActionResult> ForgotPassword(string email)
         {
             if (string.IsNullOrEmpty(email))
-                return NotFound();
+                return BadRequest("Email is required");
 
-            var result = await _authenticationService.InitiateResetPasswordAsync(email);
+            var result = await _authenticationService.ForgotPasswordAsync(email);
 
             if (result.IsSuccess)
                 return Ok(result); // 200
 
+            if (result.StatusCode == "404")
+                return NotFound(result); // 404
+
             return BadRequest(result); // 400
         }
 
-        
-        [HttpPost("CompleteResetPassword")]
-        public async Task<IActionResult> CompletePasswordReset([FromForm] ResetPasswordViewModel model)
+
+
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var result = await _authenticationService.CompletePasswordResetAsync(model);
+                var result = await _authenticationService.ResetPasswordAsync(model);
 
                 if (result.IsSuccess)
                     return Ok(result);
