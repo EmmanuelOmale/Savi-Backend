@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Savi.Core", "Savi.Core\Savi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Savi.Data", "Savi.Data\Savi.Data.csproj", "{6FBF2718-6271-4B8E-839D-17F0274CCB3F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Savi.Test", "Savi.Test\Savi.Test.csproj", "{461F083A-5242-402A-8C9A-52117ABFEBA4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Savi.Test", "Savi.Test\Savi.Test.csproj", "{461F083A-5242-402A-8C9A-52117ABFEBA4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -33,6 +33,8 @@ public class Program
         builder.Host.UseSerilog();
 
         builder.Services.AddControllers();
+        
+
         builder.Services.AddScoped<IGoogleSignupService, GoogleSignupService>();
         builder.Services.AddHttpClient();
 
@@ -61,6 +63,7 @@ public class Program
         builder.Services.AddCloudinaryExtension(builder.Configuration);
         builder.Services.AddDbContext<SaviDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SaviContext")));
         builder.Services.AddTransient<IEmailService, SmtpEmailService>();
+       // builder.Services.AddTransient<IPasswordService, PasswordService>();
         builder.Services.AddAppSettingsConfig(builder.Configuration, builder.Environment);
         builder.Services.AddHttpContextAccessor();
 		builder.Services.AddSingleton<IRestClient>(new RestClient("https://sandboxapi.fincra.com/core/bvn-verification"));
@@ -97,7 +100,7 @@ public class Program
 
         builder.Services.AddSwaggerGen(option =>
         {
-            
+
             option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 In = ParameterLocation.Header,
@@ -123,11 +126,20 @@ public class Program
     });
         });
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(builder =>
+            {
+                builder.WithOrigins("http://localhost:3000")
+                       .AllowAnyHeader()
+                       .AllowAnyMethod();
+            });
+        });
 
 
         var app = builder.Build();
         var logger = app.Services.GetRequiredService<ILogger<Program>>();
-        app.ConfigureExceptionHandler(logger);
+        // app.ConfigureExceptionHandler(logger);
         // Create a scope and resolve the SaviDbContext
         using (var scope = app.Services.CreateScope())
         {
@@ -147,15 +159,21 @@ public class Program
         }
 
         app.UseHttpsRedirection();
+        app.UseCors();
+        
 
         app.UseRouting();
-        
+
+
         app.UseAuthentication();
 
         app.UseAuthorization();
 
+
         app.UseEndpoints(endpoints =>
         {
+            
+
             endpoints.MapControllers();
         });
 

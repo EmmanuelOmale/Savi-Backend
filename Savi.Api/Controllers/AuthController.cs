@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Savi.Api.Models;
 using Savi.Core.Interfaces;
 using Savi.Data.DTO;
 
@@ -54,6 +55,46 @@ namespace Savi.Api.Controllers
 
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
+
+
+
+        [HttpPost("ForgotPassword")]
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+                return BadRequest("Email is required");
+
+            var result = await _authenticationService.ForgotPasswordAsync(email);
+
+            if (result.IsSuccess)
+                return Ok(result); // 200
+
+            if (result.StatusCode == "404")
+                return NotFound(result); // 404
+
+            return BadRequest(result); // 400
+        }
+
+
+
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _authenticationService.ResetPasswordAsync(model);
+
+                if (result.IsSuccess)
+                    return Ok(result);
+
+                return BadRequest(result);
+            }
+
+            return BadRequest("Some properties are not valid");
+        }
+
+
+
 
     }
 }
