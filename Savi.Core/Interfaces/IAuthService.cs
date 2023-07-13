@@ -10,9 +10,9 @@ namespace Savi.Core.Interfaces
         public Task<ResponseDto<IdentityResult>> RegisterAsync(SignUpDto signUpDto);
         Task<APIResponse> Login(LoginRequestDTO loginModel);
         JwtSecurityToken GetToken(List<Claim> authClaims);
-        Task<APIResponse> InitiateResetPasswordAsync(string email);
+        Task<APIResponse> ForgotPasswordAsync(string email);
 
-        Task<APIResponse> CompletePasswordResetAsync(ResetPasswordViewModel model);
+        Task<APIResponse> ResetPasswordAsync(ResetPasswordViewModel model);
 
 
     }
