@@ -37,6 +37,16 @@ public class Program
         builder.Services.AddScoped<IGoogleSignupService, GoogleSignupService>();
         builder.Services.AddHttpClient();
 
+       builder.Services.AddCors(options => {
+            options.AddDefaultPolicy(builder =>
+            {
+                builder.AllowAnyOrigin()
+                 .AllowAnyMethod()
+                 .AllowAnyHeader();
+            });
+
+        });
+
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(c =>
         {
@@ -148,7 +158,7 @@ public class Program
 
         app.UseHttpsRedirection();
 
-        
+        app.UseCors();
 
         app.UseRouting();
 
