@@ -18,6 +18,7 @@ using System.Text;
 using Savi.Data.IRepositories;
 using Savi.Data.UnitOfWork;
 using Savi.Data.Seeding;
+using RestSharp;
 
 public class Program
 {
@@ -65,9 +66,11 @@ public class Program
        // builder.Services.AddTransient<IPasswordService, PasswordService>();
         builder.Services.AddAppSettingsConfig(builder.Configuration, builder.Environment);
         builder.Services.AddHttpContextAccessor();
+		builder.Services.AddSingleton<IRestClient>(new RestClient("https://sandboxapi.fincra.com/core/bvn-verification"));
+		builder.Services.AddScoped<IKYCService, KYCService>();  
 
-        //Entityframework
-        builder.Services.AddDbContext<SaviDbContext>(options =>
+		//Entityframework
+		builder.Services.AddDbContext<SaviDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("SAVIBackEnd")));
         builder.Services.AddScoped<IAuthService, AuthService>();
 

@@ -9,6 +9,7 @@ namespace Savi.Api.Extensions
         {
             var mailSettings = new EmailSettings();
             var cloudinarySettings = new CloudinarySettings();
+            var kycsettings = new KYCSettings();
 
             if (env.IsProduction())
             {
@@ -26,6 +27,9 @@ namespace Savi.Api.Extensions
             {
                 config.GetSection("EmailSettings").Bind(mailSettings);
                 config.Bind(nameof(cloudinarySettings), cloudinarySettings);
+                config.GetSection("KYCSettings").Bind(kycsettings);
+
+
             }
 
             services.AddSingleton(mailSettings);
