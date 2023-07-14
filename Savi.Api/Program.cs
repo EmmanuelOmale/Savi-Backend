@@ -60,7 +60,9 @@ public class Program
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         builder.Services.AddScoped<IDocumentUploadService, DocumentUploadService>();
         builder.Services.AddCloudinaryExtension(builder.Configuration);
-        builder.Services.AddDbContext<SaviDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SaviContext")));
+        //builder.Services.AddDbContext<SaviDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SaviContext")));
+        builder.Services.AddDbContext<SaviDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SaviContext"),
+        sqlServerOptions => sqlServerOptions.EnableRetryOnFailure()));
         builder.Services.AddTransient<IEmailService, SmtpEmailService>();
        // builder.Services.AddTransient<IPasswordService, PasswordService>();
         builder.Services.AddAppSettingsConfig(builder.Configuration, builder.Environment);
