@@ -49,11 +49,11 @@ namespace Savi.Core.Services
                 var encodedToken = Encoding.UTF8.GetBytes(token);
                 var validToken = WebEncoders.Base64UrlEncode(encodedToken);
 
-                string url = $"{_configuration["AppUrl"]}/login+{user.Email}&token={validToken}";
+                string url = $"{_configuration["AppUrl"]}/login";
                 string emailSubject = "Verify your email address";
                 string emailBody = $@"
                             <p>Thank you for registering with us. To complete your registration and verify your email address, please click the link below:</p>
-                            <p><a href='{url}'>Verify Email</a></p>
+                            <p><a href='{url}?token={validToken}'>Verify Email</a></p>
                             <p>If you did not register on our platform, please ignore this email.</p>
                             <p>Thank you!</p>";
 
@@ -82,13 +82,13 @@ namespace Savi.Core.Services
                     };
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return new ResponseDto<IdentityResult>()
                 {
                     Result = null,
                     StatusCode = 500,
-                    DisplayMessage = "Error trying to create account Check your parameters and try again"
+                    DisplayMessage = ex.Message
                 };
             }
 
