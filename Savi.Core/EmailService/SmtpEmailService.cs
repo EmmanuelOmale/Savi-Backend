@@ -11,8 +11,6 @@ using Savi.Core.Interfaces;
 using Savi.Data.Context;
 using Savi.Data.Domains;
 using Savi.Data.Enums;
-using SendGrid;
-using SendGrid.Helpers.Mail;
 using System.ComponentModel;
 using System.Net.Mail;
 using System.Net;
