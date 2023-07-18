@@ -60,10 +60,7 @@ namespace Savi.Core.Services
                 var regUser = await _userManager.CreateAsync(user, signUpDto.Password);
                 if (regUser.Succeeded)
                 {
-
-
                     await _emailService.SendPassWordResetEmailAsync(user.Email, emailSubject, emailBody);
-
                     return new ResponseDto<IdentityResult>()
                     {
                         Result = regUser,
