@@ -5,7 +5,6 @@ using Microsoft.IdentityModel.Tokens;
 using Savi.Core.Interfaces;
 using Savi.Data.Domains;
 using Savi.Data.DTO;
-using Savi.Data.Enums;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;

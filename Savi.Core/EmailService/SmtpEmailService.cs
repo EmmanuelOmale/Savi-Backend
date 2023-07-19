@@ -146,7 +146,7 @@ namespace Savi.Data.EmailService
             string userId = GetUserIdFromHttpContext();
             string token = GenerateUniqueToken();
 
-            string registrationLink = $"https://api/auth/login{userId}&token={token}";
+            string registrationLink = $"https://example.com/register?userId={userId}&token={token}";
 
             return registrationLink;
         }
