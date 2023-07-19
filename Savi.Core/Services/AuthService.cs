@@ -132,8 +132,6 @@ namespace Savi.Core.Services
             return token;
         }
 
-
-
         public async Task<APIResponse> ForgotPasswordAsync(string email)
         {
             if (string.IsNullOrEmpty(email))
