@@ -60,7 +60,7 @@ namespace Savi.Core.Services
                 var regUser = await _userManager.CreateAsync(user, signUpDto.Password);
                 if (regUser.Succeeded)
                 {
-                    await _emailService.SendPassWordResetEmailAsync(user.Email, emailSubject, emailBody);
+                    await _emailService.SendEmailAsync(user.Email, emailSubject, emailBody);
                     return new ResponseDto<IdentityResult>()
                     {
                         Result = regUser,
@@ -157,7 +157,7 @@ namespace Savi.Core.Services
 
             string url = $"{_configuration["AppUrl"]}/password-reset2?email={email}&token={validToken}";
 
-            await _emailService.SendPassWordResetEmailAsync(email, "Reset Password", "<h1>Follow the instructions to reset your password</h1>" +
+            await _emailService.SendEmailAsync(email, "Reset Password", "<h1>Follow the instructions to reset your password</h1>" +
                 $"<p>To reset your password <a href='{url}'>Click here</a></p>");
 
             return new APIResponse

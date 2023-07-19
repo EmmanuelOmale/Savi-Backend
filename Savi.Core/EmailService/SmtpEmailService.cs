@@ -173,7 +173,7 @@ namespace Savi.Data.EmailService
             return token.ToString();
         }
 
-        public async Task SendPassWordResetEmailAsync(string toEmail, string subject, string content)
+        public async Task SendEmailAsync(string toEmail, string subject, string content)
         {
             var emailSettings = _config.GetSection("EmailSettings");
 
