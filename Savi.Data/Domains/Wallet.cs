@@ -13,6 +13,7 @@ namespace Savi.Data.Domains
         public decimal Balance { get; set; }
         public string Reference { get; set; }
         public string Pin { get; set; } = null!;
+        public string Code { get; set; } = null!;
         public string PaystackCustomerCode { get; set; } = null!;
         public void SetWalletId(string phoneNumber)
         {
@@ -35,9 +36,11 @@ namespace Savi.Data.Domains
                 throw new Exception("Invalid Wallet Id Format");
             }
         }
-
-        public ApplicationUser User { get; set; }
         public int UserId { get; set; }
+        public ApplicationUser User { get; set; }
+        public int WalletFundingId { get; set; }
+        public ICollection<WalletFunding> WalletFunding { get; set; } = null!;
+
     }
 
 }
