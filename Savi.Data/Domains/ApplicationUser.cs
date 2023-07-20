@@ -31,8 +31,7 @@ namespace Savi.Data.Domains
         public Occupation Occupation { get; set; }
         [ForeignKey("IdentityTypeId")]
         public IdentityType IdentityType { get; set; }
-        [ForeignKey("WalletId")]
-
+        public string WalletId { get; set; }
         public Wallet Wallet { get; set; }
     }
 }
