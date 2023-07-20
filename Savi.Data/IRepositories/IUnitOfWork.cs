@@ -8,6 +8,8 @@ namespace Savi.Data.IRepositories
     {
         IIdentityTypeRepository IdentityTypeRepository { get; }
         IOccupationRepository OccupationRepository { get; }
+        IUserRepository UserRepository { get; }
+
         void Save();
     }
 }
