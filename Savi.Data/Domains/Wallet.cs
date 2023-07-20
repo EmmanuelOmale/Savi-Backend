@@ -12,9 +12,9 @@ namespace Savi.Data.Domains
         public string Currency { get; set; }
         public decimal Balance { get; set; }
         public string Reference { get; set; }
-        public string Pin { get; set; } = null!;
-        public string Code { get; set; } = null!;
-        public string PaystackCustomerCode { get; set; } = null!;
+        public string Pin { get; set; } 
+        public string Code { get; set; } 
+        public string PaystackCustomerCode { get; set; }
         public void SetWalletId(string phoneNumber)
         {
             if (phoneNumber.StartsWith("+234"))
@@ -39,7 +39,7 @@ namespace Savi.Data.Domains
         public int UserId { get; set; }
         public ApplicationUser User { get; set; }
         public int WalletFundingId { get; set; }
-        public ICollection<WalletFunding> WalletFunding { get; set; } = null!;
+        public ICollection<WalletFunding> WalletFunding { get; set; } 
 
     }
 
