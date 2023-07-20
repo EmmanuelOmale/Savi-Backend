@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Savi.Data.Domains;
+using System.Reflection.Emit;
 
 namespace Savi.Data.Context
 {
@@ -20,7 +21,6 @@ namespace Savi.Data.Context
         public DbSet<IdentityType> IdentityTypes { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<WalletFunding> WalletFundings { get; set; }
-        public DbSet<Bank> Banks { get; set; }
 
         public SaviDbContext(DbContextOptions<SaviDbContext> Options) : base(Options)
         {
@@ -98,7 +98,19 @@ namespace Savi.Data.Context
                 .HasForeignKey(gt => gt.GroupId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-          
+            builder.Entity<Wallet>()
+            .HasKey(w => w.WalletId);
+
+            builder.Entity<Wallet>()
+                .HasMany(w => w.WalletFunding)
+                .WithOne(wf => wf.Wallet)
+                .HasForeignKey(wf => wf.WalletId);
+
+            builder.Entity<WalletFunding>()
+                  .HasKey(wf => wf.Id);
+
+
+
 
         }
     }

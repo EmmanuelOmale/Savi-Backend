@@ -601,6 +601,104 @@ namespace Savi.Data.Migrations
                     b.ToTable("UserTransactions");
                 });
 
+            modelBuilder.Entity("Savi.Data.Domains.Wallet", b =>
+                {
+                    b.Property<string>("WalletId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("Balance")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Currency")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PaystackCustomerCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Pin")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Reference")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId1")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("WalletFundingId")
+                        .HasColumnType("int");
+
+                    b.HasKey("WalletId");
+
+                    b.HasIndex("UserId1");
+
+                    b.ToTable("Wallets");
+                });
+
+            modelBuilder.Entity("Savi.Data.Domains.WalletFunding", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Narration")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Reference")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("TransactionCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<string>("WalletId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WalletId");
+
+                    b.ToTable("WalletFundings");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<string>", null)
@@ -732,6 +830,24 @@ namespace Savi.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Savi.Data.Domains.Wallet", b =>
+                {
+                    b.HasOne("Savi.Data.Domains.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId1");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Savi.Data.Domains.WalletFunding", b =>
+                {
+                    b.HasOne("Savi.Data.Domains.Wallet", "Wallet")
+                        .WithMany("WalletFunding")
+                        .HasForeignKey("WalletId");
+
+                    b.Navigation("Wallet");
+                });
+
             modelBuilder.Entity("Savi.Data.Domains.ApplicationUser", b =>
                 {
                     b.Navigation("CardDetails");
@@ -762,6 +878,11 @@ namespace Savi.Data.Migrations
             modelBuilder.Entity("Savi.Data.Domains.Occupation", b =>
                 {
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Savi.Data.Domains.Wallet", b =>
+                {
+                    b.Navigation("WalletFunding");
                 });
 #pragma warning restore 612, 618
         }

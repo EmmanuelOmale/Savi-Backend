@@ -12,8 +12,8 @@ using Savi.Data.Context;
 namespace Savi.Data.Migrations
 {
     [DbContext(typeof(SaviDbContext))]
-    [Migration("20230704125908_templateupdates")]
-    partial class templateupdates
+    [Migration("20230720060128_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -191,11 +191,8 @@ namespace Savi.Data.Migrations
                     b.Property<bool>("Gender")
                         .HasColumnType("bit");
 
-                    b.Property<string>("IdentificationNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("IdentificationTypeId")
-                        .HasColumnType("int");
+                    b.Property<string>("IdentityTypeId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
@@ -220,8 +217,8 @@ namespace Savi.Data.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("Occupation")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("OccupationId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
@@ -247,6 +244,8 @@ namespace Savi.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("IdentityTypeId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -254,6 +253,8 @@ namespace Savi.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("OccupationId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -419,6 +420,61 @@ namespace Savi.Data.Migrations
                     b.ToTable("GroupTransactions");
                 });
 
+            modelBuilder.Entity("Savi.Data.Domains.IdentityType", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DocumentImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdentificationNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("IdentityTypes");
+                });
+
+            modelBuilder.Entity("Savi.Data.Domains.Occupation", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Occupations");
+                });
+
             modelBuilder.Entity("Savi.Data.Domains.OTP", b =>
                 {
                     b.Property<string>("Id")
@@ -547,6 +603,104 @@ namespace Savi.Data.Migrations
                     b.ToTable("UserTransactions");
                 });
 
+            modelBuilder.Entity("Savi.Data.Domains.Wallet", b =>
+                {
+                    b.Property<string>("WalletId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("Balance")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Currency")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PaystackCustomerCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Pin")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Reference")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId1")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("WalletFundingId")
+                        .HasColumnType("int");
+
+                    b.HasKey("WalletId");
+
+                    b.HasIndex("UserId1");
+
+                    b.ToTable("Wallets");
+                });
+
+            modelBuilder.Entity("Savi.Data.Domains.WalletFunding", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Narration")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Reference")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("TransactionCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<string>("WalletId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WalletId");
+
+                    b.ToTable("WalletFundings");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<string>", null)
@@ -596,6 +750,21 @@ namespace Savi.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Savi.Data.Domains.ApplicationUser", b =>
+                {
+                    b.HasOne("Savi.Data.Domains.IdentityType", "IdentityType")
+                        .WithMany("Users")
+                        .HasForeignKey("IdentityTypeId");
+
+                    b.HasOne("Savi.Data.Domains.Occupation", "Occupation")
+                        .WithMany("Users")
+                        .HasForeignKey("OccupationId");
+
+                    b.Navigation("IdentityType");
+
+                    b.Navigation("Occupation");
                 });
 
             modelBuilder.Entity("Savi.Data.Domains.CardDetail", b =>
@@ -663,6 +832,24 @@ namespace Savi.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Savi.Data.Domains.Wallet", b =>
+                {
+                    b.HasOne("Savi.Data.Domains.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId1");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Savi.Data.Domains.WalletFunding", b =>
+                {
+                    b.HasOne("Savi.Data.Domains.Wallet", "Wallet")
+                        .WithMany("WalletFunding")
+                        .HasForeignKey("WalletId");
+
+                    b.Navigation("Wallet");
+                });
+
             modelBuilder.Entity("Savi.Data.Domains.ApplicationUser", b =>
                 {
                     b.Navigation("CardDetails");
@@ -683,6 +870,21 @@ namespace Savi.Data.Migrations
             modelBuilder.Entity("Savi.Data.Domains.Group", b =>
                 {
                     b.Navigation("GroupTransactions");
+                });
+
+            modelBuilder.Entity("Savi.Data.Domains.IdentityType", b =>
+                {
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Savi.Data.Domains.Occupation", b =>
+                {
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Savi.Data.Domains.Wallet", b =>
+                {
+                    b.Navigation("WalletFunding");
                 });
 #pragma warning restore 612, 618
         }

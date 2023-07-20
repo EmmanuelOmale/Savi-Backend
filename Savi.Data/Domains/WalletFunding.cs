@@ -12,7 +12,6 @@ namespace Savi.Data.Domains
     public class WalletFunding : BaseEntity
     {
         public decimal Amount { get; set; }
-        public string Email { get; set; }
         public string Reference { get; set; }
         public string Narration { get; set; } 
         public string TransactionCode { get; set; }
