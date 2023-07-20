@@ -44,10 +44,22 @@ namespace Savi.Core.Services
 
 
                 };
-              
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var encodedToken = Encoding.UTF8.GetBytes(token);
+                var validToken = WebEncoders.Base64UrlEncode(encodedToken);
+
+                string url = $"{_configuration["AppUrl"]}/login";
+                string emailSubject = "Verify your email address";
+                string emailBody = $@"
+                            <p>Thank you for registering with us. To complete your registration and verify your email address, please click the link below:</p>
+                            <p><a href='{url}?token={validToken}'>Verify Email</a></p>
+                            <p>If you did not register on our platform, please ignore this email.</p>
+                            <p>Thank you!</p>";
+
                 var regUser = await _userManager.CreateAsync(user, signUpDto.Password);
                 if (regUser.Succeeded)
                 {
+                    await _emailService.SendEmailAsync(user.Email, emailSubject, emailBody);
                     return new ResponseDto<IdentityResult>()
                     {
                         Result = regUser,
@@ -66,13 +78,13 @@ namespace Savi.Core.Services
                     };
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return new ResponseDto<IdentityResult>()
                 {
                     Result = null,
                     StatusCode = 500,
-                    DisplayMessage = "Error trying to create account Check your parameters and try again"
+                    DisplayMessage = ex.Message
                 };
             }
 
@@ -119,8 +131,6 @@ namespace Savi.Core.Services
             return token;
         }
 
-
-
         public async Task<APIResponse> ForgotPasswordAsync(string email)
         {
             if (string.IsNullOrEmpty(email))
@@ -146,7 +156,7 @@ namespace Savi.Core.Services
 
             string url = $"{_configuration["AppUrl"]}/password-reset2?email={email}&token={validToken}";
 
-            await _emailService.SendPassWordResetEmailAsync(email, "Reset Password", "<h1>Follow the instructions to reset your password</h1>" +
+            await _emailService.SendEmailAsync(email, "Reset Password", "<h1>Follow the instructions to reset your password</h1>" +
                 $"<p>To reset your password <a href='{url}'>Click here</a></p>");
 
             return new APIResponse
