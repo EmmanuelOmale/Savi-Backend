@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,6 @@ namespace Savi.Data.Domains
 {
     public class Wallet : BaseEntity
     {
-        [Key]
         public string WalletId { get; set; }
         public string Currency { get; set; }
         public decimal Balance { get; set; }
@@ -38,8 +38,7 @@ namespace Savi.Data.Domains
                 throw new Exception("Invalid Phone Number Format");
             }
         }
-
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public ApplicationUser User { get; set; }
         public int WalletFundingId { get; set; }
         public ICollection<WalletFunding> WalletFunding { get; set; } 

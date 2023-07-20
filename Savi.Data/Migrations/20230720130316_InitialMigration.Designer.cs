@@ -12,7 +12,7 @@ using Savi.Data.Context;
 namespace Savi.Data.Migrations
 {
     [DbContext(typeof(SaviDbContext))]
-    [Migration("20230720060128_InitialMigration")]
+    [Migration("20230720130316_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -639,10 +639,7 @@ namespace Savi.Data.Migrations
                     b.Property<string>("Reference")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("WalletFundingId")
@@ -650,7 +647,9 @@ namespace Savi.Data.Migrations
 
                     b.HasKey("WalletId");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Wallets");
                 });
@@ -835,8 +834,8 @@ namespace Savi.Data.Migrations
             modelBuilder.Entity("Savi.Data.Domains.Wallet", b =>
                 {
                     b.HasOne("Savi.Data.Domains.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId1");
+                        .WithOne("Wallet")
+                        .HasForeignKey("Savi.Data.Domains.Wallet", "UserId");
 
                     b.Navigation("User");
                 });
@@ -865,6 +864,8 @@ namespace Savi.Data.Migrations
                     b.Navigation("Savings");
 
                     b.Navigation("UserTransactions");
+
+                    b.Navigation("Wallet");
                 });
 
             modelBuilder.Entity("Savi.Data.Domains.Group", b =>

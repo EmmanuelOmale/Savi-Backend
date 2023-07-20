@@ -19,7 +19,6 @@ namespace Savi.Data.Domains
         public TransactionType Type { get; set; }
         public string Description { get; set; }
 
-        [ForeignKey("WalletId")]
         public string WalletId { get; set; } 
         public Wallet Wallet { get; set; } 
        

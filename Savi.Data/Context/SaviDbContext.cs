@@ -98,16 +98,18 @@ namespace Savi.Data.Context
                 .HasForeignKey(gt => gt.GroupId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<Wallet>()
-            .HasKey(w => w.WalletId);
+            builder.Entity<Wallet>().HasKey(w => w.WalletId);
+            builder.Entity<WalletFunding>().HasKey(wf => wf.Id);
 
             builder.Entity<Wallet>()
                 .HasMany(w => w.WalletFunding)
                 .WithOne(wf => wf.Wallet)
                 .HasForeignKey(wf => wf.WalletId);
 
-            builder.Entity<WalletFunding>()
-                  .HasKey(wf => wf.Id);
+            builder.Entity<Wallet>()
+                .HasOne(w => w.User)
+                .WithOne(u => u.Wallet)
+                .HasForeignKey<Wallet>(w => w.UserId);
 
 
 

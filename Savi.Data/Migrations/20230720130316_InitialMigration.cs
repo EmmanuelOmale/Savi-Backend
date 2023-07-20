@@ -406,8 +406,7 @@ namespace Savi.Data.Migrations
                     Pin = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PaystackCustomerCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    UserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     WalletFundingId = table.Column<int>(type: "int", nullable: false),
                     Id = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -418,8 +417,8 @@ namespace Savi.Data.Migrations
                 {
                     table.PrimaryKey("PK_Wallets", x => x.WalletId);
                     table.ForeignKey(
-                        name: "FK_Wallets_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_Wallets_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                 });
@@ -550,9 +549,11 @@ namespace Savi.Data.Migrations
                 column: "WalletId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Wallets_UserId1",
+                name: "IX_Wallets_UserId",
                 table: "Wallets",
-                column: "UserId1");
+                column: "UserId",
+                unique: true,
+                filter: "[UserId] IS NOT NULL");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
