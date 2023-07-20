@@ -12,8 +12,8 @@ using Savi.Data.Context;
 namespace Savi.Data.Migrations
 {
     [DbContext(typeof(SaviDbContext))]
-    [Migration("20230720130543_InitialMigrations")]
-    partial class InitialMigrations
+    [Migration("20230720155757_NewWalletMigration")]
+    partial class NewWalletMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

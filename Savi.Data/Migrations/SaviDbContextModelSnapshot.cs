@@ -243,9 +243,6 @@ namespace Savi.Data.Migrations
                     b.Property<string>("WalletId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("isKycComplete")
-                        .HasColumnType("bit");
-
                     b.HasKey("Id");
 
                     b.HasIndex("IdentityTypeId");
