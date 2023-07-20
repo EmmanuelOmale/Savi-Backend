@@ -17,6 +17,6 @@ namespace Savi.Core.Interfaces
     {
         public Task SendMail(UserAction userAction, string userEmail);
         Task AddEmailTemplate(EmailTemplate template);
-        Task SendPassWordResetEmailAsync(string toEmail, string subject, string content);
+        Task SendEmailAsync(string toEmail, string subject, string content);
     }
 }

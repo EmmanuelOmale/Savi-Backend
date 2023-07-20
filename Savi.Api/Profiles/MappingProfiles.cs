@@ -12,6 +12,7 @@ namespace Savi.Api.Profiles
             CreateMap<Occupation, CreateOccupationDto>().ReverseMap();
             CreateMap<IdentityType, UpdateIdentityDto>().ReverseMap();
             CreateMap<Occupation, UpdateOccupationDto>().ReverseMap();
+            CreateMap<ApplicationUser, UserDTO>().ReverseMap();
         }
     }
 }

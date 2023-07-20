@@ -8,6 +8,7 @@ using Savi.Core.Interfaces;
 using Savi.Data.Context;
 using Savi.Data.Domains;
 using Savi.Data.Enums;
+using System.ComponentModel;
 using System.Net;
 using System.Net.Mail;
 using System.Security.Claims;
@@ -48,7 +49,6 @@ namespace Savi.Data.EmailService
                 var template = await GetEmailTemplateByPurpose(purpose.ToString());
                 string registrationLink = GenerateRegistrationLink(userAction);
 
-                string emailBody = template.Body.Replace(template.Body, registrationLink);
 
 
                 var request = new MailRequest
@@ -59,6 +59,7 @@ namespace Savi.Data.EmailService
                 };
                 if (userAction == UserAction.Registration || userAction == UserAction.PasswordReset)
                 {
+                    string emailBody = template.Body.Replace(template.Body, registrationLink);
 
                     request.Body = GenerateEmailBody(emailBody, userAction);
                 }
@@ -67,20 +68,24 @@ namespace Savi.Data.EmailService
                     request.Body = template.Body;
                 }
 
-                var email = new MimeMessage();
-                email.Sender = MailboxAddress.Parse(_fromMail);
-                email.To.Add(MailboxAddress.Parse(request.ToMail));
+               using var email = new MailMessage(_fromMail, userEmail);
+                //email.Sender = MailboxAddress.Parse(_fromMail);
+                //email.To.Add(MailboxAddress.Parse(request.ToMail));
                 email.Subject = request.Subject;
+                email.Body = request.Body;
+                email.IsBodyHtml = true;
 
                 var builder = new BodyBuilder();
                 builder.HtmlBody = request.Body;
-                email.Body = builder.ToMessageBody();
+                //email.Body = builder.ToMessageBody();
 
-                using var smtp = new SmtpClient();
-                await smtp.ConnectAsync(_host, _port, SecureSocketOptions.SslOnConnect);
-                await smtp.AuthenticateAsync(_fromMail, _password);
-                await smtp.SendAsync(email);
-                await smtp.DisconnectAsync(true);
+                using var smtp = new System.Net.Mail.SmtpClient(_host, _port);
+                smtp.EnableSsl = true;
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials = new NetworkCredential(_fromMail, _password);
+
+                await smtp.SendMailAsync(email);
+                //await smtp.DisconnectAsync(true);
 
                 _logger.LogInformation($"Email sent to {request.ToMail} with purpose {request.Purpose}");
             }
@@ -165,7 +170,7 @@ namespace Savi.Data.EmailService
             return token.ToString();
         }
 
-        public async Task SendPassWordResetEmailAsync(string toEmail, string subject, string content)
+        public async Task SendEmailAsync(string toEmail, string subject, string content)
         {
             var emailSettings = _config.GetSection("EmailSettings");
 

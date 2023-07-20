@@ -10,6 +10,7 @@ namespace Savi.Data.UnitOfWork
         private SaviDbContext _saviDbContext;
 
         public IIdentityTypeRepository IdentityTypeRepository { get; private set; }
+        public IUserRepository UserRepository { get; private set; }
 
         public IOccupationRepository OccupationRepository { get; private set; }
 
@@ -18,6 +19,7 @@ namespace Savi.Data.UnitOfWork
             _saviDbContext = saviDbContext;
             OccupationRepository = new OccupationRepository(_saviDbContext);
             IdentityTypeRepository = new IdentityTypeRepository(_saviDbContext);
+            UserRepository = new UserRepository(_saviDbContext);
         }
     
 
