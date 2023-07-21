@@ -71,8 +71,8 @@ public class Program
         builder.Services.AddHttpContextAccessor();
 
         //Entityframework
-        builder.Services.AddDbContext<SaviDbContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("SAVIBackEnd")));
+        //builder.Services.AddDbContext<SaviDbContext>(options =>
+        //options.UseSqlServer(builder.Configuration.GetConnectionString("SAVIBackEnd")));
         builder.Services.AddScoped<IAuthService, AuthService>();
 
         builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
