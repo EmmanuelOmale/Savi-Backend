@@ -19,6 +19,7 @@ namespace Savi.Data.Context
         public DbSet<EmailTemplate> EmailTemplates { get; set; }
         public DbSet<Occupation> Occupations { get; set; }
         public DbSet<IdentityType> IdentityTypes { get; set; }
+        public DbSet<SavingGoal> SavingGoals { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<WalletFunding> WalletFundings { get; set; }
 
