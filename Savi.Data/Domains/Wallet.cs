@@ -40,7 +40,7 @@ namespace Savi.Data.Domains
         }
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
-        public int WalletFundingId { get; set; }
+        public string WalletFundingId { get; set; }
         public ICollection<WalletFunding> WalletFunding { get; set; } 
 
     }
