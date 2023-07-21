@@ -14,12 +14,12 @@ namespace Savi.Data.UnitOfWork
 
         public IOccupationRepository OccupationRepository { get; private set; }
 
-        public UnitOfWork(SaviDbContext saviDbContext)
+        public UnitOfWork(SaviDbContext saviDbContext, IUserRepository userRepository)
         {
             _saviDbContext = saviDbContext;
             OccupationRepository = new OccupationRepository(_saviDbContext);
             IdentityTypeRepository = new IdentityTypeRepository(_saviDbContext);
-            UserRepository = new UserRepository(_saviDbContext);
+            UserRepository = userRepository;
         }
     
 

@@ -19,9 +19,10 @@ namespace Savi.Data.Repositories
         private readonly IMapper _mapper;
 
 
-        public UserRepository(SaviDbContext db) : base(db)
+        public UserRepository(SaviDbContext db, IMapper mapper) : base(db)
         {
             _saviDbContext = db;
+            _mapper = mapper;
         }
         public async Task<ResponseDto<UserDTO>> GetUserByIdAsync(string Id)
         {

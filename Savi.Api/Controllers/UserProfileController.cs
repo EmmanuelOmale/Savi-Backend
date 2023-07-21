@@ -10,6 +10,7 @@ namespace Savi.Api.Controllers
     public class UserProfileController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserRepository _userRepository;
 
         public UserProfileController(IUnitOfWork unitOfWork)
         {
@@ -34,7 +35,7 @@ namespace Savi.Api.Controllers
             {
                 var response = new APIResponse
                 {
-                    StatusCode = StatusCodes.Status404NotFound.ToString(),
+                    StatusCode = StatusCodes.Status200OK.ToString(),
                     IsSuccess = true,
                     Message = "user found",
                     Result = user
