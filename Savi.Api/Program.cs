@@ -19,6 +19,8 @@ using Savi.Data.IRepositories;
 using Savi.Data.UnitOfWork;
 using Savi.Data.Seeding;
 using Savi.Data.Repositories;
+using Savi.Data.IRepository;
+using Savi.Data.Repository;
 
 public class Program
 {
@@ -78,6 +80,8 @@ public class Program
         builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
        .AddEntityFrameworkStores<SaviDbContext>()
         .AddDefaultTokenProviders();
+        builder.Services.AddScoped<ISavingGoalRepository, SavingGoalRepository>();
+        builder.Services.AddScoped<ISavingGoalService, SavingGoalService>();
 
         // Adding Authentication
         builder.Services.AddAuthentication(options =>
