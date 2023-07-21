@@ -18,8 +18,6 @@ using System.Text;
 using Savi.Data.IRepositories;
 using Savi.Data.UnitOfWork;
 using Savi.Data.Seeding;
-using Savi.Data.IRepository;
-using Savi.Data.Repository;
 
 public class Program
 {
@@ -69,8 +67,6 @@ public class Program
        // builder.Services.AddTransient<IPasswordService, PasswordService>();
         builder.Services.AddAppSettingsConfig(builder.Configuration, builder.Environment);
         builder.Services.AddHttpContextAccessor();
-        builder.Services.AddScoped<ISavingGoalRepository, SavingGoalRepository>();
-        builder.Services.AddScoped<ISavingGoalService, SavingGoalService>();
 
         //Entityframework
         builder.Services.AddDbContext<SaviDbContext>(options =>
