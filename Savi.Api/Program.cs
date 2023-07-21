@@ -18,6 +18,7 @@ using System.Text;
 using Savi.Data.IRepositories;
 using Savi.Data.UnitOfWork;
 using Savi.Data.Seeding;
+using Savi.Data.Repositories;
 
 public class Program
 {
@@ -61,6 +62,7 @@ public class Program
         builder.Services.AddScoped<IDocumentUploadService, DocumentUploadService>();
         builder.Services.AddCloudinaryExtension(builder.Configuration);
         builder.Services.AddDbContext<SaviDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SaviContext")));
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
         //builder.Services.AddDbContext<SaviDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SaviContext"),
         //sqlServerOptions => sqlServerOptions.EnableRetryOnFailure()));
         builder.Services.AddTransient<IEmailService, SmtpEmailService>();

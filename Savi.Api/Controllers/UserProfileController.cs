@@ -10,6 +10,7 @@ namespace Savi.Api.Controllers
     public class UserProfileController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserRepository _userRepository;
 
         public UserProfileController(IUnitOfWork unitOfWork)
         {
