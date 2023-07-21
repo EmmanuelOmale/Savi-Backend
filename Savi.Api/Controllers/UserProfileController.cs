@@ -35,7 +35,7 @@ namespace Savi.Api.Controllers
             {
                 var response = new APIResponse
                 {
-                    StatusCode = StatusCodes.Status404NotFound.ToString(),
+                    StatusCode = StatusCodes.Status200OK.ToString(),
                     IsSuccess = true,
                     Message = "user found",
                     Result = user
