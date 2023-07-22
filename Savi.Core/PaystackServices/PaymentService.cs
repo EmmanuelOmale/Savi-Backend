@@ -78,7 +78,7 @@ namespace Savi.Core.PaystackServices
                                     var result0 = new PayStackResponseDto()
                                     {
                                         Status = true,
-                                        Message = ($"Payment Verified!You have successfully withdraw {newWalletfund.Amount}, you have {newbalance} left "),
+                                        Message = ($"Payment Verified!You have successfully credited {newWalletfund.Amount}, your wallet balance is {newbalance}"),
                                         Data = data.GetProperty("customer")
                                     };
                                     return result0;
@@ -147,27 +147,27 @@ namespace Savi.Core.PaystackServices
             }
         }
 
-        public async Task<PayStackResponseDto> WithdrawFundAsync(WalletFundingDto walletFunding)
+        public async Task<PayStackResponseDto> WithdrawFundAsync(decimal amount, string walletId)
         {
             try
             {
-                var UserWallet = await _walletRepository.GetWalletByPhoneNumber(walletFunding.WalletId);
+                var UserWallet = await _walletRepository.GetWalletByPhoneNumber(walletId);
                 if (UserWallet != null)
                 {
-                    var walletbalance = await _walletRepository.GetBalanceAsync(walletFunding.WalletId);
-                    if (walletFunding.Amount! <= 0 && walletFunding.Amount <= walletbalance)
+                    var walletbalance = await _walletRepository.GetBalanceAsync(walletId);
+                    if (amount < walletbalance && amount > 0)
                     {
-                        var newbalance = walletbalance - walletFunding.Amount;
+                        var newbalance = walletbalance - amount;
                         var updatedWallet = new Wallet()
                         {
-                            WalletId = walletFunding.WalletId,
+                            WalletId = walletId,
                             Balance = newbalance.Value
                         };
                         var walletupdate = _walletRepository.VerifyPaymentAsync(updatedWallet);
                         var newWalletfunding = new WalletFunding()
                         {
-                            WalletId = walletFunding.WalletId,
-                            Amount = walletFunding.Amount,
+                            WalletId = walletId,
+                            Amount = amount,
                             TransactionType = Data.Enums.TransactionType.Withdrawal,
                             Description = "Debit",
                             Cummulative = newbalance.Value,
@@ -178,7 +178,7 @@ namespace Savi.Core.PaystackServices
                         var result31 = new PayStackResponseDto()
                         {
                             Status = true,
-                            Message = ($"You have successfully withdraw {walletFunding.Amount}, you have {newbalance} left"),
+                            Message = ($"You have successfully withdraw {amount}, you have {newbalance} left"),
                             Data = null
                         };
                         return result31;
