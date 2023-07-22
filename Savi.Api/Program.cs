@@ -1,26 +1,27 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Savi.Api.Extensions;
 using Savi.Api.Service;
 using Savi.Core.Interfaces;
+using Savi.Core.PaystackServices;
 using Savi.Core.Services;
 using Savi.Data.Context;
 using Savi.Data.Domains;
+using Savi.Data.EmailService;
+using Savi.Data.IRepositories;
+using Savi.Data.IRepository;
+using Savi.Data.Repositories;
+using Savi.Data.Repository;
+using Savi.Data.Seeding;
+using Savi.Data.UnitOfWork;
 using Serilog;
 using Serilog.Extensions.Logging;
-using Savi.Data.EmailService;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Savi.Data.IRepositories;
-using Savi.Data.UnitOfWork;
-using Savi.Data.Seeding;
-using Savi.Data.Repositories;
-using Savi.Data.IRepository;
-using Savi.Data.Repository;
 
 public class Program
 {
@@ -35,7 +36,7 @@ public class Program
         builder.Host.UseSerilog();
 
         builder.Services.AddControllers();
-        
+
 
         builder.Services.AddScoped<IGoogleSignupService, GoogleSignupService>();
         builder.Services.AddHttpClient();
@@ -68,7 +69,7 @@ public class Program
         //builder.Services.AddDbContext<SaviDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SaviContext"),
         //sqlServerOptions => sqlServerOptions.EnableRetryOnFailure()));
         builder.Services.AddTransient<IEmailService, SmtpEmailService>();
-       // builder.Services.AddTransient<IPasswordService, PasswordService>();
+        // builder.Services.AddTransient<IPasswordService, PasswordService>();
         builder.Services.AddAppSettingsConfig(builder.Configuration, builder.Environment);
         builder.Services.AddHttpContextAccessor();
 
@@ -76,6 +77,9 @@ public class Program
         //builder.Services.AddDbContext<SaviDbContext>(options =>
         //options.UseSqlServer(builder.Configuration.GetConnectionString("SAVIBackEnd")));
         builder.Services.AddScoped<IAuthService, AuthService>();
+        builder.Services.AddScoped<IWalletRepository, WalletRepository>();
+        builder.Services.AddScoped<IPaymentService, PaymentService>();
+        builder.Services.AddScoped<IWalletFundingRepository, WalletFundingRepository>();
 
         builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
        .AddEntityFrameworkStores<SaviDbContext>()
@@ -102,6 +106,14 @@ public class Program
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
             };
         });
+        //PayStack
+        builder.Services.AddHttpClient("Paystack", client =>
+        {
+            client.BaseAddress = new Uri($"https://api.paystack.co/");
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer sk_test_b3717ea2cfd6604a4e6bedb2087f0f62c0948e01");
+        }
+
+        );
 
         builder.Services.AddSwaggerGen(option =>
         {
@@ -165,7 +177,7 @@ public class Program
 
         app.UseHttpsRedirection();
         app.UseCors();
-        
+
 
         app.UseRouting();
 
@@ -177,7 +189,7 @@ public class Program
 
         app.UseEndpoints(endpoints =>
         {
-            
+
 
             endpoints.MapControllers();
         });

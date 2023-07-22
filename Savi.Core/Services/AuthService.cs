@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Savi.Core.Interfaces;
 using Savi.Data.Domains;
 using Savi.Data.DTO;
+using Savi.Data.IRepositories;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -13,13 +14,16 @@ namespace Savi.Core.Services
 {
     public class AuthService : IAuthService
     {
-
+        private readonly IUserRepository _userRepository;
+        private readonly IWalletRepository _walletRepository;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailService _emailService;
         private readonly IConfiguration _configuration;
 
-        public AuthService(UserManager<ApplicationUser> userManager, IEmailService emailService, IConfiguration configuration)
+        public AuthService(IUserRepository userRepository, IWalletRepository walletRepository, UserManager<ApplicationUser> userManager, IEmailService emailService, IConfiguration configuration)
         {
+            _userRepository = userRepository;
+            _walletRepository = walletRepository;
             _userManager = userManager;
             _emailService = emailService;
             _configuration = configuration;
@@ -30,17 +34,21 @@ namespace Savi.Core.Services
             try
             {
                 var findEmail = await _userManager.FindByEmailAsync(signUpDto.Email);
-                if (findEmail != null)
-                {
-                    throw new Exception("UserName already exist");
-                }
+                var findPhoneNumber = _userRepository.FinduserByPhoneNumber(signUpDto.PhoneNumber);
 
+                if (findEmail != null || findPhoneNumber != null)
+                {
+                    throw new Exception("UserName or phone already exist");
+                }
+                //Create ApplicationUser
                 ApplicationUser user = new ApplicationUser()
                 {
                     UserName = signUpDto.Email,
                     Email = signUpDto.Email,
                     FirstName = signUpDto.FirstName,
                     LastName = signUpDto.LastName,
+                    PhoneNumber = signUpDto.PhoneNumber,
+
 
 
                 };
@@ -56,27 +64,50 @@ namespace Savi.Core.Services
                             <p>If you did not register on our platform, please ignore this email.</p>
                             <p>Thank you!</p>";
 
+
+                //Registering ApplicationUser
                 var regUser = await _userManager.CreateAsync(user, signUpDto.Password);
                 if (regUser.Succeeded)
                 {
-                    await _emailService.SendEmailAsync(user.Email, emailSubject, emailBody);
-                    return new ResponseDto<IdentityResult>()
-                    {
-                        Result = regUser,
-                        StatusCode = 200,
-                        DisplayMessage = "Your Savi Account Successfully Created, Check your Email for Confirmation."
-                    };
-                }
+                    // Create Wallet for ApplicationUser
+                    Wallet wallet = new Wallet();
+                    var wa = wallet.SetWalletId(signUpDto.PhoneNumber);
+                    wallet.WalletId = wa;
+                    wallet.Balance = 0;
+                    wallet.Currency = "NGA";
+                    wallet.UserId = user.Id;
 
-                else
-                {
+
+
+                    // Call the respective repository methods asynchronously to register user wallet
+                    var createWalletTask = _walletRepository.CreateWalletAsync(wallet);
+                    if (createWalletTask.Result)
+                    {
+                        await _emailService.SendEmailAsync(user.Email, emailSubject, emailBody);
+                        return new ResponseDto<IdentityResult>()
+                        {
+                            Result = regUser,
+                            StatusCode = 200,
+                            DisplayMessage = "Your Savi Account Successfully Created, Check your Email for Confirmation."
+                        };
+                    }
                     return new ResponseDto<IdentityResult>()
                     {
                         Result = regUser,
                         StatusCode = 404,
-                        DisplayMessage = "Error trying to Create Account",
+                        DisplayMessage = "Error trying to Create Wallet",
                     };
+
+
                 }
+
+                return new ResponseDto<IdentityResult>()
+                {
+                    Result = regUser,
+                    StatusCode = 404,
+                    DisplayMessage = "Error trying to Create Account",
+                };
+
             }
             catch (Exception ex)
             {
@@ -206,7 +237,7 @@ namespace Savi.Core.Services
             {
                 Message = "Something went wrong",
                 IsSuccess = false,
-              
+
             };
         }
 
