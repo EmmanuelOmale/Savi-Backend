@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -408,7 +407,7 @@ namespace Savi.Data.Migrations
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PaystackCustomerCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    WalletFundingId = table.Column<int>(type: "int", nullable: false),
+                    WalletFundingId = table.Column<int>(type: "int", nullable: true),
                     Id = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
