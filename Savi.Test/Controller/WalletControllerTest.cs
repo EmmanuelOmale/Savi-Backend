@@ -46,12 +46,10 @@ namespace Savi.Test.Controller
             // Arrange
             var paymentServiceMock = new Mock<IPaymentService>();
             var controller = new WalletController(paymentServiceMock.Object);
-            var newWalletfund = new WalletFundingDto()
-            {
-                Amount = 5000,
-                WalletId = "8136582045"
 
-            };
+            decimal Amount = 5000;
+            string WalletId = "8136582045";
+
             var expectedResult = new PayStackResponseDto
             {
 
@@ -60,11 +58,11 @@ namespace Savi.Test.Controller
                 Data = null
             };
 
-            paymentServiceMock.Setup(service => service.WithdrawFundAsync(newWalletfund))
+            paymentServiceMock.Setup(service => service.WithdrawFundAsync(Amount, WalletId))
                 .ReturnsAsync(expectedResult);
 
             // Act
-            var result = await controller.WithDrawFund(newWalletfund);
+            var result = await controller.WithDrawFund(Amount, WalletId);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
@@ -81,12 +79,11 @@ namespace Savi.Test.Controller
             // Arrange
             var paymentServiceMock = new Mock<IPaymentService>();
             var controller = new WalletController(paymentServiceMock.Object);
-            var newWalletfund = new WalletFundingDto()
-            {
-                Amount = 5000000000,
-                WalletId = "8136582045"
 
-            };
+            decimal Amount = 5000000000;
+            string WalletId = "8136582045";
+
+
             var expectedResult = new PayStackResponseDto
             {
 
@@ -95,11 +92,11 @@ namespace Savi.Test.Controller
                 Data = null
             };
 
-            paymentServiceMock.Setup(service => service.WithdrawFundAsync(newWalletfund))
+            paymentServiceMock.Setup(service => service.WithdrawFundAsync(Amount, WalletId))
                 .ReturnsAsync(expectedResult);
 
             // Act
-            var result = await controller.WithDrawFund(newWalletfund);
+            var result = await controller.WithDrawFund(Amount, WalletId);
 
             // Assert
             var badResult = Assert.IsType<BadRequestObjectResult>(result);
@@ -116,12 +113,11 @@ namespace Savi.Test.Controller
             // Arrange
             var paymentServiceMock = new Mock<IPaymentService>();
             var controller = new WalletController(paymentServiceMock.Object);
-            var newWalletfund = new WalletFundingDto()
-            {
-                Amount = -0,
-                WalletId = "8136582045"
 
-            };
+            decimal Amount = -0;
+            string WalletId = "8136582045";
+
+
             var expectedResult = new PayStackResponseDto
             {
 
@@ -130,11 +126,11 @@ namespace Savi.Test.Controller
                 Data = null
             };
 
-            paymentServiceMock.Setup(service => service.WithdrawFundAsync(newWalletfund))
+            paymentServiceMock.Setup(service => service.WithdrawFundAsync(Amount, WalletId))
                 .ReturnsAsync(expectedResult);
 
             // Act
-            var result = await controller.WithDrawFund(newWalletfund);
+            var result = await controller.WithDrawFund(Amount, WalletId);
 
             // Assert
             var badResult = Assert.IsType<BadRequestObjectResult>(result);
@@ -151,12 +147,10 @@ namespace Savi.Test.Controller
             // Arrange
             var paymentServiceMock = new Mock<IPaymentService>();
             var controller = new WalletController(paymentServiceMock.Object);
-            var newWalletfund = new WalletFundingDto()
-            {
-                Amount = 500,
-                WalletId = "ghjklsssss"
 
-            };
+            decimal Amount = 500;
+            string WalletId = "ghjklsssss";
+            ;
             var expectedResult = new PayStackResponseDto
             {
 
@@ -165,11 +159,11 @@ namespace Savi.Test.Controller
                 Data = null
             };
 
-            paymentServiceMock.Setup(service => service.WithdrawFundAsync(newWalletfund))
+            paymentServiceMock.Setup(service => service.WithdrawFundAsync(Amount, WalletId))
                 .ReturnsAsync(expectedResult);
 
             // Act
-            var result = await controller.WithDrawFund(newWalletfund);
+            var result = await controller.WithDrawFund(Amount, WalletId);
 
             // Assert
             var badResult = Assert.IsType<BadRequestObjectResult>(result);

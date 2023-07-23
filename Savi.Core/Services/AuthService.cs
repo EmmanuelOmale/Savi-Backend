@@ -83,7 +83,7 @@ namespace Savi.Core.Services
                     var createWalletTask = _walletRepository.CreateWalletAsync(wallet);
                     if (createWalletTask.Result)
                     {
-                        await _emailService.SendEmailAsync(user.Email, emailSubject, emailBody);
+                        //await _emailService.SendEmailAsync(user.Email, emailSubject, emailBody);
                         return new ResponseDto<IdentityResult>()
                         {
                             Result = regUser,

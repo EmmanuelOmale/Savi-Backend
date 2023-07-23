@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Savi.Core.Interfaces;
-using Savi.Data.DTO;
 
 namespace Savi.Api.Controllers
 {
@@ -29,10 +28,10 @@ namespace Savi.Api.Controllers
 
             return BadRequest(response);
         }
-        [HttpPost("/payment/withdrawfund/{amount}")]
-        public async Task<IActionResult> WithDrawFund(WalletFundingDto walletFunding)
+        [HttpPost("/payment/withdrawfund/{amount}/{walletId}")]
+        public async Task<IActionResult> WithDrawFund(decimal amount, string walletId)
         {
-            var response = await _paymentService.WithdrawFundAsync(walletFunding);
+            var response = await _paymentService.WithdrawFundAsync(amount, walletId);
 
             if (response != null && response.Status == true)
             {
