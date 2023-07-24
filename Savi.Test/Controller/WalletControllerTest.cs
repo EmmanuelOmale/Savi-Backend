@@ -74,13 +74,13 @@ namespace Savi.Test.Controller
 
         }
         [Fact]
-        public async Task WithdrawFund_InvalidAmount__ReturnsBadRequest()
+        public async Task WithdrawFund_AmountLessThanZero__ReturnsBadRequest()
         {
             // Arrange
             var paymentServiceMock = new Mock<IPaymentService>();
             var controller = new WalletController(paymentServiceMock.Object);
 
-            decimal Amount = 5000000000;
+            decimal Amount = -50;
             string WalletId = "8136582045";
 
 
@@ -88,7 +88,7 @@ namespace Savi.Test.Controller
             {
 
                 Status = false,
-                Message = ("Insufficient balance"),
+                Message = ("Invalid Amount"),
                 Data = null
             };
 
@@ -108,13 +108,13 @@ namespace Savi.Test.Controller
 
         }
         [Fact]
-        public async Task WithdrawFund_InvalidAmountInput__ReturnsBadRequest()
+        public async Task WithdrawFund_AmountGreaterThanBalance__ReturnsBadRequest()
         {
             // Arrange
             var paymentServiceMock = new Mock<IPaymentService>();
             var controller = new WalletController(paymentServiceMock.Object);
 
-            decimal Amount = -0;
+            decimal Amount = 5000;
             string WalletId = "8136582045";
 
 
@@ -122,7 +122,7 @@ namespace Savi.Test.Controller
             {
 
                 Status = false,
-                Message = ("Invalid Credentials"),
+                Message = ("Insufficient balance"),
                 Data = null
             };
 
