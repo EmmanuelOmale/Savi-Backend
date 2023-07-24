@@ -39,15 +39,15 @@ namespace Savi.Core.PaystackServices
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
-                    var responseData = JsonSerializer.Deserialize<JsonElement>(content);
+                    var responseData = JsonSerializer.Deserialize<PaystackResponse>(content);
 
-                    // Checking if responseData is not null 
-                    if (responseData.ValueKind == JsonValueKind.Object)
+                    // Checkng if responseData is not null 
+                    if (responseData.data != null)
                     {
                         // Geting specific properties from the JSON object
-                        var data = responseData.GetProperty("data");
-                        decimal amount = data.GetProperty("amount").GetDecimal();
-                        var phone = data.GetProperty("customer").GetProperty("phone").GetString();
+                        var data = responseData.data;
+                        decimal amount = data.amount;
+                        var phone = data.customer.phone;
 
                         var walletId = new Wallet();
                         var UserWalletId = walletId.SetWalletId(phone);
@@ -79,7 +79,7 @@ namespace Savi.Core.PaystackServices
                                     {
                                         Status = true,
                                         Message = ($"Payment Verified!You have successfully credited {newWalletfund.Amount}, your wallet balance is {newbalance}"),
-                                        Data = data.GetProperty("customer")
+                                        Data = data.customer
                                     };
                                     return result0;
                                 }
@@ -87,7 +87,7 @@ namespace Savi.Core.PaystackServices
                                 {
                                     Status = true,
                                     Message = ("Payment Verified! error encountered trying to update walletfunding"),
-                                    Data = data.GetProperty("customer")
+                                    Data = data.customer
                                 };
                                 return result1;
 
@@ -97,7 +97,7 @@ namespace Savi.Core.PaystackServices
                             {
                                 Status = true,
                                 Message = ("Payment Verified! error encountered trying to update wallet"),
-                                Data = data.GetProperty("customer")
+                                Data = null
                             };
                             return result;
 
@@ -155,7 +155,7 @@ namespace Savi.Core.PaystackServices
                 if (UserWallet != null)
                 {
                     var walletbalance = await _walletRepository.GetBalanceAsync(walletId);
-                    if (amount < walletbalance && amount > 0)
+                    if (amount <= walletbalance && amount > 0)
                     {
                         var newbalance = walletbalance - amount;
                         var updatedWallet = new Wallet()
