@@ -80,8 +80,11 @@ public class Program
         builder.Services.AddScoped<IWalletRepository, WalletRepository>();
         builder.Services.AddScoped<IPaymentService, PaymentService>();
         builder.Services.AddScoped<IWalletFundingRepository, WalletFundingRepository>();
+		builder.Services.AddScoped<ISavingsService, SavingsService>();
+		builder.Services.AddScoped<IWalletService, WalletService>();
 
-        builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+
+		builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
        .AddEntityFrameworkStores<SaviDbContext>()
         .AddDefaultTokenProviders();
         builder.Services.AddScoped<ISavingGoalRepository, SavingGoalRepository>();

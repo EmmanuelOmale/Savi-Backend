@@ -1,5 +1,7 @@
-﻿using Savi.Data.Context;
+﻿using Microsoft.EntityFrameworkCore;
+using Savi.Data.Context;
 using Savi.Data.Domains;
+using Savi.Data.DTO;
 using Savi.Data.IRepositories;
 
 namespace Savi.Data.Repositories
@@ -61,5 +63,10 @@ namespace Savi.Data.Repositories
             return null;
         }
 
+        public void UpdateWallet(Wallet wallet)
+        {
+            _SaviDb.Wallets.Update(wallet);
+            _SaviDb.SaveChanges();
+        }
     }
 }

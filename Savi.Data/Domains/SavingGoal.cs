@@ -1,4 +1,6 @@
-﻿namespace Savi.Data.Domains
+﻿using Savi.Data.Enums;
+
+namespace Savi.Data.Domains
 {
     public class SavingGoal 
     {
@@ -10,5 +12,9 @@
         public string Frequency { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public TransactionType TransactionType { get; set; }
+
+        public string WalletId { get; set; }
+        public Wallet Wallet { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Savi.Api.Service;
+using Savi.Core.Interfaces;
 using Savi.Data.Domains;
 using Savi.Data.DTO;
 
@@ -10,12 +11,19 @@ namespace Savi.Api.Controllers
     public class SavingGoalController : ControllerBase
     {
         private readonly ISavingGoalService _goalService;
-        public SavingGoalController(ISavingGoalService goalService)
+        private readonly ISavingsService _savingsService;
+
+		public ISavingGoalService Object { get; }
+
+		public SavingGoalController(ISavingGoalService goalService, ISavingsService savings)
         {
             _goalService = goalService;
+            _savingsService = savings;
         }
 
-        [HttpPost]
+		
+
+		[HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -115,6 +123,18 @@ namespace Savi.Api.Controllers
                 return BadRequest(result);
             }
         }
+
+        [HttpPost("{id}/fundtarget")]
+        public async Task<ActionResult<APIResponse>> FundTarget(int id, decimal amount)
+		{
+			
+			var saving = await _savingsService.FundTargetSavings(id,amount);
+			if(saving == null)
+            {
+                return NotFound();
+            }
+            return Ok(saving);
+		}
 
     }
 }
