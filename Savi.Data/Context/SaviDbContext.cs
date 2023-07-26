@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Savi.Data.Domains;
 using System.Reflection.Emit;
 
@@ -22,6 +23,7 @@ namespace Savi.Data.Context
         public DbSet<SavingGoal> SavingGoals { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<WalletFunding> WalletFundings { get; set; }
+        public DbSet<SetTarget> SetTargets { get; set; }
 
         public SaviDbContext(DbContextOptions<SaviDbContext> Options) : base(Options)
         {
@@ -55,6 +57,10 @@ namespace Savi.Data.Context
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<SetTarget>()
+           .HasKey(e => e.Id)
+           .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             // UserTransaction (User to UserTransaction: 1 to M)
             builder.Entity<UserTransaction>()
