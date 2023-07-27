@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Savi.Data.Context;
 
@@ -11,9 +12,10 @@ using Savi.Data.Context;
 namespace Savi.Data.Migrations
 {
     [DbContext(typeof(SaviDbContext))]
-    partial class SaviDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230725182246_SetTarget")]
+    partial class SetTarget
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -593,15 +595,7 @@ namespace Savi.Data.Migrations
                     b.Property<decimal>("TargetAmount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("TransactionType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("WalletId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("WalletId");
 
                     b.ToTable("SavingGoals");
                 });
@@ -630,8 +624,7 @@ namespace Savi.Data.Migrations
                     b.Property<DateTime>("WithdrawalDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.HasKey("Id");
 
                     b.ToTable("SetTargets");
                 });
@@ -892,15 +885,6 @@ namespace Savi.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Savi.Data.Domains.SavingGoal", b =>
-                {
-                    b.HasOne("Savi.Data.Domains.Wallet", "Wallet")
-                        .WithMany()
-                        .HasForeignKey("WalletId");
-
-                    b.Navigation("Wallet");
                 });
 
             modelBuilder.Entity("Savi.Data.Domains.UserTransaction", b =>

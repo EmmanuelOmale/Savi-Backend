@@ -89,6 +89,8 @@ public class Program
         .AddDefaultTokenProviders();
         builder.Services.AddScoped<ISavingGoalRepository, SavingGoalRepository>();
         builder.Services.AddScoped<ISavingGoalService, SavingGoalService>();
+        builder.Services.AddScoped<ISetTargetRepository, SetTargetRepository>();
+        builder.Services.AddScoped<ISetTargetService, SetTargetService>();
 
         // Adding Authentication
         builder.Services.AddAuthentication(options =>
