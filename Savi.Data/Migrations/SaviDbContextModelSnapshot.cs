@@ -593,7 +593,15 @@ namespace Savi.Data.Migrations
                     b.Property<decimal>("TargetAmount")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("TransactionType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("WalletId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("WalletId");
 
                     b.ToTable("SavingGoals");
                 });
@@ -854,6 +862,15 @@ namespace Savi.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Savi.Data.Domains.SavingGoal", b =>
+                {
+                    b.HasOne("Savi.Data.Domains.Wallet", "Wallet")
+                        .WithMany()
+                        .HasForeignKey("WalletId");
+
+                    b.Navigation("Wallet");
                 });
 
             modelBuilder.Entity("Savi.Data.Domains.UserTransaction", b =>

@@ -13,7 +13,6 @@ namespace Savi.Data.Domains
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public TransactionType TransactionType { get; set; }
-
         public string WalletId { get; set; }
         public Wallet Wallet { get; set; }
     }

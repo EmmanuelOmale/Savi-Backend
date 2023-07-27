@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Savi.Data.Migrations
 {
-    public partial class NewWalletMigration : Migration
+    public partial class funding : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -407,7 +408,7 @@ namespace Savi.Data.Migrations
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PaystackCustomerCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    WalletFundingId = table.Column<int>(type: "int", nullable: true),
+                    WalletFundingId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Id = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -424,16 +425,42 @@ namespace Savi.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SavingGoals",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GoalName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TargetAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    AmountToAddPerTime = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Frequency = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TransactionType = table.Column<int>(type: "int", nullable: false),
+                    WalletId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SavingGoals", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SavingGoals_Wallets_WalletId",
+                        column: x => x.WalletId,
+                        principalTable: "Wallets",
+                        principalColumn: "WalletId");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "WalletFundings",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Cummulative = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Reference = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Narration = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TransactionCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<bool>(type: "bit", nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false),
+                    TransactionType = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     WalletId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -527,6 +554,11 @@ namespace Savi.Data.Migrations
                 filter: "[UserId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SavingGoals_WalletId",
+                table: "SavingGoals",
+                column: "WalletId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Savings_ApplicationUserId",
                 table: "Savings",
                 column: "ApplicationUserId");
@@ -584,6 +616,9 @@ namespace Savi.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "OTPs");
+
+            migrationBuilder.DropTable(
+                name: "SavingGoals");
 
             migrationBuilder.DropTable(
                 name: "Savings");
