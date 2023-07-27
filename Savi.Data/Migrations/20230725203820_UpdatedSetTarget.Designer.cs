@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Savi.Data.Context;
 
@@ -11,9 +12,10 @@ using Savi.Data.Context;
 namespace Savi.Data.Migrations
 {
     [DbContext(typeof(SaviDbContext))]
-    partial class SaviDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230725203820_UpdatedSetTarget")]
+    partial class UpdatedSetTarget
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -900,8 +902,7 @@ namespace Savi.Data.Migrations
                 {
                     b.HasOne("Savi.Data.Domains.ApplicationUser", "User")
                         .WithOne("Wallet")
-                        .HasForeignKey("Savi.Data.Domains.Wallet", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("Savi.Data.Domains.Wallet", "UserId");
 
                     b.Navigation("User");
                 });
@@ -910,8 +911,7 @@ namespace Savi.Data.Migrations
                 {
                     b.HasOne("Savi.Data.Domains.Wallet", "Wallet")
                         .WithMany("WalletFunding")
-                        .HasForeignKey("WalletId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("WalletId");
 
                     b.Navigation("Wallet");
                 });
