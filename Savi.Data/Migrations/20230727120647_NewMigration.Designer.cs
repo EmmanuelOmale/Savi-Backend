@@ -12,8 +12,8 @@ using Savi.Data.Context;
 namespace Savi.Data.Migrations
 {
     [DbContext(typeof(SaviDbContext))]
-    [Migration("20230725182246_SetTarget")]
-    partial class SetTarget
+    [Migration("20230727120647_NewMigration")]
+    partial class NewMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -624,7 +624,8 @@ namespace Savi.Data.Migrations
                     b.Property<DateTime>("WithdrawalDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.ToTable("SetTargets");
                 });
@@ -901,7 +902,8 @@ namespace Savi.Data.Migrations
                 {
                     b.HasOne("Savi.Data.Domains.ApplicationUser", "User")
                         .WithOne("Wallet")
-                        .HasForeignKey("Savi.Data.Domains.Wallet", "UserId");
+                        .HasForeignKey("Savi.Data.Domains.Wallet", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("User");
                 });
@@ -910,7 +912,8 @@ namespace Savi.Data.Migrations
                 {
                     b.HasOne("Savi.Data.Domains.Wallet", "Wallet")
                         .WithMany("WalletFunding")
-                        .HasForeignKey("WalletId");
+                        .HasForeignKey("WalletId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Wallet");
                 });

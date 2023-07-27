@@ -117,6 +117,23 @@ namespace Savi.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SetTargets",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Target = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TargetAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    AmountToSave = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Frequency = table.Column<int>(type: "int", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    WithdrawalDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SetTargets", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -612,6 +629,9 @@ namespace Savi.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Savings");
+
+            migrationBuilder.DropTable(
+                name: "SetTargets");
 
             migrationBuilder.DropTable(
                 name: "UserTransactions");
