@@ -7,5 +7,8 @@ namespace Savi.Data.IRepositories
     {
         Task<ResponseDto<UserDTO>> GetUserByIdAsync(string Id);
         public ApplicationUser FinduserByPhoneNumber(string Phonenumber);
-    }
+        Task<ApplicationUser> GetLoggedInUserByToken(string token);
+        Task<ResponseDto<UserDTO>> UpdateUser(string userId, UserDTO updateUserDto);
+
+	}
 }
