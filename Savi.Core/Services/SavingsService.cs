@@ -25,40 +25,48 @@ namespace Savi.Core.Services
             _mapper = mapper;
         }
 
-        public async Task<APIResponse> FundTargetSavings(int id, decimal amount)
+		public async Task<APIResponse> FundTargetSavings(int id, decimal amount)
 		{
-			
 			var savings = await _savingGoalRepository.GetGoalById(id);
-           if(savings == null)
-            {
-                return new APIResponse()
-                {
-                    IsSuccess = false,
-                    StatusCode = StatusCodes.Status404NotFound.ToString(),
-                    Message = "Savings Goal Not Found",
-                };
-            }
-                var saving = savings.Result;
-            //var totalSavings = new Saving()
-            //{
-            //    GoalAmount = saving.TargetAmount,
-            //    TotalContribution = 
-            //};
+			if (savings == null)
+			{
+				return new APIResponse()
+				{
+					IsSuccess = false,
+					StatusCode = StatusCodes.Status404NotFound.ToString(),
+					Message = "Savings Goal Not Found",
+				};
+			}
+
+			var saving = savings.Result;
 			var walletId = saving.WalletId;
-			var wallet = await _walletService.DebitWallet(walletId, amount);
-			    saving.TargetAmount += amount;
-			    var save = _mapper.Map<SavingGoal>(saving);
-			    await _savingGoalRepository.UpdateGoal(id, save);
 
-            return new APIResponse()
-            {
-                IsSuccess = true,
-                StatusCode = StatusCodes.Status200OK.ToString(),
-                Message = "saving Credited Successfully",
-                Result = saving
-            };
+			// Debit the wallet with the funding amount
+			var debitResult = await _walletService.DebitWallet(walletId, amount);
+			if (!debitResult.IsSuccess)
+			{
+				return new APIResponse()
+				{
+					IsSuccess = false,
+					StatusCode = StatusCodes.Status400BadRequest.ToString(),
+					Message = "Insufficient balance in the wallet.",
+				};
+			}
 
-        }
-       
-    }
+			// Update the saving goal's TargetAmount and TotalContribution
+			saving.TotalContribution += amount;
+
+			var save = _mapper.Map<SavingGoal>(saving);
+			await _savingGoalRepository.UpdateGoal(id, save);
+
+			return new APIResponse()
+			{
+				IsSuccess = true,
+				StatusCode = StatusCodes.Status200OK.ToString(),
+				Message = "Saving Credited Successfully",
+				Result = saving
+			};
+		}
+
+	}
 }

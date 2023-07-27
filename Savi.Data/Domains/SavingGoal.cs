@@ -15,5 +15,7 @@ namespace Savi.Data.Domains
         public TransactionType TransactionType { get; set; }
         public string WalletId { get; set; }
         public Wallet Wallet { get; set; }
-    }
+		public decimal TotalContribution { get; set; }
+
+	}
 }

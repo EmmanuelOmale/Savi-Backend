@@ -18,5 +18,6 @@ namespace Savi.Data.DTO
 		public DateTime EndDate { get; set; }
 		public TransactionType TransactionType { get; set; }
 		public string WalletId { get; set; }
+		public decimal TotalContribution { get; set; }
 	}
 }
