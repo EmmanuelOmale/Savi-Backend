@@ -1,3 +1,4 @@
+using CMS.API.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -64,7 +65,9 @@ public class Program
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         builder.Services.AddScoped<IDocumentUploadService, DocumentUploadService>();
         builder.Services.AddCloudinaryExtension(builder.Configuration);
-        builder.Services.AddDbContext<SaviDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SaviContext")));
+        //builder.Services.AddDbContext<SaviDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SaviContext")));
+        builder.Services.AddDbContextAndConfigurations(builder.Environment, builder.Configuration);
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         //builder.Services.AddDbContext<SaviDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SaviContext"),
         //sqlServerOptions => sqlServerOptions.EnableRetryOnFailure()));
