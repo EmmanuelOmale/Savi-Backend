@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Savi.Api.Models;
 using Savi.Core.Interfaces;
 using Savi.Data.DTO;
@@ -34,9 +35,8 @@ namespace Savi.Api.Controllers
             {
                 return BadRequest(result);
             }
-
-
         }
+
 
         [HttpPost]
         [Route("login")]

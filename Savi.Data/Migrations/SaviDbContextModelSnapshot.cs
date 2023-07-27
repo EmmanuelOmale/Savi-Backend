@@ -870,7 +870,8 @@ namespace Savi.Data.Migrations
                 {
                     b.HasOne("Savi.Data.Domains.ApplicationUser", "User")
                         .WithOne("Wallet")
-                        .HasForeignKey("Savi.Data.Domains.Wallet", "UserId");
+                        .HasForeignKey("Savi.Data.Domains.Wallet", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("User");
                 });
@@ -879,7 +880,8 @@ namespace Savi.Data.Migrations
                 {
                     b.HasOne("Savi.Data.Domains.Wallet", "Wallet")
                         .WithMany("WalletFunding")
-                        .HasForeignKey("WalletId");
+                        .HasForeignKey("WalletId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Wallet");
                 });

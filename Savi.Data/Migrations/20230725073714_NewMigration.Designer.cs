@@ -12,8 +12,8 @@ using Savi.Data.Context;
 namespace Savi.Data.Migrations
 {
     [DbContext(typeof(SaviDbContext))]
-    [Migration("20230721180309_SavingGoal")]
-    partial class SavingGoal
+    [Migration("20230725073714_NewMigration")]
+    partial class NewMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -700,6 +700,9 @@ namespace Savi.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<decimal>("Cummulative")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -721,7 +724,7 @@ namespace Savi.Data.Migrations
                     b.Property<string>("TransactionCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Type")
+                    b.Property<int>("TransactionType")
                         .HasColumnType("int");
 
                     b.Property<string>("WalletId")
@@ -869,7 +872,8 @@ namespace Savi.Data.Migrations
                 {
                     b.HasOne("Savi.Data.Domains.ApplicationUser", "User")
                         .WithOne("Wallet")
-                        .HasForeignKey("Savi.Data.Domains.Wallet", "UserId");
+                        .HasForeignKey("Savi.Data.Domains.Wallet", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("User");
                 });
@@ -878,7 +882,8 @@ namespace Savi.Data.Migrations
                 {
                     b.HasOne("Savi.Data.Domains.Wallet", "Wallet")
                         .WithMany("WalletFunding")
-                        .HasForeignKey("WalletId");
+                        .HasForeignKey("WalletId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Wallet");
                 });
