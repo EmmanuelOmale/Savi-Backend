@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Savi.Api.Service;
+using Savi.Core.Interfaces;
 using Savi.Data.Domains;
 using Savi.Data.DTO;
 
@@ -10,20 +12,30 @@ namespace Savi.Api.Controllers
     public class SavingGoalController : ControllerBase
     {
         private readonly ISavingGoalService _goalService;
-        public SavingGoalController(ISavingGoalService goalService)
+        private readonly ISavingsService _savingsService;
+        private readonly IMapper _mapper;
+
+		public ISavingGoalService Object { get; }
+
+		public SavingGoalController(ISavingGoalService goalService, ISavingsService savings, IMapper mapper)
         {
             _goalService = goalService;
+            _savingsService = savings;
+            _mapper = mapper;
         }
 
-        [HttpPost]
+		
+
+		[HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ResponseDto<SavingGoal>>> CreateGoal(SavingGoal goal)
+        public async Task<ActionResult<ResponseDto<SavingGoalsDTO>>> CreateGoal(SavingGoalsDTO goal)
         {
             try
             {
-                var response = await _goalService.CreateGoal(goal);
+				var goals = _mapper.Map<SavingGoal>(goal);
+				var response = await _goalService.CreateGoal(goals);
 
                 if (response.StatusCode == 200)
                     return Ok(response);
@@ -40,7 +52,7 @@ namespace Savi.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ResponseDto<List<SavingGoal>>>> GetAllGoals()
+        public async Task<ActionResult<ResponseDto<List<SavingGoalsDTO>>>> GetAllGoals()
         {
             try
             {
@@ -61,7 +73,7 @@ namespace Savi.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ResponseDto<SavingGoal>>> GetGoalById(int id)
+        public async Task<ActionResult<ResponseDto<SavingGoalsDTO>>> GetGoalById(int id)
         {
             var response = await _goalService.GetGoalById(id);
             if (response.StatusCode == 200)
@@ -78,7 +90,7 @@ namespace Savi.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ResponseDto<SavingGoal>>> DeleteGoal(int id)
+        public async Task<ActionResult<ResponseDto<SavingGoalsDTO>>> DeleteGoal(int id)
         {
             var result = await _goalService.DeleteGoal(id);
             if (result.StatusCode == 200)
@@ -99,7 +111,7 @@ namespace Savi.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ResponseDto<SavingGoal>>> UpdateGoal(int id, SavingGoal updatedGoal)
+        public async Task<ActionResult<ResponseDto<SavingGoalsDTO>>> UpdateGoal(int id, SavingGoal updatedGoal)
         {
             var result = await _goalService.UpdateGoal(id, updatedGoal);
             if (result.StatusCode == 200)
@@ -115,6 +127,18 @@ namespace Savi.Api.Controllers
                 return BadRequest(result);
             }
         }
+
+        [HttpPost("{id}/fundtarget")]
+        public async Task<ActionResult<APIResponse>> FundTarget(int id, decimal amount)
+		{
+			
+			var saving = await _savingsService.FundTargetSavings(id,amount);
+			if(saving == null)
+            {
+                return NotFound();
+            }
+            return Ok(saving);
+		}
 
     }
 }

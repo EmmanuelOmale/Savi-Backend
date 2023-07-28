@@ -13,28 +13,28 @@ namespace Savi.Api.Service
             _goalRepository = goalRepository;
         }
 
-        public async Task<ResponseDto<SavingGoal>> CreateGoal(SavingGoal goal)
+        public async Task<ResponseDto<SavingGoalsDTO>> CreateGoal(SavingGoal goal)
         {
             return await _goalRepository.CreateGoal(goal);
         }
 
-        public async Task<ResponseDto<SavingGoal>> DeleteGoal(int id)
+        public async Task<ResponseDto<SavingGoalsDTO>> DeleteGoal(int id)
         {
                 return await _goalRepository.DeleteGoal(id); 
             
         }
 
-        public async Task<ResponseDto<List<SavingGoal>>> GetAllGoals()
+        public async Task<ResponseDto<List<SavingGoalsDTO>>> GetAllGoals()
         {
             return await _goalRepository.GetAllGoals();
         }
 
-        public async Task<ResponseDto<SavingGoal>> GetGoalById(int id)
+        public async Task<ResponseDto<SavingGoalsDTO>> GetGoalById(int id)
         {
             return await _goalRepository.GetGoalById(id);
         }
 
-        public async Task<ResponseDto<SavingGoal>> UpdateGoal(int id, SavingGoal updatedGoal)
+        public async Task<ResponseDto<SavingGoalsDTO>> UpdateGoal(int id, SavingGoal updatedGoal)
         {
             return await _goalRepository.UpdateGoal(id, updatedGoal);
         }
