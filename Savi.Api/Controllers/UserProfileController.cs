@@ -44,5 +44,28 @@ namespace Savi.Api.Controllers
                 return response;
             }
         }
+
+        [HttpGet("token")]
+        public async Task<IActionResult>GetUserByToken(string token)
+        {
+            var user = await _unitOfWork.UserRepository.GetLoggedInUserByToken(token);
+            if (user == null)
+            {
+                throw new Exception("User does not exist");
+            }
+            return Ok(user);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Update(string userId, UserDTO userDTO)
+        {
+            var user = _userRepository.UpdateUser(userId, userDTO);
+            if (user == null)
+            {
+                throw new Exception("User Not Found");
+            }
+
+            return Ok(user);
+        }
     }
 }

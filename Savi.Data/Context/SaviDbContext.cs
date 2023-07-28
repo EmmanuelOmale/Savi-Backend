@@ -111,12 +111,14 @@ namespace Savi.Data.Context
             builder.Entity<Wallet>()
                 .HasMany(w => w.WalletFunding)
                 .WithOne(wf => wf.Wallet)
-                .HasForeignKey(wf => wf.WalletId);
+                .HasForeignKey(wf => wf.WalletId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Wallet>()
                 .HasOne(w => w.User)
                 .WithOne(u => u.Wallet)
-                .HasForeignKey<Wallet>(w => w.UserId);
+                .HasForeignKey<Wallet>(w => w.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
 
 

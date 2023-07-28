@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -19,14 +20,16 @@ namespace Savi.Core.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailService _emailService;
         private readonly IConfiguration _configuration;
-
-        public AuthService(IUserRepository userRepository, IWalletRepository walletRepository, UserManager<ApplicationUser> userManager, IEmailService emailService, IConfiguration configuration)
+        private readonly IMapper _mapper;
+        public AuthService(IUserRepository userRepository, IWalletRepository walletRepository, UserManager<ApplicationUser> userManager, 
+                           IEmailService emailService, IConfiguration configuration, IMapper mapper)
         {
             _userRepository = userRepository;
             _walletRepository = walletRepository;
             _userManager = userManager;
             _emailService = emailService;
             _configuration = configuration;
+            _mapper = mapper;
         }
 
         public async Task<ResponseDto<IdentityResult>> RegisterAsync(SignUpDto signUpDto)
@@ -77,13 +80,14 @@ namespace Savi.Core.Services
                     wallet.Currency = "NGA";
                     wallet.UserId = user.Id;
 
-
-
                     // Call the respective repository methods asynchronously to register user wallet
                     var createWalletTask = _walletRepository.CreateWalletAsync(wallet);
                     if (createWalletTask.Result)
                     {
-                        //await _emailService.SendEmailAsync(user.Email, emailSubject, emailBody);
+                        user.WalletId = wa;
+						var result = _mapper.Map<UserDTO>(user);
+						await _userRepository.UpdateUser(user.Id, result);
+                        await _emailService.SendEmailAsync(user.Email, emailSubject, emailBody);
                         return new ResponseDto<IdentityResult>()
                         {
                             Result = regUser,
