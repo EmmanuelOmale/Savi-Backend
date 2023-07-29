@@ -21,7 +21,7 @@ namespace Savi.Core.Services
         private readonly IEmailService _emailService;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
-        public AuthService(IUserRepository userRepository, IWalletRepository walletRepository, UserManager<ApplicationUser> userManager, 
+        public AuthService(IUserRepository userRepository, IWalletRepository walletRepository, UserManager<ApplicationUser> userManager,
                            IEmailService emailService, IConfiguration configuration, IMapper mapper)
         {
             _userRepository = userRepository;
@@ -85,9 +85,9 @@ namespace Savi.Core.Services
                     if (createWalletTask.Result)
                     {
                         user.WalletId = wa;
-						var result = _mapper.Map<UserDTO>(user);
-						await _userRepository.UpdateUser(user.Id, result);
-                        await _emailService.SendEmailAsync(user.Email, emailSubject, emailBody);
+                        var result = _mapper.Map<UserDTO>(user);
+                        await _userRepository.UpdateUser(user.Id, result);
+                        //await _emailService.SendEmailAsync(user.Email, emailSubject, emailBody);
                         return new ResponseDto<IdentityResult>()
                         {
                             Result = regUser,

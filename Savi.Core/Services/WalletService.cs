@@ -2,11 +2,6 @@
 using Savi.Core.Interfaces;
 using Savi.Data.DTO;
 using Savi.Data.IRepositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Savi.Core.Services
 {
@@ -21,7 +16,7 @@ namespace Savi.Core.Services
 
         public async Task<APIResponse> DebitWallet(string walletId, decimal amount)
         {
-            var wallet =await _walletRepository.GetWalletByPhoneNumber(walletId);
+            var wallet = await _walletRepository.GetWalletByPhoneNumber(walletId);
             if (wallet == null)
             {
                 return new APIResponse()
@@ -44,16 +39,17 @@ namespace Savi.Core.Services
             }
 
             wallet.Balance -= amount;
-           _walletRepository.UpdateWallet(wallet);
+            _walletRepository.UpdateWallet(wallet);
             return new APIResponse()
             {
                 StatusCode = StatusCodes.Status200OK.ToString(),
                 IsSuccess = true,
                 Message = "Wallet debited successfully.",
                 Result = wallet
-                
+
             };
 
         }
+
     }
 }

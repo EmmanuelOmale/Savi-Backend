@@ -8,10 +8,19 @@ namespace Savi.Api.Controllers
     public class WalletController : ControllerBase
     {
         private readonly IPaymentService _paymentService;
+        private readonly IWalletCreditService _walletCreditService;
+        private readonly IWalletCreditService _walletServices;
+        private readonly IGroupSavingsServices _groupSavingsServices;
+        private readonly IWalletDebitService _walletDebitService;
 
-        public WalletController(IPaymentService paymentService)
+        public WalletController(IPaymentService paymentService, IWalletCreditService walletCreditService,
+            IGroupSavingsServices groupSavingsServices,
+            IWalletDebitService walletDebitService)
         {
             _paymentService = paymentService;
+            _walletCreditService = walletCreditService;
+            _groupSavingsServices = groupSavingsServices;
+            _walletDebitService = walletDebitService;
         }
 
         [HttpGet("/payment/verify/{reference}")]
@@ -21,26 +30,33 @@ namespace Savi.Api.Controllers
 
             if (response != null && response.Status == true)
             {
-
                 return Ok(response);
-
             }
-
             return BadRequest(response);
         }
+
         [HttpPost("/payment/withdrawfund/{amount}/{walletId}")]
         public async Task<IActionResult> WithDrawFund(decimal amount, string walletId)
         {
-            var response = await _paymentService.WithdrawFundAsync(amount, walletId);
+            var response = await _walletDebitService.WithdrawUserFundAsync(amount, walletId);
 
             if (response != null && response.Status == true)
             {
-
                 return Ok(response);
-
             }
-
             return BadRequest(response);
         }
+        [HttpPost("/payment/creditfund/{amount}/{walletId}")]
+        public async Task<IActionResult> CreditFund(decimal amount, string walletId)
+        {
+            var response = await _walletCreditService.CreditUserFundAsync(amount, walletId);
+
+            if (response != null && response.Status == true)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
+        }
+
     }
 }
