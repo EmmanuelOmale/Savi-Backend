@@ -31,6 +31,7 @@ namespace Savi.Core.GroupSaving
             var response = new PayStackResponseDto();
 
             var newGroupSavings = _mapper.Map<GroupSavings>(groupSavingsDto);
+            newGroupSavings.GroupStatus = Data.Enums.GroupStatus.Ongoing;
             var result = await _groupSavingsRepository.CreateGroupSavings(newGroupSavings);
             if (result)
             {

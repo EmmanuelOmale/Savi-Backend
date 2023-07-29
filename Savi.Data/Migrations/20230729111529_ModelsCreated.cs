@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Savi.Data.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class ModelsCreated : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -39,22 +39,6 @@ namespace Savi.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_EmailTemplates", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "FrequencyNames",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "text", nullable: false),
-                    FrequencyName = table.Column<string>(type: "text", nullable: true),
-                    FrequencyId = table.Column<int>(type: "integer", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FrequencyNames", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -116,6 +100,20 @@ namespace Savi.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SavingFrequencys",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FrequencyName = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SavingFrequencys", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SetTargets",
                 columns: table => new
                 {
@@ -162,15 +160,16 @@ namespace Savi.Data.Migrations
                     SavesName = table.Column<string>(type: "text", nullable: true),
                     ContributionAmount = table.Column<decimal>(type: "numeric", nullable: false),
                     ExpectedstartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ExpectedendDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ActualStartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ActualEndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    FrequecncyNameId = table.Column<string>(type: "text", nullable: true),
+                    FrequecncyId = table.Column<int>(type: "integer", nullable: false),
                     MemberCount = table.Column<int>(type: "integer", nullable: false),
-                    FrequencyNameId = table.Column<string>(type: "text", nullable: true),
+                    FrequencyId = table.Column<int>(type: "integer", nullable: true),
                     Runtime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     PurPoseAndGoal = table.Column<string>(type: "text", nullable: true),
                     TermsAndCondition = table.Column<string>(type: "text", nullable: true),
-                    GroupStatus = table.Column<string>(type: "text", nullable: true),
+                    GroupStatus = table.Column<int>(type: "integer", nullable: false),
                     SavePortraitUrl = table.Column<string>(type: "text", nullable: true),
                     SaveLandScape = table.Column<string>(type: "text", nullable: true),
                     NextRunTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -182,9 +181,9 @@ namespace Savi.Data.Migrations
                 {
                     table.PrimaryKey("PK_GroupSavings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_GroupSavings_FrequencyNames_FrequencyNameId",
-                        column: x => x.FrequencyNameId,
-                        principalTable: "FrequencyNames",
+                        name: "FK_GroupSavings_SavingFrequencys_FrequencyId",
+                        column: x => x.FrequencyId,
+                        principalTable: "SavingFrequencys",
                         principalColumn: "Id");
                 });
 
@@ -670,9 +669,9 @@ namespace Savi.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GroupSavings_FrequencyNameId",
+                name: "IX_GroupSavings_FrequencyId",
                 table: "GroupSavings",
-                column: "FrequencyNameId");
+                column: "FrequencyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GroupSavingsFundings_GroupSavingsId",
@@ -820,7 +819,7 @@ namespace Savi.Data.Migrations
                 name: "Occupations");
 
             migrationBuilder.DropTable(
-                name: "FrequencyNames");
+                name: "SavingFrequencys");
         }
     }
 }
