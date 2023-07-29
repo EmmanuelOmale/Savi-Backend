@@ -6,8 +6,6 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Savi.Data.Context;
-using Npgsql;
-
 
 #nullable disable
 
@@ -191,6 +189,9 @@ namespace Savi.Data.Migrations
                     b.Property<bool>("Gender")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("GroupSavingsId")
+                        .HasColumnType("text");
+
                     b.Property<string>("IdentityTypeId")
                         .HasColumnType("text");
 
@@ -246,6 +247,8 @@ namespace Savi.Data.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GroupSavingsId");
 
                     b.HasIndex("IdentityTypeId");
 
@@ -327,6 +330,32 @@ namespace Savi.Data.Migrations
                     b.ToTable("EmailTemplates");
                 });
 
+            modelBuilder.Entity("Savi.Data.Domains.Frequency", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("FrequencyId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("FrequencyName")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FrequencyNames");
+                });
+
             modelBuilder.Entity("Savi.Data.Domains.Group", b =>
                 {
                     b.Property<string>("Id")
@@ -378,6 +407,151 @@ namespace Savi.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Groups");
+                });
+
+            modelBuilder.Entity("Savi.Data.Domains.GroupSavings", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ActualEndDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("ActualStartDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<decimal>("ContributionAmount")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("ExpectedstartDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("FrequecncyNameId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FrequencyNameId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("GroupStatus")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("MemberCount")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("NextRunTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("PurPoseAndGoal")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("Runtime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("SaveLandScape")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SavePortraitUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SavesName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TermsAndCondition")
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FrequencyNameId");
+
+                    b.ToTable("GroupSavings");
+                });
+
+            modelBuilder.Entity("Savi.Data.Domains.GroupSavingsFunding", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("GroupSavingsId")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("TransactionType")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupSavingsId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("GroupSavingsFundings");
+                });
+
+            modelBuilder.Entity("Savi.Data.Domains.GroupSavingsMembers", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("GroupSavingsId")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("IsGroupOwner")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("LastsavingsDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("Positions")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupSavingsId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("GroupSavingsMembers");
                 });
 
             modelBuilder.Entity("Savi.Data.Domains.GroupTransaction", b =>
@@ -593,13 +767,13 @@ namespace Savi.Data.Migrations
                         .HasColumnType("numeric");
 
                     b.Property<decimal>("TotalContribution")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric");
 
                     b.Property<int>("TransactionType")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("WalletId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -827,6 +1001,10 @@ namespace Savi.Data.Migrations
 
             modelBuilder.Entity("Savi.Data.Domains.ApplicationUser", b =>
                 {
+                    b.HasOne("Savi.Data.Domains.GroupSavings", null)
+                        .WithMany("User")
+                        .HasForeignKey("GroupSavingsId");
+
                     b.HasOne("Savi.Data.Domains.IdentityType", "IdentityType")
                         .WithMany("Users")
                         .HasForeignKey("IdentityTypeId");
@@ -846,6 +1024,45 @@ namespace Savi.Data.Migrations
                         .WithMany("CardDetails")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Savi.Data.Domains.GroupSavings", b =>
+                {
+                    b.HasOne("Savi.Data.Domains.Frequency", "FrequencyName")
+                        .WithMany()
+                        .HasForeignKey("FrequencyNameId");
+
+                    b.Navigation("FrequencyName");
+                });
+
+            modelBuilder.Entity("Savi.Data.Domains.GroupSavingsFunding", b =>
+                {
+                    b.HasOne("Savi.Data.Domains.GroupSavings", "GroupSavings")
+                        .WithMany()
+                        .HasForeignKey("GroupSavingsId");
+
+                    b.HasOne("Savi.Data.Domains.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("GroupSavings");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Savi.Data.Domains.GroupSavingsMembers", b =>
+                {
+                    b.HasOne("Savi.Data.Domains.GroupSavings", "GroupSavings")
+                        .WithMany()
+                        .HasForeignKey("GroupSavingsId");
+
+                    b.HasOne("Savi.Data.Domains.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("GroupSavings");
 
                     b.Navigation("User");
                 });
@@ -956,6 +1173,11 @@ namespace Savi.Data.Migrations
             modelBuilder.Entity("Savi.Data.Domains.Group", b =>
                 {
                     b.Navigation("GroupTransactions");
+                });
+
+            modelBuilder.Entity("Savi.Data.Domains.GroupSavings", b =>
+                {
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Savi.Data.Domains.IdentityType", b =>

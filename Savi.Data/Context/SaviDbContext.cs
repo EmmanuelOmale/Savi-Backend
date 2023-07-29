@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Savi.Data.Domains;
-using System.Reflection.Emit;
 
 namespace Savi.Data.Context
 {
@@ -24,6 +23,11 @@ namespace Savi.Data.Context
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<WalletFunding> WalletFundings { get; set; }
         public DbSet<SetTarget> SetTargets { get; set; }
+        public DbSet<GroupSavings> GroupSavings { get; set; }
+
+        public DbSet<GroupSavingsMembers> GroupSavingsMembers { get; set; }
+        public DbSet<GroupSavingsFunding> GroupSavingsFundings { get; set; }
+        public DbSet<Frequency> FrequencyNames { get; set; }
 
         public SaviDbContext(DbContextOptions<SaviDbContext> Options) : base(Options)
         {

@@ -3,14 +3,15 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Savi.Api.Extensions;
 using Savi.Api.Service;
+using Savi.Core.GroupSaving;
 using Savi.Core.Interfaces;
 using Savi.Core.PaystackServices;
 using Savi.Core.Services;
+using Savi.Core.WalletService;
 using Savi.Data.Context;
 using Savi.Data.Domains;
 using Savi.Data.EmailService;
@@ -83,11 +84,18 @@ public class Program
         builder.Services.AddScoped<IWalletRepository, WalletRepository>();
         builder.Services.AddScoped<IPaymentService, PaymentService>();
         builder.Services.AddScoped<IWalletFundingRepository, WalletFundingRepository>();
-		builder.Services.AddScoped<ISavingsService, SavingsService>();
-		builder.Services.AddScoped<IWalletService, WalletService>();
+        builder.Services.AddScoped<ISavingsService, SavingsService>();
+        builder.Services.AddScoped<IWalletService, WalletService>();
+        builder.Services.AddScoped<IGroupSavingsRepository, GroupSavingsRepository>();
+        builder.Services.AddScoped<IGroupSavingsServices, GroupSavingsService>();
+        builder.Services.AddScoped<IGroupSavingsMembersRepository, GroupSavingsMembersRepository>();
+        builder.Services.AddScoped<IGroupSavingsMemberServices, GroupSavingsMemberServices>();
+        builder.Services.AddScoped<IWalletCreditService, WalletCreditService>();
+        builder.Services.AddScoped<IWalletDebitService, WalletDebitService>();
+        builder.Services.AddScoped<IGroupsavingsFundingRepository, GroupSavingFundingRepository>();
 
 
-		builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+        builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
        .AddEntityFrameworkStores<SaviDbContext>()
         .AddDefaultTokenProviders();
         builder.Services.AddScoped<ISavingGoalRepository, SavingGoalRepository>();
