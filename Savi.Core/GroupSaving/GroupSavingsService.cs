@@ -61,67 +61,64 @@ namespace Savi.Core.GroupSaving
         }
 
 
-        //public async Task<bool> ActivateGroupSavings(string GroupId)
-        //{
-        //    var response = await _groupSavingsRepository.GetGroupByIdAsync(GroupId);
-        //    {
-        //        if (response.Result != null)
-        //        {
-        //            var grp = await _groupSavingsMembers.GetListOfGroupMembersAsync2(GroupId);
-        //            var gr = grp.Count();
-
-        //            for (int i = 0; i <= gr; i++)
-        //            {
-        //                var rem = grp.First();
-        //                var user = await _userRepository.GetUserByIdAsync(rem.UserId);
-
-        //                if (rem.Positions == 0)
-        //                {
-        //                    var contributions = response.Result.ContributionAmount;
-        //                    var members = response.Result.MemberCount;
-        //                    var totalAmountContributed = (members - 1) * contributions;
-        //                    var newcrediteduser = await _walletServices.CreditUserFundAsync(totalAmountContributed, user.Result.WalletId);
-        //                    if (newcrediteduser.Status == true)
-        //                    {
-        //                        return true;
-        //                    }
-
-        //                }
-        //                else if (rem.Positions != 0)
-        //                {
-        //                    var contribution = response.Result.ContributionAmount;
-        //                    var newDeediteduser = await _walletServices.WithdrawUserFundAsync(contribution, user.Result.WalletId);
-        //                }
+        public async Task<ResponseDto<IEnumerable<GroupSavings>>> GetListOfSavingsGroupAsync()
+        {
+            var response = new ResponseDto<IEnumerable<GroupSavings>>();
 
 
+            try
+            {
 
+                var result = await _groupSavingsRepository.GetListOfGroupSavingsAsync();
+                if (result.Count > 0)
+                {
 
-        //            }
-        //        }
-        //        return false;
-        //    }
+                    response.StatusCode = 200;
+                    response.DisplayMessage = "Group List Fetched successfully";
+                    response.Result = result;
+                    return response;
 
+                }
 
+                response.StatusCode = 400;
+                response.DisplayMessage = "No list Available";
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = 200;
+                response.DisplayMessage = ex.Message;
+                return response;
+            }
 
+        }
+        public async Task<ResponseDto<GroupSavings>> GetUsrByIDAsync(string UserId)
+        {
+            var response = new ResponseDto<GroupSavings>();
 
+            try
+            {
+                var result = await _groupSavingsRepository.GetGroupByIdAsync(UserId);
+                if (result.Result != null)
+                {
+                    response.StatusCode = 200;
+                    response.DisplayMessage = "Group account Fetched successfully";
+                    response.Result = result.Result;
+                    return response;
+                }
 
-        //public async Task<bool> AutoDebitAndCredit()
-        //{
-        //    var Groups = await _groupSavingsRepository.GetListOfGroupSavingsAsync();
-        //    var gr = Groups.Count();
+                response.StatusCode = 400;
+                response.DisplayMessage = "No list Available";
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = 500;
+                response.DisplayMessage = ex.Message;
+                return response;
+            }
 
-        //    for(int i = 0; i <= gr; i++)
-        //    {
-        //        var rem = Groups.First();
-        //        if(rem.ActualStartDate == DateTime.Now)
-        //        {
-        //            var grp =await _groupSavingsMembers.GetListOfGroupMembersAsync(rem.Id);
-        //            var usr = 
-        //            _walletServices.CreditUserFundAsync()
-        //        }
-        //    }
-        //}
-
+        }
 
     }
 }
