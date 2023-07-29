@@ -9,7 +9,6 @@ namespace Savi.Api.Controllers
     {
         private readonly IPaymentService _paymentService;
         private readonly IWalletCreditService _walletCreditService;
-        private readonly IWalletCreditService _walletServices;
         private readonly IGroupSavingsServices _groupSavingsServices;
         private readonly IWalletDebitService _walletDebitService;
 

@@ -1,7 +1,5 @@
 ﻿using Savi.Data.Context;
 using Savi.Data.Domains;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Savi.Data.Seeding
 {
@@ -31,6 +29,14 @@ namespace Savi.Data.Seeding
             };
 
             dbContext.IdentityTypes.AddRange(identityTypes);
+            var frequency = new List<SavingsFrequency>
+            {
+                new SavingsFrequency{Id = 1,FrequencyName = "Daily",CreatedAt = DateTime.Now},
+                new SavingsFrequency{Id = 2,FrequencyName = "Weekly",CreatedAt = DateTime.Now},
+                new SavingsFrequency{Id = 3,FrequencyName = "Monthly",CreatedAt = DateTime.Now},
+
+            };
+            dbContext.SavingFrequencys.AddRange(frequency);
 
             dbContext.SaveChanges();
         }

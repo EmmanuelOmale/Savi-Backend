@@ -330,32 +330,6 @@ namespace Savi.Data.Migrations
                     b.ToTable("EmailTemplates");
                 });
 
-            modelBuilder.Entity("Savi.Data.Domains.Frequency", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("FrequencyId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("FrequencyName")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("ModifiedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("FrequencyNames");
-                });
-
             modelBuilder.Entity("Savi.Data.Domains.Group", b =>
                 {
                     b.Property<string>("Id")
@@ -427,17 +401,20 @@ namespace Savi.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<DateTime>("ExpectedendDate")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<DateTime>("ExpectedstartDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("FrequecncyNameId")
-                        .HasColumnType("text");
+                    b.Property<int>("FrequecncyId")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("FrequencyNameId")
-                        .HasColumnType("text");
+                    b.Property<int?>("FrequencyId")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("GroupStatus")
-                        .HasColumnType("text");
+                    b.Property<int>("GroupStatus")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -474,7 +451,7 @@ namespace Savi.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FrequencyNameId");
+                    b.HasIndex("FrequencyId");
 
                     b.ToTable("GroupSavings");
                 });
@@ -782,6 +759,25 @@ namespace Savi.Data.Migrations
                     b.ToTable("SavingGoals");
                 });
 
+            modelBuilder.Entity("Savi.Data.Domains.SavingsFrequency", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("FrequencyName")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SavingFrequencys");
+                });
+
             modelBuilder.Entity("Savi.Data.Domains.SetTarget", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1030,11 +1026,11 @@ namespace Savi.Data.Migrations
 
             modelBuilder.Entity("Savi.Data.Domains.GroupSavings", b =>
                 {
-                    b.HasOne("Savi.Data.Domains.Frequency", "FrequencyName")
+                    b.HasOne("Savi.Data.Domains.SavingsFrequency", "Frequency")
                         .WithMany()
-                        .HasForeignKey("FrequencyNameId");
+                        .HasForeignKey("FrequencyId");
 
-                    b.Navigation("FrequencyName");
+                    b.Navigation("Frequency");
                 });
 
             modelBuilder.Entity("Savi.Data.Domains.GroupSavingsFunding", b =>
