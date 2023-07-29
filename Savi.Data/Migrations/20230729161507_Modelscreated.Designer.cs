@@ -13,8 +13,8 @@ using Savi.Data.Context;
 namespace Savi.Data.Migrations
 {
     [DbContext(typeof(SaviDbContext))]
-    [Migration("20230728222158_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20230729161507_Modelscreated")]
+    partial class Modelscreated
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

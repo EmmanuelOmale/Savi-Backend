@@ -12,7 +12,8 @@ namespace Savi.Api.Controllers
         private readonly IGroupSavingsServices _groupSavingsServices;
         private readonly IGroupSavingsMemberServices _groupSavingsMemberServices;
 
-        public GroupSavingsController(IGroupSavingsServices groupSavingsServices, IGroupSavingsMemberServices groupSavingsMemberServices)
+        public GroupSavingsController(IGroupSavingsServices groupSavingsServices,
+            IGroupSavingsMemberServices groupSavingsMemberServices)
         {
             _groupSavingsServices = groupSavingsServices;
             _groupSavingsMemberServices = groupSavingsMemberServices;
@@ -37,5 +38,27 @@ namespace Savi.Api.Controllers
             }
             return BadRequest(newGroupSavings);
         }
+        [HttpGet("get/groupby/{groupId}")]
+        public async Task<IActionResult> GetGroupByIdAsync(string groupId)
+        {
+            var group = await _groupSavingsServices.GetUsrByIDAsync(groupId);
+            if (group.StatusCode == 200)
+            {
+                return Ok(group);
+            }
+            return BadRequest(group);
+        }
+
+        [HttpGet("get/list/groupsavings")]
+        public async Task<IActionResult> GetListOfGroupSavingsAsync()
+        {
+            var listofgroup = await _groupSavingsServices.GetListOfSavingsGroupAsync();
+            if (listofgroup.StatusCode == 200)
+            {
+                return Ok(listofgroup);
+            }
+            return BadRequest(listofgroup);
+        }
+
     }
 }
