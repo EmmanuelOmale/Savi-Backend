@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Savi.Api.Service;
+using Savi.Core.Interfaces;
 using Savi.Data.Domains;
 using Savi.Data.DTO;
 using Savi.Data.Enums;
@@ -14,15 +15,17 @@ namespace Savi.Api.Controllers
     {
         private readonly ISetTargetService _setTargetService;
         private readonly IMapper _mapper;
+		private readonly ISavingsService _savingsService;
 
-        public SetTargetController(ISetTargetService setTargetService, IMapper mapper)
+		public SetTargetController(ISetTargetService setTargetService, IMapper mapper, ISavingsService savingsService)
         {
             _setTargetService = setTargetService;
             _mapper = mapper;
+            _savingsService = savingsService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<ResponseDto<IEnumerable<SetTarget>>>> GetAllTargets()
+        public async Task<ActionResult<ResponseDto<IEnumerable<SetTargetDTO>>>> GetAllTargets()
         {
             var response = await _setTargetService.GetAllTargets();
            StatusCode(response.StatusCode);
@@ -32,11 +35,11 @@ namespace Savi.Api.Controllers
 
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ResponseDto<SetTarget>>> GetTargetById(Guid id)
+        public async Task<ActionResult<ResponseDto<SetTargetDTO>>> GetTargetById(Guid id)
         {
             try
             {
-                var response = await _setTargetService.GetTargetById(id);
+				var response = await _setTargetService.GetTargetById(id);
                 return Ok(response);
             }
             catch (Exception ex)
@@ -45,7 +48,7 @@ namespace Savi.Api.Controllers
                 Console.WriteLine($"Exception occurred while fetching target by ID: {ex}");
 
                
-                var errorResponse = new ResponseDto<SetTarget>
+                var errorResponse = new ResponseDto<SetTargetDTO>
                 {
                     StatusCode = 500, 
                     DisplayMessage = "An error occurred while fetching the target. Please try again later.",
@@ -59,11 +62,12 @@ namespace Savi.Api.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<ResponseDto<SetTarget>>> CreateTarget([FromBody] SetTarget setTarget)
+        public async Task<ActionResult<ResponseDto<SetTargetDTO>>> CreateTarget([FromBody] SetTargetDTO setTarget)
         {
             try
             {
-                var response = await _setTargetService.CreateTarget(setTarget);
+				var target = _mapper.Map<SetTarget>(setTarget);
+				var response = await _setTargetService.CreateTarget(target);
                 return StatusCode(response.StatusCode, response);
             }
             catch (Exception ex)
@@ -72,7 +76,7 @@ namespace Savi.Api.Controllers
                 Console.WriteLine($"Exception occurred during target creation: {ex}");
 
                 
-                var errorResponse = new ResponseDto<SetTarget>
+                var errorResponse = new ResponseDto<SetTargetDTO>
                 {
                     StatusCode = 500, 
                     DisplayMessage = "An error occurred during target creation. Please try again later.",
@@ -116,7 +120,7 @@ namespace Savi.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<ResponseDto<SetTarget>>> DeleteTarget(Guid id)
+        public async Task<ActionResult<ResponseDto<SetTargetDTO>>> DeleteTarget(Guid id)
         {
             try
             {
@@ -128,7 +132,7 @@ namespace Savi.Api.Controllers
               
                 Console.WriteLine($"Exception occurred while deleting target: {ex}");
 
-                var errorResponse = new ResponseDto<SetTarget>
+                var errorResponse = new ResponseDto<SetTargetDTO>
                 {
                     StatusCode = 500,
                     DisplayMessage = "An error occurred while deleting the target. Please try again later.",
@@ -138,8 +142,24 @@ namespace Savi.Api.Controllers
                 return StatusCode(errorResponse.StatusCode, errorResponse);
             }
         }
+		[HttpPost("{id}/fundtarget")]
+		public async Task<ActionResult<APIResponse>> FundTarget(Guid id, decimal amount)
+		{
+			if (!User.Identity.IsAuthenticated)
+			{
+				return Unauthorized(); 
+			}
 
-    }
+
+			var saving = await _savingsService.FundTargetSavings(id, amount, User);
+			if (saving == null)
+			{
+				return NotFound();
+			}
+			return Ok(saving);
+		}
+
+	}
 
 
 }

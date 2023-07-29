@@ -16,5 +16,9 @@ namespace Savi.Data.Domains
         public FrequencyType Frequency { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime WithdrawalDate { get; set; }
-    }
+		public SetTargetFunding SetTargetFunding { get; set; }
+		public decimal CumulativeAmount { get; set; }
+
+
+	}
 }
