@@ -82,7 +82,7 @@ namespace Savi.Api.Controllers
             }
         }
 
-        [HttpGet("{userId}")]
+        [HttpGet("{userId}/transaction-history")]
         public IActionResult GetUserTransactions(string userId)
         {
             var transactions = _walletService.GetUserTransactions(userId);
