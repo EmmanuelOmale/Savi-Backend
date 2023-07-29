@@ -1,4 +1,5 @@
-﻿using Savi.Data.Context;
+﻿using Microsoft.EntityFrameworkCore;
+using Savi.Data.Context;
 using Savi.Data.Domains;
 using Savi.Data.IRepositories;
 
@@ -76,6 +77,57 @@ namespace Savi.Data.Repositories
             _SaviDb.Wallets.Update(wallet);
             _SaviDb.SaveChanges();
         }
+
+        public async Task<Wallet> GetUserWalletAsync(string userId)
+        {
+            var wallet = await _SaviDb.Wallets.FirstOrDefaultAsync(x => x.UserId == userId);
+
+            return wallet; // This might be null if the wallet does not exist, and that's okay.
+        }
+
+        public async Task<bool> TransferFundsAsync(string sourceWalletId, string destinationWalletId, decimal amount)
+        {
+            var sourceWallet = await _SaviDb.Wallets.FirstOrDefaultAsync(w => w.WalletId == sourceWalletId);
+            var destinationWallet = await _SaviDb.Wallets.FirstOrDefaultAsync(w => w.WalletId == destinationWalletId);
+
+            if (sourceWallet == null || destinationWallet == null || amount <= 0)
+            {
+                return false;
+            }
+
+            if (sourceWallet.Balance < amount)
+            {
+                return false;
+            }
+
+            sourceWallet.Balance -= amount;
+            destinationWallet.Balance += amount;
+
+            await _SaviDb.SaveChangesAsync();
+
+            var transaction = new UserTransaction
+            {
+                TransactionType = "Transfer",
+                Description = $"Funds transfer from {sourceWalletId} to {destinationWalletId}",
+                Amount = amount,
+                Reference = Guid.NewGuid().ToString(),
+                UserId = sourceWallet.UserId,
+            };
+
+            _SaviDb.UserTransactions.Add(transaction);
+            await _SaviDb.SaveChangesAsync();
+
+            return true;
+        }
+
+
+        public List<UserTransaction> GetUserTransactions(string userId)
+        {
+            return _SaviDb.UserTransactions
+                .Where(ut => ut.UserId == userId)
+                .ToList();
+        }
+
 
     }
 }
