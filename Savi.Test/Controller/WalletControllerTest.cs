@@ -13,7 +13,7 @@ namespace Savi.Test.Controller
         {
             // Arrange
             var paymentServiceMock = new Mock<IPaymentService>();
-            var controller = new WalletController(paymentServiceMock.Object);
+            var controller = new WalletController(paymentServiceMock.Object, null);
             var paymentReference = "T470565688084910";
 
             var expectedResult = new PayStackResponseDto
@@ -45,7 +45,7 @@ namespace Savi.Test.Controller
         {
             // Arrange
             var paymentServiceMock = new Mock<IPaymentService>();
-            var controller = new WalletController(paymentServiceMock.Object);
+            var controller = new WalletController(paymentServiceMock.Object, null);
 
             decimal Amount = 5000;
             string WalletId = "8136582045";
@@ -78,7 +78,7 @@ namespace Savi.Test.Controller
         {
             // Arrange
             var paymentServiceMock = new Mock<IPaymentService>();
-            var controller = new WalletController(paymentServiceMock.Object);
+            var controller = new WalletController(paymentServiceMock.Object, null);
 
             decimal Amount = -50;
             string WalletId = "8136582045";
@@ -112,7 +112,7 @@ namespace Savi.Test.Controller
         {
             // Arrange
             var paymentServiceMock = new Mock<IPaymentService>();
-            var controller = new WalletController(paymentServiceMock.Object);
+            var controller = new WalletController(paymentServiceMock.Object, null);
 
             decimal Amount = 5000;
             string WalletId = "8136582045";
@@ -146,7 +146,7 @@ namespace Savi.Test.Controller
         {
             // Arrange
             var paymentServiceMock = new Mock<IPaymentService>();
-            var controller = new WalletController(paymentServiceMock.Object);
+            var controller = new WalletController(paymentServiceMock.Object, null);
 
             decimal Amount = 500;
             string WalletId = "ghjklsssss";

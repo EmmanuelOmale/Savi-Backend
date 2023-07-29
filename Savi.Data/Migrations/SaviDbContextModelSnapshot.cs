@@ -6,8 +6,6 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Savi.Data.Context;
-using Npgsql;
-
 
 #nullable disable
 
@@ -593,13 +591,13 @@ namespace Savi.Data.Migrations
                         .HasColumnType("numeric");
 
                     b.Property<decimal>("TotalContribution")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric");
 
                     b.Property<int>("TransactionType")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("WalletId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace Savi.Data.Migrations
 {
-    public partial class NewMigrationPostgreSQL : Migration
+    public partial class AddedTrs : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -96,24 +97,6 @@ namespace Savi.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Occupations", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SavingGoals",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    GoalName = table.Column<string>(type: "text", nullable: true),
-                    TargetAmount = table.Column<decimal>(type: "numeric", nullable: false),
-                    AmountToAddPerTime = table.Column<decimal>(type: "numeric", nullable: false),
-                    Frequency = table.Column<string>(type: "text", nullable: true),
-                    StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SavingGoals", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -461,6 +444,32 @@ namespace Savi.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SavingGoals",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    GoalName = table.Column<string>(type: "text", nullable: true),
+                    TargetAmount = table.Column<decimal>(type: "numeric", nullable: false),
+                    AmountToAddPerTime = table.Column<decimal>(type: "numeric", nullable: false),
+                    Frequency = table.Column<string>(type: "text", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    TransactionType = table.Column<int>(type: "integer", nullable: false),
+                    WalletId = table.Column<string>(type: "text", nullable: true),
+                    TotalContribution = table.Column<decimal>(type: "numeric", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SavingGoals", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SavingGoals_Wallets_WalletId",
+                        column: x => x.WalletId,
+                        principalTable: "Wallets",
+                        principalColumn: "WalletId");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "WalletFundings",
                 columns: table => new
                 {
@@ -561,6 +570,11 @@ namespace Savi.Data.Migrations
                 table: "OTPs",
                 column: "UserId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SavingGoals_WalletId",
+                table: "SavingGoals",
+                column: "WalletId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Savings_ApplicationUserId",
