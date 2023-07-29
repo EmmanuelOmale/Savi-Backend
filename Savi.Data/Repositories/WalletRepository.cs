@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Savi.Data.Context;
 using Savi.Data.Domains;
-using Savi.Data.DTO;
 using Savi.Data.IRepositories;
 
 namespace Savi.Data.Repositories
@@ -16,6 +15,17 @@ namespace Savi.Data.Repositories
         }
 
         public async Task<bool> VerifyPaymentAsync(Wallet wallet)
+        {
+
+            var newentry = _SaviDb.Wallets.Update(wallet);
+            var rowsAffected = await _SaviDb.SaveChangesAsync();
+            if (rowsAffected > 0)
+            {
+                return true;
+            }
+            return false;
+        }
+        public async Task<bool> DebitUser(Wallet wallet)
         {
 
             var newentry = _SaviDb.Wallets.Update(wallet);
@@ -62,7 +72,6 @@ namespace Savi.Data.Repositories
             }
             return null;
         }
-
         public void UpdateWallet(Wallet wallet)
         {
             _SaviDb.Wallets.Update(wallet);
@@ -118,6 +127,7 @@ namespace Savi.Data.Repositories
                 .Where(ut => ut.UserId == userId)
                 .ToList();
         }
+
 
     }
 }
