@@ -94,9 +94,9 @@ namespace Savi.Api.Controllers
             }
 
             
-            if (updatedTarget.Frequency > FrequencyType.Manually)
+            if (updatedTarget.Frequency > FrequencyType.Daily)
             {
-                return BadRequest("Frequency cannot be more than Manually.");
+                return BadRequest("Frequency cannot be more than Daily");
             }
 
             var response = await _setTargetService.UpdateTarget(id, updatedTarget);
