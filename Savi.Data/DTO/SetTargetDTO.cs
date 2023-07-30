@@ -9,7 +9,6 @@ namespace Savi.Data.DTO
 {
 	public class SetTargetDTO
 	{
-		public Guid Id { get; set; }
 		public string Target { get; set; }
 		public decimal TargetAmount { get; set; }
 		public decimal AmountToSave { get; set; }
