@@ -61,9 +61,9 @@ namespace Savi.Core.GroupSaving
         }
 
 
-        public async Task<ResponseDto<IEnumerable<GroupSavings>>> GetListOfSavingsGroupAsync()
+        public async Task<ResponseDto<IEnumerable<GroupSavingsRespnseDto>>> GetListOfSavingsGroupAsync()
         {
-            var response = new ResponseDto<IEnumerable<GroupSavings>>();
+            var response = new ResponseDto<IEnumerable<GroupSavingsRespnseDto>>();
 
 
             try
@@ -92,9 +92,9 @@ namespace Savi.Core.GroupSaving
             }
 
         }
-        public async Task<ResponseDto<GroupSavings>> GetUsrByIDAsync(string UserId)
+        public async Task<ResponseDto<GroupSavingsRespnseDto>> GetUsrByIDAsync(string UserId)
         {
-            var response = new ResponseDto<GroupSavings>();
+            var response = new ResponseDto<GroupSavingsRespnseDto>();
 
             try
             {

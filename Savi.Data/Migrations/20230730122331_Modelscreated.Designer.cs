@@ -13,8 +13,8 @@ using Savi.Data.Context;
 namespace Savi.Data.Migrations
 {
     [DbContext(typeof(SaviDbContext))]
-    [Migration("20230730073749_updateentities")]
-    partial class updateentities
+    [Migration("20230730122331_Modelscreated")]
+    partial class Modelscreated
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -191,9 +191,6 @@ namespace Savi.Data.Migrations
                     b.Property<bool>("Gender")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("GroupSavingsId")
-                        .HasColumnType("text");
-
                     b.Property<string>("IdentityTypeId")
                         .HasColumnType("text");
 
@@ -249,8 +246,6 @@ namespace Savi.Data.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GroupSavingsId");
 
                     b.HasIndex("IdentityTypeId");
 
@@ -454,6 +449,8 @@ namespace Savi.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("FrequencyId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("GroupSavings");
                 });
@@ -1044,10 +1041,6 @@ namespace Savi.Data.Migrations
 
             modelBuilder.Entity("Savi.Data.Domains.ApplicationUser", b =>
                 {
-                    b.HasOne("Savi.Data.Domains.GroupSavings", null)
-                        .WithMany("User")
-                        .HasForeignKey("GroupSavingsId");
-
                     b.HasOne("Savi.Data.Domains.IdentityType", "IdentityType")
                         .WithMany("Users")
                         .HasForeignKey("IdentityTypeId");
@@ -1077,7 +1070,13 @@ namespace Savi.Data.Migrations
                         .WithMany()
                         .HasForeignKey("FrequencyId");
 
+                    b.HasOne("Savi.Data.Domains.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Frequency");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Savi.Data.Domains.GroupSavingsFunding", b =>
@@ -1242,11 +1241,6 @@ namespace Savi.Data.Migrations
             modelBuilder.Entity("Savi.Data.Domains.Group", b =>
                 {
                     b.Navigation("GroupTransactions");
-                });
-
-            modelBuilder.Entity("Savi.Data.Domains.GroupSavings", b =>
-                {
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Savi.Data.Domains.IdentityType", b =>

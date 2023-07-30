@@ -13,53 +13,64 @@ using System.Text;
 
 namespace Savi.Data.Repositories
 {
-    public class UserRepository : RepositoryBase<ApplicationUser>, IUserRepository
-    {
-        private SaviDbContext _saviDbContext;
-        private readonly IMapper _mapper;
+	public class UserRepository : RepositoryBase<ApplicationUser>, IUserRepository
+	{
+		private SaviDbContext _saviDbContext;
+		private readonly IMapper _mapper;
 		private readonly IConfiguration _configuration;
 		private readonly UserManager<ApplicationUser> _userManager;
 
 
 		public UserRepository(SaviDbContext db, IMapper mapper, IConfiguration configuration, UserManager<ApplicationUser> userManager) : base(db)
-        {
-            _saviDbContext = db;
-            _mapper = mapper;
+		{
+			_saviDbContext = db;
+			_mapper = mapper;
 			_configuration = configuration;
 			_userManager = userManager;
-        }
-        public async Task<ResponseDto<UserDTO>> GetUserByIdAsync(string Id)
-        {
-            var user = await _saviDbContext.Users.FindAsync(Id);
-            if (user == null)
-            {
-                var notFoundResponse = new ResponseDto<UserDTO>
-                {
-                    StatusCode = StatusCodes.Status404NotFound,
-                    DisplayMessage = "User not found"
-                };
-                return notFoundResponse;
-            }
-            var result = _mapper.Map<UserDTO>(user);
+		}
+		public async Task<ResponseDto<UserDTO>> GetUserByIdAsync(string Id)
+		{
+			var user = await _saviDbContext.Users.FindAsync(Id);
+			if (user == null)
+			{
+				var notFoundResponse = new ResponseDto<UserDTO>
+				{
+					StatusCode = StatusCodes.Status404NotFound,
+					DisplayMessage = "User not found"
+				};
+				return notFoundResponse;
+			}
+			var result = _mapper.Map<UserDTO>(user);
 
-            var success = new ResponseDto<UserDTO>
-            {
-                StatusCode = StatusCodes.Status200OK,
-                DisplayMessage = "User Found",
-                Result = result
-            };
-            return success;
+			var success = new ResponseDto<UserDTO>
+			{
+				StatusCode = StatusCodes.Status200OK,
+				DisplayMessage = "User Found",
+				Result = result
+			};
+			return success;
 
-        }
-        public ApplicationUser FinduserByPhoneNumber(string Phonenumber)
-        {
-            var UserPhoneNumber = _saviDbContext.Users.FirstOrDefault(x => x.PhoneNumber == Phonenumber);
-            if (UserPhoneNumber == null)
-            {
-                return null;
-            }
-            return UserPhoneNumber;
-        }
+		}
+		public async Task<ApplicationUser> GetUserById(string Id)
+		{
+			var user = await _saviDbContext.Users.FindAsync(Id);
+
+			if (user == null)
+			{
+				return null;
+			}
+			return user;
+
+		}
+		public ApplicationUser FinduserByPhoneNumber(string Phonenumber)
+		{
+			var UserPhoneNumber = _saviDbContext.Users.FirstOrDefault(x => x.PhoneNumber == Phonenumber);
+			if (UserPhoneNumber == null)
+			{
+				return null;
+			}
+			return UserPhoneNumber;
+		}
 
 		public async Task<ApplicationUser> GetLoggedInUserByToken(string token)
 		{
