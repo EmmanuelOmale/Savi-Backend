@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Savi.Data.Migrations
 {
-    public partial class updateTables : Migration
+    public partial class Modelscreated : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -114,24 +114,6 @@ namespace Savi.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SetTargets",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Target = table.Column<string>(type: "text", nullable: true),
-                    TargetAmount = table.Column<decimal>(type: "numeric", nullable: false),
-                    AmountToSave = table.Column<decimal>(type: "numeric", nullable: false),
-                    Frequency = table.Column<int>(type: "integer", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    WithdrawalDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    CumulativeAmount = table.Column<decimal>(type: "numeric", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SetTargets", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -153,42 +135,6 @@ namespace Savi.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GroupSavings",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "text", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: true),
-                    SavesName = table.Column<string>(type: "text", nullable: true),
-                    ContributionAmount = table.Column<decimal>(type: "numeric", nullable: false),
-                    ExpectedstartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ExpectedendDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ActualStartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ActualEndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    FrequecncyId = table.Column<int>(type: "integer", nullable: false),
-                    MemberCount = table.Column<int>(type: "integer", nullable: false),
-                    FrequencyId = table.Column<int>(type: "integer", nullable: true),
-                    Runtime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    PurPoseAndGoal = table.Column<string>(type: "text", nullable: true),
-                    TermsAndCondition = table.Column<string>(type: "text", nullable: true),
-                    GroupStatus = table.Column<int>(type: "integer", nullable: false),
-                    SavePortraitUrl = table.Column<string>(type: "text", nullable: true),
-                    SaveLandScape = table.Column<string>(type: "text", nullable: true),
-                    NextRunTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GroupSavings", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_GroupSavings_SavingFrequencys_FrequencyId",
-                        column: x => x.FrequencyId,
-                        principalTable: "SavingFrequencys",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetUsers",
                 columns: table => new
                 {
@@ -205,7 +151,6 @@ namespace Savi.Data.Migrations
                     ProofOfAddressUrl = table.Column<string>(type: "text", nullable: true),
                     KYCLevel = table.Column<int>(type: "integer", nullable: false),
                     WalletId = table.Column<string>(type: "text", nullable: true),
-                    GroupSavingsId = table.Column<string>(type: "text", nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -224,11 +169,6 @@ namespace Savi.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_GroupSavings_GroupSavingsId",
-                        column: x => x.GroupSavingsId,
-                        principalTable: "GroupSavings",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_AspNetUsers_IdentityTypes_IdentityTypeId",
                         column: x => x.IdentityTypeId,
@@ -352,59 +292,43 @@ namespace Savi.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GroupSavingsFundings",
+                name: "GroupSavings",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
-                    GroupSavingsId = table.Column<string>(type: "text", nullable: true),
-                    TransactionType = table.Column<int>(type: "integer", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: true),
+                    SavesName = table.Column<string>(type: "text", nullable: true),
+                    ContributionAmount = table.Column<decimal>(type: "numeric", nullable: false),
+                    ExpectedstartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ExpectedendDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ActualStartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ActualEndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    FrequecncyId = table.Column<int>(type: "integer", nullable: false),
+                    MemberCount = table.Column<int>(type: "integer", nullable: false),
+                    FrequencyId = table.Column<int>(type: "integer", nullable: true),
+                    Runtime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    PurPoseAndGoal = table.Column<string>(type: "text", nullable: true),
+                    TermsAndCondition = table.Column<string>(type: "text", nullable: true),
+                    GroupStatus = table.Column<int>(type: "integer", nullable: false),
+                    SavePortraitUrl = table.Column<string>(type: "text", nullable: true),
+                    SaveLandScape = table.Column<string>(type: "text", nullable: true),
+                    NextRunTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GroupSavingsFundings", x => x.Id);
+                    table.PrimaryKey("PK_GroupSavings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_GroupSavingsFundings_AspNetUsers_UserId",
+                        name: "FK_GroupSavings_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_GroupSavingsFundings_GroupSavings_GroupSavingsId",
-                        column: x => x.GroupSavingsId,
-                        principalTable: "GroupSavings",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "GroupSavingsMembers",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "text", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: true),
-                    GroupSavingsId = table.Column<string>(type: "text", nullable: true),
-                    IsGroupOwner = table.Column<int>(type: "integer", nullable: false),
-                    Positions = table.Column<int>(type: "integer", nullable: false),
-                    LastsavingsDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GroupSavingsMembers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_GroupSavingsMembers_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_GroupSavingsMembers_GroupSavings_GroupSavingsId",
-                        column: x => x.GroupSavingsId,
-                        principalTable: "GroupSavings",
+                        name: "FK_GroupSavings_SavingFrequencys_FrequencyId",
+                        column: x => x.FrequencyId,
+                        principalTable: "SavingFrequencys",
                         principalColumn: "Id");
                 });
 
@@ -504,6 +428,30 @@ namespace Savi.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SetTargets",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Target = table.Column<string>(type: "text", nullable: true),
+                    TargetAmount = table.Column<decimal>(type: "numeric", nullable: false),
+                    AmountToSave = table.Column<decimal>(type: "numeric", nullable: false),
+                    Frequency = table.Column<int>(type: "integer", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    WithdrawalDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CumulativeAmount = table.Column<decimal>(type: "numeric", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SetTargets", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SetTargets_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserTransactions",
                 columns: table => new
                 {
@@ -555,6 +503,63 @@ namespace Savi.Data.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GroupSavingsFundings",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    GroupSavingsId = table.Column<string>(type: "text", nullable: true),
+                    TransactionType = table.Column<int>(type: "integer", nullable: false),
+                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupSavingsFundings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GroupSavingsFundings_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_GroupSavingsFundings_GroupSavings_GroupSavingsId",
+                        column: x => x.GroupSavingsId,
+                        principalTable: "GroupSavings",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GroupSavingsMembers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: true),
+                    GroupSavingsId = table.Column<string>(type: "text", nullable: true),
+                    IsGroupOwner = table.Column<int>(type: "integer", nullable: false),
+                    Positions = table.Column<int>(type: "integer", nullable: false),
+                    LastsavingsDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupSavingsMembers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GroupSavingsMembers_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_GroupSavingsMembers_GroupSavings_GroupSavingsId",
+                        column: x => x.GroupSavingsId,
+                        principalTable: "GroupSavings",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -673,11 +678,6 @@ namespace Savi.Data.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_GroupSavingsId",
-                table: "AspNetUsers",
-                column: "GroupSavingsId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_IdentityTypeId",
                 table: "AspNetUsers",
                 column: "IdentityTypeId");
@@ -702,6 +702,11 @@ namespace Savi.Data.Migrations
                 name: "IX_GroupSavings_FrequencyId",
                 table: "GroupSavings",
                 column: "FrequencyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupSavings_UserId",
+                table: "GroupSavings",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GroupSavingsFundings_GroupSavingsId",
@@ -770,6 +775,11 @@ namespace Savi.Data.Migrations
                 name: "IX_SetTargetFundings_walletId",
                 table: "SetTargetFundings",
                 column: "walletId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SetTargets_UserId",
+                table: "SetTargets",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserTransactions_UserId",
@@ -842,6 +852,9 @@ namespace Savi.Data.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "GroupSavings");
+
+            migrationBuilder.DropTable(
                 name: "Groups");
 
             migrationBuilder.DropTable(
@@ -851,19 +864,16 @@ namespace Savi.Data.Migrations
                 name: "Wallets");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "SavingFrequencys");
 
             migrationBuilder.DropTable(
-                name: "GroupSavings");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "IdentityTypes");
 
             migrationBuilder.DropTable(
                 name: "Occupations");
-
-            migrationBuilder.DropTable(
-                name: "SavingFrequencys");
         }
     }
 }
