@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Savi.Core.Interfaces;
 using Savi.Data.Context;
 using Savi.Data.Domains;
 using Savi.Data.DTO;
+using Savi.Data.Enums;
+using Savi.Data.IRepositories;
 using Savi.Data.IRepository;
-
+using System.Security.Claims;
 
 namespace Savi.Core.Services
 {
@@ -13,21 +16,24 @@ namespace Savi.Core.Services
     {
         private readonly SaviDbContext _dbContext;
         private readonly IWalletService _walletService;
-        private readonly ISavingGoalRepository _savingGoalRepository;
+		private readonly ISetTargetRepository _targetRepository;
         private readonly IMapper _mapper;
+		private readonly IUserRepository _userRepository;
 
 
-        public SavingsService(SaviDbContext dbContext, IWalletService walletService, ISavingGoalRepository savingGoalRepository, IMapper mapper)
+
+        public SavingsService(SaviDbContext dbContext, IWalletService walletService, IMapper mapper, ISetTargetRepository setTarget, IUserRepository userRepository)
         {
             _dbContext = dbContext;
             _walletService = walletService;
-            _savingGoalRepository = savingGoalRepository;
             _mapper = mapper;
+			_targetRepository = setTarget;
+			_userRepository = userRepository;
         }
 
-		public async Task<APIResponse> FundTargetSavings(int id, decimal amount)
+		public async Task<APIResponse> FundTargetSavings(Guid id, decimal amount, string userId)
 		{
-			var savings = await _savingGoalRepository.GetGoalById(id);
+			var savings = await _targetRepository.GetTargetById(id); 
 			if (savings == null)
 			{
 				return new APIResponse()
@@ -37,12 +43,8 @@ namespace Savi.Core.Services
 					Message = "Savings Goal Not Found",
 				};
 			}
-
-			var saving = savings.Result;
-			var walletId = saving.WalletId;
-
-			// Debit the wallet with the funding amount
-			var debitResult = await _walletService.DebitWallet(walletId, amount);
+			var walletId = await _walletService.GetUserWalletAsync(userId);
+			var debitResult = await _walletService.DebitWallet(walletId.Result.WalletId, amount);
 			if (!debitResult.IsSuccess)
 			{
 				return new APIResponse()
@@ -53,18 +55,35 @@ namespace Savi.Core.Services
 				};
 			}
 
-			// Update the saving goal's TargetAmount and TotalContribution
-			saving.TotalContribution += amount;
+			savings.Result.CumulativeAmount += amount;
 
-			var save = _mapper.Map<SavingGoal>(saving);
-			await _savingGoalRepository.UpdateGoal(id, save);
+			var fundingDetails = new SetTargetFunding
+			{
+				Amount = amount,
+				TransactionType = TransactionType.Funding, 
+				SetTarget = savings.Result,
+				SetTargetId = savings.Result.Id,
+				walletId = walletId.Result.WalletId,
+			};
 
+			
+
+			//if (savings.Result.CumulativeAmount >= savings.Result.TargetAmount)
+			//{
+			//	return new APIResponse()
+			//	{
+			//		StatusCode = StatusCodes.Status200OK.ToString(),
+			//		Message = "Target Amount Reached",
+			//		Result = savings
+			//	};
+			//}
+			//await _targetRepository.UpdateTarget(id, savings.Result);
 			return new APIResponse()
 			{
 				IsSuccess = true,
 				StatusCode = StatusCodes.Status200OK.ToString(),
 				Message = "Saving Credited Successfully",
-				Result = saving
+				Result = savings 
 			};
 		}
 

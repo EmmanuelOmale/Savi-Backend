@@ -12,15 +12,13 @@ namespace Savi.Api.Controllers
     public class SavingGoalController : ControllerBase
     {
         private readonly ISavingGoalService _goalService;
-        private readonly ISavingsService _savingsService;
         private readonly IMapper _mapper;
 
 		public ISavingGoalService Object { get; }
 
-		public SavingGoalController(ISavingGoalService goalService, ISavingsService savings, IMapper mapper)
+		public SavingGoalController(ISavingGoalService goalService, IMapper mapper)
         {
             _goalService = goalService;
-            _savingsService = savings;
             _mapper = mapper;
         }
 
@@ -127,18 +125,6 @@ namespace Savi.Api.Controllers
                 return BadRequest(result);
             }
         }
-
-        [HttpPost("{id}/fundtarget")]
-        public async Task<ActionResult<APIResponse>> FundTarget(int id, decimal amount)
-		{
-			
-			var saving = await _savingsService.FundTargetSavings(id,amount);
-			if(saving == null)
-            {
-                return NotFound();
-            }
-            return Ok(saving);
-		}
 
     }
 }
