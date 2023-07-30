@@ -18,6 +18,8 @@ namespace Savi.Data.Domains
         public DateTime WithdrawalDate { get; set; }
 		public SetTargetFunding SetTargetFunding { get; set; }
 		public decimal CumulativeAmount { get; set; }
+		public string UserId { get; set; }
+		public ApplicationUser User { get; set; }
 
 
 	}

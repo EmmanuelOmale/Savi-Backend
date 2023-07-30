@@ -16,5 +16,6 @@ namespace Savi.Data.DTO
 		public FrequencyType Frequency { get; set; }
 		public DateTime StartDate { get; set; }
 		public DateTime WithdrawalDate { get; set; }
+
 	}
 }

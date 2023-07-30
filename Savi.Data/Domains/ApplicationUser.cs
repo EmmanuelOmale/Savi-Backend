@@ -33,5 +33,6 @@ namespace Savi.Data.Domains
         public IdentityType IdentityType { get; set; }
         public string WalletId { get; set; }
         public Wallet Wallet { get; set; }
-    }
+
+	}
 }
