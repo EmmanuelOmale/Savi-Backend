@@ -63,12 +63,12 @@ namespace Savi.Api.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<ResponseDto<SetTargetDTO>>> CreateTarget([FromBody] SetTargetDTO setTarget)
+        public async Task<ActionResult<ResponseDto<SetTargetDTO>>> CreateTarget([FromBody] SetTargetDTO setTarget, string userId)
         {
             try
             {
 				var target = _mapper.Map<SetTarget>(setTarget);
-				var response = await _setTargetService.CreateTarget(target);
+				var response = await _setTargetService.CreateTarget(target, userId);
                 return StatusCode(response.StatusCode, response);
             }
             catch (Exception ex)
@@ -155,7 +155,13 @@ namespace Savi.Api.Controllers
 			return Ok(saving);
 		}
 
-	}
+		[HttpGet("user/{userId}/settargets")]
+		public async Task<ActionResult<ResponseDto<SetTargetDTO>>> GetSetTargetsByUserId(string userId)
+		{
+			var setTargets = await _setTargetService.GetSetTargetsByUserId(userId);
+			return Ok(setTargets);
+		}
 
+	}
 
 }

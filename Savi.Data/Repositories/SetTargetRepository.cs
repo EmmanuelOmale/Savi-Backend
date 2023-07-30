@@ -20,7 +20,7 @@ namespace Savi.Data.Repositories
                 _mapper = mapper;
             }
 
-            public async Task<ResponseDto<SetTarget>> CreateTarget(SetTarget setTarget)
+            public async Task<ResponseDto<SetTarget>> CreateTarget(SetTarget setTarget, string userId)
             {
 
             
@@ -52,9 +52,9 @@ namespace Savi.Data.Repositories
                     Result = null
                 };
             }
+			setTarget.UserId = userId;
 
-            
-            _dbContext.SetTargets.Add(setTarget);
+			_dbContext.SetTargets.Add(setTarget);
             await _dbContext.SaveChangesAsync();
 
             return new ResponseDto<SetTarget>
@@ -193,9 +193,17 @@ namespace Savi.Data.Repositories
                         Result = null
                     };
                 }
-            }
         }
-    }
+
+        public async Task<List<SetTarget>> GetSetTargetsByUserId(string userId)
+        {
+			return await _dbContext.SetTargets
+		   .Where(t => t.UserId == userId)
+		   .ToListAsync();
+		}
+
+	}
+}
 
 
 

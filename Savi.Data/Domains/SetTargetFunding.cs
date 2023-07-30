@@ -16,5 +16,6 @@ namespace Savi.Data.Domains
 
 		public Wallet Wallet { get; set; }
 		public string walletId { get; set; }
+		
 	}
 }
