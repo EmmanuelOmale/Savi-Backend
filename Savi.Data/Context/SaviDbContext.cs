@@ -28,6 +28,7 @@ namespace Savi.Data.Context
         public DbSet<GroupSavingsMembers> GroupSavingsMembers { get; set; }
         public DbSet<GroupSavingsFunding> GroupSavingsFundings { get; set; }
         public DbSet<SavingsFrequency> SavingFrequencys { get; set; }
+        public DbSet<SetTargetFunding> SetTargetFundings { get; set; }
 
         public SaviDbContext(DbContextOptions<SaviDbContext> Options) : base(Options)
         {

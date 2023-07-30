@@ -189,9 +189,6 @@ namespace Savi.Data.Migrations
                     b.Property<bool>("Gender")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("GroupSavingsId")
-                        .HasColumnType("text");
-
                     b.Property<string>("IdentityTypeId")
                         .HasColumnType("text");
 
@@ -247,8 +244,6 @@ namespace Savi.Data.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GroupSavingsId");
 
                     b.HasIndex("IdentityTypeId");
 
@@ -452,6 +447,8 @@ namespace Savi.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("FrequencyId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("GroupSavings");
                 });
@@ -787,6 +784,9 @@ namespace Savi.Data.Migrations
                     b.Property<decimal>("AmountToSave")
                         .HasColumnType("numeric");
 
+                    b.Property<decimal>("CumulativeAmount")
+                        .HasColumnType("numeric");
+
                     b.Property<int>("Frequency")
                         .HasColumnType("integer");
 
@@ -799,13 +799,55 @@ namespace Savi.Data.Migrations
                     b.Property<decimal>("TargetAmount")
                         .HasColumnType("numeric");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("WithdrawalDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("SetTargets");
+                });
+
+            modelBuilder.Entity("Savi.Data.Domains.SetTargetFunding", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid>("SetTargetId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("TransactionType")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("walletId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SetTargetId")
+                        .IsUnique();
+
+                    b.HasIndex("walletId");
+
+                    b.ToTable("SetTargetFundings");
                 });
 
             modelBuilder.Entity("Savi.Data.Domains.UserTransaction", b =>
@@ -997,10 +1039,6 @@ namespace Savi.Data.Migrations
 
             modelBuilder.Entity("Savi.Data.Domains.ApplicationUser", b =>
                 {
-                    b.HasOne("Savi.Data.Domains.GroupSavings", null)
-                        .WithMany("User")
-                        .HasForeignKey("GroupSavingsId");
-
                     b.HasOne("Savi.Data.Domains.IdentityType", "IdentityType")
                         .WithMany("Users")
                         .HasForeignKey("IdentityTypeId");
@@ -1030,7 +1068,13 @@ namespace Savi.Data.Migrations
                         .WithMany()
                         .HasForeignKey("FrequencyId");
 
+                    b.HasOne("Savi.Data.Domains.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Frequency");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Savi.Data.Domains.GroupSavingsFunding", b =>
@@ -1117,6 +1161,32 @@ namespace Savi.Data.Migrations
                     b.Navigation("Wallet");
                 });
 
+            modelBuilder.Entity("Savi.Data.Domains.SetTarget", b =>
+                {
+                    b.HasOne("Savi.Data.Domains.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Savi.Data.Domains.SetTargetFunding", b =>
+                {
+                    b.HasOne("Savi.Data.Domains.SetTarget", "SetTarget")
+                        .WithOne("SetTargetFunding")
+                        .HasForeignKey("Savi.Data.Domains.SetTargetFunding", "SetTargetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Savi.Data.Domains.Wallet", "Wallet")
+                        .WithMany()
+                        .HasForeignKey("walletId");
+
+                    b.Navigation("SetTarget");
+
+                    b.Navigation("Wallet");
+                });
+
             modelBuilder.Entity("Savi.Data.Domains.UserTransaction", b =>
                 {
                     b.HasOne("Savi.Data.Domains.ApplicationUser", "User")
@@ -1171,11 +1241,6 @@ namespace Savi.Data.Migrations
                     b.Navigation("GroupTransactions");
                 });
 
-            modelBuilder.Entity("Savi.Data.Domains.GroupSavings", b =>
-                {
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Savi.Data.Domains.IdentityType", b =>
                 {
                     b.Navigation("Users");
@@ -1184,6 +1249,11 @@ namespace Savi.Data.Migrations
             modelBuilder.Entity("Savi.Data.Domains.Occupation", b =>
                 {
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Savi.Data.Domains.SetTarget", b =>
+                {
+                    b.Navigation("SetTargetFunding");
                 });
 
             modelBuilder.Entity("Savi.Data.Domains.Wallet", b =>

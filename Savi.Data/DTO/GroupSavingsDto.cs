@@ -5,7 +5,6 @@
         public string UserId { get; set; }
         public string SavesName { get; set; }
         public decimal ContributionAmount { get; set; }
-
         public DateTime ExpectedstartDate { get; set; }
         public DateTime ExpectedendDate { get; set; }
 

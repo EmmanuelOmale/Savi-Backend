@@ -23,9 +23,7 @@ namespace Savi.Core.WalletService
                 if (UserWallet != null)
                 {
                     var walletbalance = UserWallet.Balance;
-
                     var newbalance = walletbalance + amount;
-                    UserWallet.Balance = newbalance;
                     var walletupdate = await _walletRepository.VerifyPaymentAsync(UserWallet);
                     var newWalletfunding = new WalletFunding()
                     {
@@ -36,6 +34,9 @@ namespace Savi.Core.WalletService
                         Cummulative = newbalance,
                     };
                     var createnewWalletFund = await _walletFunding.CreateFundingWalletAsync(newWalletfunding);
+					UserWallet.Balance = newbalance;
+					UserWallet.WalletFundingId = newWalletfunding.Id;
+                    _walletRepository.UpdateWallet(UserWallet);
                     var result31 = new PayStackResponseDto()
                     {
                         Status = true,

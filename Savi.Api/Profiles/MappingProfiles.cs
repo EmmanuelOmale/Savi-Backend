@@ -13,9 +13,12 @@ namespace Savi.Api.Profiles
             CreateMap<IdentityType, UpdateIdentityDto>().ReverseMap();
             CreateMap<Occupation, UpdateOccupationDto>().ReverseMap();
             CreateMap<ApplicationUser, UserDTO>().ReverseMap();
-            CreateMap<SavingGoal, SavingGoalsDTO>().ReverseMap();
-            CreateMap<SetTarget, SetTarget>().ReverseMap();
+            CreateMap<SetTargetFunding, SetTargetFundingDTO>().ReverseMap();
+            CreateMap<SetTarget, SetTargetDTO>().ReverseMap();
             CreateMap<GroupSavings, GroupSavingsDto>().ReverseMap();
+            CreateMap<GroupSavings, GroupSavingsRespnseDto>().ReverseMap();
+
+
         }
     }
 }

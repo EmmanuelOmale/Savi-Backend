@@ -4,7 +4,7 @@ namespace Savi.Data.Domains
 {
     public class GroupSavings : BaseEntity
     {
-        public IEnumerable<ApplicationUser> User { get; set; }
+        public ApplicationUser User { get; set; }
         public string UserId { get; set; }
         public string SavesName { get; set; }
         public decimal ContributionAmount { get; set; }
