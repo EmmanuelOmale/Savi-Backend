@@ -18,20 +18,20 @@ namespace Savi.Core.Services
         private readonly IWalletService _walletService;
 		private readonly ISetTargetRepository _targetRepository;
         private readonly IMapper _mapper;
-		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly IUserRepository _userRepository;
 
 
 
-        public SavingsService(SaviDbContext dbContext, IWalletService walletService, IMapper mapper, ISetTargetRepository setTarget, UserManager<ApplicationUser> userManager)
+        public SavingsService(SaviDbContext dbContext, IWalletService walletService, IMapper mapper, ISetTargetRepository setTarget, IUserRepository userRepository)
         {
             _dbContext = dbContext;
             _walletService = walletService;
             _mapper = mapper;
 			_targetRepository = setTarget;
-			_userManager = userManager;
+			_userRepository = userRepository;
         }
 
-		public async Task<APIResponse> FundTargetSavings(Guid id, decimal amount, ClaimsPrincipal user)
+		public async Task<APIResponse> FundTargetSavings(Guid id, decimal amount, string userId)
 		{
 			var savings = await _targetRepository.GetTargetById(id); 
 			if (savings == null)
@@ -43,7 +43,6 @@ namespace Savi.Core.Services
 					Message = "Savings Goal Not Found",
 				};
 			}
-			var userId =  _userManager.GetUserId(user);
 			var walletId = await _walletService.GetUserWalletAsync(userId);
 			var debitResult = await _walletService.DebitWallet(walletId.Result.WalletId, amount);
 			if (!debitResult.IsSuccess)
@@ -67,19 +66,18 @@ namespace Savi.Core.Services
 				walletId = walletId.Result.WalletId,
 			};
 
-			await _dbContext.AddAsync(fundingDetails);
-			await _dbContext.SaveChangesAsync();
+			
 
-			if (savings.Result.CumulativeAmount >= savings.Result.TargetAmount)
-			{
-				return new APIResponse()
-				{
-					StatusCode = StatusCodes.Status200OK.ToString(),
-					Message = "Target Amount Reached",
-					Result = savings
-				};
-			}
-			await _targetRepository.UpdateTarget(id, savings.Result);
+			//if (savings.Result.CumulativeAmount >= savings.Result.TargetAmount)
+			//{
+			//	return new APIResponse()
+			//	{
+			//		StatusCode = StatusCodes.Status200OK.ToString(),
+			//		Message = "Target Amount Reached",
+			//		Result = savings
+			//	};
+			//}
+			//await _targetRepository.UpdateTarget(id, savings.Result);
 			return new APIResponse()
 			{
 				IsSuccess = true,

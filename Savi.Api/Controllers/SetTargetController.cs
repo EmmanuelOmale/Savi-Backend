@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Savi.Api.Service;
@@ -11,7 +12,7 @@ namespace Savi.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SetTargetController : ControllerBase
+	public class SetTargetController : ControllerBase
     {
         private readonly ISetTargetService _setTargetService;
         private readonly IMapper _mapper;
@@ -143,15 +144,10 @@ namespace Savi.Api.Controllers
             }
         }
 		[HttpPost("{id}/fundtarget")]
-		public async Task<ActionResult<APIResponse>> FundTarget(Guid id, decimal amount)
+		public async Task<ActionResult<APIResponse>> FundTarget(Guid id, decimal amount, string userId)
 		{
-			if (!User.Identity.IsAuthenticated)
-			{
-				return Unauthorized(); 
-			}
 
-
-			var saving = await _savingsService.FundTargetSavings(id, amount, User);
+			var saving = await _savingsService.FundTargetSavings(id, amount, userId);
 			if (saving == null)
 			{
 				return NotFound();
