@@ -77,7 +77,7 @@ namespace Savi.Core.Services
 			//		Result = savings
 			//	};
 			//}
-			//await _targetRepository.UpdateTarget(id, savings.Result);
+			await _targetRepository.UpdateTarget(id, savings.Result);
 			return new APIResponse()
 			{
 				IsSuccess = true,
