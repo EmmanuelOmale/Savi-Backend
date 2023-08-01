@@ -46,8 +46,11 @@ namespace Savi.Core.PaystackServices
                     {
                         // Geting specific properties from the JSON object
                         var data = responseData.data;
-                        decimal amount = data.amount;
                         var phone = data.customer.phone;
+                        decimal amount = data.amount;
+                        var formatedamount = amount / 100;
+                        var realAmount = formatedamount.ToString("F2");
+                        var Amount = decimal.Parse(realAmount);
 
                         var walletId = new Wallet();
                         var UserWalletId = walletId.SetWalletId(phone);
@@ -57,14 +60,15 @@ namespace Savi.Core.PaystackServices
                         var entry = await _walletRepository.GetWalletByPhoneNumber(UserWalletId);
                         if (entry != null)
                         {
-                            var newbalance = entry.Balance += amount;
+                            var newbalance = entry.Balance + Amount;
+                            entry.Balance = newbalance;
                             var walletentry = await _walletRepository.VerifyPaymentAsync(entry);
                             if (walletentry)
                             {
                                 //Creating new walletfunding record for the transaction
                                 var newWalletfund = new WalletFunding()
                                 {
-                                    Amount = amount,
+                                    Amount = Amount,
                                     WalletId = UserWalletId,
                                     TransactionType = Data.Enums.TransactionType.Funding,
                                     CreatedAt = DateTime.UtcNow,

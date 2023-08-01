@@ -87,7 +87,7 @@ namespace Savi.Core.Services
                         user.WalletId = wa;
                         var result = _mapper.Map<UserDTO>(user);
                         await _userRepository.UpdateUser(user.Id, result);
-                        //await _emailService.SendEmailAsync(user.Email, emailSubject, emailBody);
+                        await _emailService.SendEmailAsync(user.Email, emailSubject, emailBody);
                         return new ResponseDto<IdentityResult>()
                         {
                             Result = regUser,
