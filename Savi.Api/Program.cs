@@ -82,7 +82,7 @@ public class Program
         //options.UseSqlServer(builder.Configuration.GetConnectionString("SAVIBackEnd")));
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IWalletRepository, WalletRepository>();
-        builder.Services.AddScoped<IPaymentService, PaymentService>();
+        builder.Services.AddTransient<IPaymentService, PaymentService>();
         builder.Services.AddScoped<IWalletFundingRepository, WalletFundingRepository>();
         builder.Services.AddScoped<ISavingsService, SavingsService>();
         builder.Services.AddScoped<IWalletService, WalletService>();
@@ -126,7 +126,7 @@ public class Program
         builder.Services.AddHttpClient("Paystack", client =>
         {
             client.BaseAddress = new Uri($"https://api.paystack.co/");
-            client.DefaultRequestHeaders.Add("Authorization", "Bearer sk_test_b3717ea2cfd6604a4e6bedb2087f0f62c0948e01");
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer sk_test_be37ad047e6eb09cae4b2b64ba2db3fdc87060f0");
         }
 
         );
