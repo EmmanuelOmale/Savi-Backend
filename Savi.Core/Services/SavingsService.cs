@@ -66,17 +66,6 @@ namespace Savi.Core.Services
 				walletId = walletId.Result.WalletId,
 			};
 
-			
-
-			//if (savings.Result.CumulativeAmount >= savings.Result.TargetAmount)
-			//{
-			//	return new APIResponse()
-			//	{
-			//		StatusCode = StatusCodes.Status200OK.ToString(),
-			//		Message = "Target Amount Reached",
-			//		Result = savings
-			//	};
-			//}
 			await _targetRepository.UpdateTarget(id, savings.Result);
 			return new APIResponse()
 			{
