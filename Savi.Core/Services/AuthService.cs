@@ -37,9 +37,9 @@ namespace Savi.Core.Services
             try
             {
                 var findEmail = await _userManager.FindByEmailAsync(signUpDto.Email);
-                var findPhoneNumber = _userRepository.FinduserByPhoneNumber(signUpDto.PhoneNumber);
+                var findPhoneNumber = await _userRepository.FinduserByPhoneNumber(signUpDto.PhoneNumber);
 
-                if (findEmail != null || findPhoneNumber != null)
+                if(findEmail != null || findPhoneNumber != null)
                 {
                     throw new Exception("UserName or phone already exist");
                 }
@@ -70,7 +70,7 @@ namespace Savi.Core.Services
 
                 //Registering ApplicationUser
                 var regUser = await _userManager.CreateAsync(user, signUpDto.Password);
-                if (regUser.Succeeded)
+                if(regUser.Succeeded)
                 {
                     // Create Wallet for ApplicationUser
                     Wallet wallet = new Wallet();
@@ -81,13 +81,13 @@ namespace Savi.Core.Services
                     wallet.UserId = user.Id;
 
                     // Call the respective repository methods asynchronously to register user wallet
-                    var createWalletTask = _walletRepository.CreateWalletAsync(wallet);
-                    if (createWalletTask.Result)
+                    var createWalletTask = await _walletRepository.CreateWalletAsync(wallet);
+                    if(createWalletTask)
                     {
                         user.WalletId = wa;
                         var result = _mapper.Map<UserDTO>(user);
                         await _userRepository.UpdateUser(user.Id, result);
-                        await _emailService.SendEmailAsync(user.Email, emailSubject, emailBody);
+                        //await _emailService.SendEmailAsync(user.Email, emailSubject, emailBody);
                         return new ResponseDto<IdentityResult>()
                         {
                             Result = regUser,
@@ -113,11 +113,10 @@ namespace Savi.Core.Services
                 };
 
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 return new ResponseDto<IdentityResult>()
                 {
-                    Result = null,
                     StatusCode = 500,
                     DisplayMessage = ex.Message
                 };
@@ -128,14 +127,14 @@ namespace Savi.Core.Services
         public async Task<APIResponse> Login(LoginRequestDTO loginModel)
         {
             var user = await _userManager.FindByNameAsync(loginModel.UserName);
-            if (user == null)
+            if(user == null)
             {
                 return new APIResponse { StatusCode = "Error", Message = "Invalid username or password." };
             }
 
 
 
-            if (await _userManager.CheckPasswordAsync(user, loginModel.Password))
+            if(await _userManager.CheckPasswordAsync(user, loginModel.Password))
             {
                 var authClaims = new List<Claim>
             {
@@ -168,7 +167,7 @@ namespace Savi.Core.Services
 
         public async Task<APIResponse> ForgotPasswordAsync(string email)
         {
-            if (string.IsNullOrEmpty(email))
+            if(string.IsNullOrEmpty(email))
                 return new APIResponse
                 {
                     IsSuccess = false,
@@ -177,7 +176,7 @@ namespace Savi.Core.Services
                 };
 
             var user = await _userManager.FindByEmailAsync(email);
-            if (user == null)
+            if(user == null)
                 return new APIResponse
                 {
                     IsSuccess = false,
@@ -211,14 +210,14 @@ namespace Savi.Core.Services
         public async Task<APIResponse> ResetPasswordAsync(ResetPasswordViewModel model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
-            if (user == null)
+            if(user == null)
                 return new APIResponse
                 {
                     IsSuccess = false,
                     Message = "No user associated with email",
                 };
 
-            if (model.NewPassword != model.ConfirmPassword)
+            if(model.NewPassword != model.ConfirmPassword)
                 return new APIResponse
                 {
                     IsSuccess = false,
@@ -230,7 +229,7 @@ namespace Savi.Core.Services
 
             var result = await _userManager.ResetPasswordAsync(user, normalToken, model.NewPassword);
 
-            if (result.Succeeded)
+            if(result.Succeeded)
                 return new APIResponse
                 {
                     Message = "Password has been reset successfully!",

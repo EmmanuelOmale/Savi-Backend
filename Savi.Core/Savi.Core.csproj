@@ -3,12 +3,12 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="CloudinaryDotNet" Version="1.21.0" />
     <PackageReference Include="Hangfire" Version="1.8.3" />
+    <PackageReference Include="Hangfire.PostgreSql.NetCore" Version="1.4.3" />
     <PackageReference Include="MailKit" Version="4.1.0" />
     <PackageReference Include="MimeKit" Version="4.1.0" />
     <PackageReference Include="SendGrid" Version="9.28.1" />

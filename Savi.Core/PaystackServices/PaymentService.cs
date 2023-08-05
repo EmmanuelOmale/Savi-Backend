@@ -25,7 +25,7 @@ namespace Savi.Core.PaystackServices
 
             try
             {
-                if (string.IsNullOrWhiteSpace(reference))
+                if(string.IsNullOrWhiteSpace(reference))
                 {
                     throw new Exception("Please provide a valid reference number");
                 }
@@ -36,13 +36,13 @@ namespace Savi.Core.PaystackServices
 
                 var response = await client.GetAsync(apiUrl);
 
-                if (response.IsSuccessStatusCode)
+                if(response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
                     var responseData = JsonSerializer.Deserialize<PaystackResponse>(content);
 
                     // Checkng if responseData is not null 
-                    if (responseData.data != null)
+                    if(responseData?.data != null)
                     {
                         // Geting specific properties from the JSON object
                         var data = responseData.data;
@@ -58,12 +58,12 @@ namespace Savi.Core.PaystackServices
                         // Updating local database with the payment information.
 
                         var entry = await _walletRepository.GetWalletByPhoneNumber(UserWalletId);
-                        if (entry != null)
+                        if(entry != null)
                         {
                             var newbalance = entry.Balance + Amount;
                             entry.Balance = newbalance;
                             var walletentry = await _walletRepository.VerifyPaymentAsync(entry);
-                            if (walletentry)
+                            if(walletentry)
                             {
                                 //Creating new walletfunding record for the transaction
                                 var newWalletfund = new WalletFunding()
@@ -77,7 +77,7 @@ namespace Savi.Core.PaystackServices
 
                                 };
                                 var newwalletfunding = await _walletFunding.CreateFundingWalletAsync(newWalletfund);
-                                if (newwalletfunding)
+                                if(newwalletfunding)
                                 {
                                     var result0 = new PayStackResponseDto()
                                     {
@@ -139,7 +139,7 @@ namespace Savi.Core.PaystackServices
 
 
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 var result4 = new PayStackResponseDto()
                 {
@@ -156,10 +156,10 @@ namespace Savi.Core.PaystackServices
             try
             {
                 var UserWallet = await _walletRepository.GetWalletByPhoneNumber(walletId);
-                if (UserWallet != null)
+                if(UserWallet != null)
                 {
                     var walletbalance = await _walletRepository.GetBalanceAsync(walletId);
-                    if (amount <= walletbalance && amount > 0)
+                    if(amount <= walletbalance && amount > 0)
                     {
                         var newbalance = walletbalance - amount;
                         var updatedWallet = new Wallet()
@@ -203,7 +203,7 @@ namespace Savi.Core.PaystackServices
                 };
                 return result3;
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 var result3 = new PayStackResponseDto()
                 {

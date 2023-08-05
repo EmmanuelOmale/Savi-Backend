@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Savi.Data.Migrations
 {
-    public partial class Modelscreated : Migration
+    public partial class models : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -303,10 +303,10 @@ namespace Savi.Data.Migrations
                     ExpectedendDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ActualStartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ActualEndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    FrequecncyId = table.Column<int>(type: "integer", nullable: false),
+                    FrequencyId = table.Column<int>(type: "integer", nullable: false),
                     MemberCount = table.Column<int>(type: "integer", nullable: false),
-                    FrequencyId = table.Column<int>(type: "integer", nullable: true),
-                    Runtime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Runtime = table.Column<int>(type: "integer", nullable: false),
+                    Count = table.Column<int>(type: "integer", nullable: false),
                     PurPoseAndGoal = table.Column<string>(type: "text", nullable: true),
                     TermsAndCondition = table.Column<string>(type: "text", nullable: true),
                     GroupStatus = table.Column<int>(type: "integer", nullable: false),
@@ -329,7 +329,8 @@ namespace Savi.Data.Migrations
                         name: "FK_GroupSavings_SavingFrequencys_FrequencyId",
                         column: x => x.FrequencyId,
                         principalTable: "SavingFrequencys",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

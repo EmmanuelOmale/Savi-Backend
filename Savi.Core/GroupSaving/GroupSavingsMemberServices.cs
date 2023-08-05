@@ -27,32 +27,61 @@ namespace Savi.Core.GroupSaving
             try
             {
                 var newMember = await _userRepository.GetUserByIdAsync(UserId);
-                var newGroup = await _groupSavingsRepository.GetGroupByIdAsync(GroupId);
+                var newGroup = await _groupSavingsRepository.GetGroupById(GroupId);
 
-                if (newMember != null && newGroup.Result != null)
+                if (newMember != null && newGroup != null)
                 {
 
                     var newGroupMembertoAdd = new GroupSavingsMembers();
                     var newposition = await _groupSavingsMembersRepository.GetUserLastUserPosition();
+                    if (newposition == 4)
+                    {
+                        newGroup.ActualStartDate = DateTime.Now;
+                        newGroup.NextRunTime = DateTime.Today;
+                        newGroup.GroupStatus = GroupStatus.Running;
+
+                        var frequency = newGroup.FrequencyId;
+                        if (frequency == 1)
+                        {
+                            newGroup.ActualEndDate = DateTime.Now.AddDays(6);
+                            await _groupSavingsRepository.UpDateGroupSavings(newGroup);
+
+                        }
+                        else if (frequency == 2)
+                        {
+                            newGroup.ActualEndDate = DateTime.Now.AddDays(34);
+                            await _groupSavingsRepository.UpDateGroupSavings(newGroup);
+
+
+                        }
+                        else if (frequency == 3)
+                        {
+                            newGroup.ActualEndDate = DateTime.Now.AddDays(174);
+                            await _groupSavingsRepository.UpDateGroupSavings(newGroup);
+                        }
+
+
+                    }
+
                     var listOfmembers = await _groupSavingsMembersRepository.GetListOfGroupMembersAsync(GroupId);
 
-                    if (newposition <= newGroup.Result.MemberCount & listOfmembers < newGroup.Result.MemberCount)
+                    if (newposition <= newGroup.MemberCount & listOfmembers < newGroup.MemberCount)
                     {
                         newGroupMembertoAdd.UserId = UserId;
                         newGroupMembertoAdd.Positions = ++newposition;
                         newGroupMembertoAdd.IsGroupOwner = IsGroupOwner.No;
                         newGroupMembertoAdd.GroupSavingsId = GroupId;
 
-                        var addNewGroupMember = _groupSavingsMembersRepository.CreateSavingsGroupMembersAsync(newGroupMembertoAdd);
-                        if (addNewGroupMember != null)
+                        var addNewGroupMember = await _groupSavingsMembersRepository.CreateSavingsGroupMembersAsync(newGroupMembertoAdd);
+                        if (addNewGroupMember)
                         {
                             response.StatusCode = 200;
-                            response.DisplayMessage = ($"Successfully added to {newGroup.Result.SavesName} group");
+                            response.DisplayMessage = ($"Successfully added to {newGroup.SavesName} group");
                             response.Result = true;
                             return response;
                         }
                         response.StatusCode = 400;
-                        response.DisplayMessage = ($"Unable to add you to {newGroup.Result.SavesName} group");
+                        response.DisplayMessage = ($"Unable to add you to {newGroup.SavesName} group");
                         response.Result = false;
                         return response;
                     }
@@ -70,7 +99,7 @@ namespace Savi.Core.GroupSaving
             catch (Exception ex)
             {
                 response.StatusCode = 500;
-                response.DisplayMessage = ("Internal error");
+                response.DisplayMessage = (ex.Message);
                 response.Result = false;
                 return response;
             }

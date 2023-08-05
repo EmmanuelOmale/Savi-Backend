@@ -19,7 +19,7 @@ namespace Savi.Data.Repositories
         {
 
             var entry = await _saviDbContext.WalletFundings.AddAsync(walletfunding);
-            int rowsAffected = _saviDbContext.SaveChanges();
+            int rowsAffected = await _saviDbContext.SaveChangesAsync();
 
             if (rowsAffected > 0)
             {
