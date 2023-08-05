@@ -245,6 +245,39 @@ namespace Savi.Core.Services
             };
         }
 
+        public async Task<APIResponse> ChangePasswordAsync(string email, string currentPassword, string newPassword)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return new APIResponse
+                {
+                    StatusCode = "404",
+                    IsSuccess = false,
+                    Message = "User not found."
+                };
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+            if (!result.Succeeded)
+            {
+                var errors = result.Errors.Select(e => e.Description).ToList();
+                return new APIResponse
+                {
+                    StatusCode = "400",
+                    IsSuccess = false,
+                    Message = "Error changing password.",
+                    Result = errors
+                };
+            }
+
+            return new APIResponse
+            {
+                StatusCode = "200",
+                IsSuccess = true,
+                Message = "Password changed successfully."
+            };
+        }
 
 
     }

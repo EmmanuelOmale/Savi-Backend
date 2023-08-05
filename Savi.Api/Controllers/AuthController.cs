@@ -94,6 +94,22 @@ namespace Savi.Api.Controllers
         }
 
 
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _authenticationService.ChangePasswordAsync(model.Email, model.CurrentPassword, model.NewPassword);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(result);
+        }
 
 
     }
