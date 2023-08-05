@@ -40,6 +40,7 @@
 
   <ItemGroup>
     <Folder Include="JsonFiles\" />
+    <Folder Include="Upload\Files\" />
   </ItemGroup>
 
 </Project>
