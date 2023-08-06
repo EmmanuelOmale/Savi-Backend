@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Savi.Core.Interfaces;
 using Savi.Data.DTO;
 using Savi.Data.IRepositories;
@@ -18,7 +17,7 @@ namespace Savi.Core.Services
         public async Task<APIResponse> DebitWallet(string walletId, decimal amount)
         {
             var wallet = await _walletRepository.GetWalletByPhoneNumber(walletId);
-            if (wallet == null)
+            if(wallet == null)
             {
                 return new APIResponse()
                 {
@@ -29,7 +28,7 @@ namespace Savi.Core.Services
                 };
             }
 
-            if (wallet.Balance < amount)
+            if(wallet.Balance < amount)
             {
                 return new APIResponse()
                 {
@@ -40,7 +39,7 @@ namespace Savi.Core.Services
             }
 
             wallet.Balance -= amount;
-            _walletRepository.UpdateWallet(wallet);
+            await _walletRepository.UpdateWallet(wallet);
             return new APIResponse()
             {
                 StatusCode = StatusCodes.Status200OK.ToString(),
@@ -58,12 +57,12 @@ namespace Savi.Core.Services
         {
             var wallet = await _walletRepository.GetUserWalletAsync(userId);
 
-            if (wallet == null)
+            if(wallet == null)
             {
                 return new ResponseDto<WalletDTO>()
                 {
-                    StatusCode =404,
-                   // IsSuccess = false,
+                    StatusCode = 404,
+                    // IsSuccess = false,
                     DisplayMessage = "User does not have a wallet.",
                 };
             }
@@ -83,7 +82,7 @@ namespace Savi.Core.Services
             return new ResponseDto<WalletDTO>()
             {
                 StatusCode = 200,
-               // IsSuccess = true,
+                // IsSuccess = true,
                 DisplayMessage = "User's wallet retrieved successfully.",
                 Result = walletDto,
             };
@@ -96,7 +95,7 @@ namespace Savi.Core.Services
                 var transferSuccess = await _walletRepository.TransferFundsAsync(sourceWalletId, destinationWalletId, amount);
                 return transferSuccess;
             }
-            catch (Exception ex)
+            catch(Exception)
             {
                 return false;
             }

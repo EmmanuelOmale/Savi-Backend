@@ -1,4 +1,6 @@
 using CMS.API.Extensions;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -8,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using Savi.Api.Extensions;
 using Savi.Api.Service;
 using Savi.Core.GroupSaving;
+using Savi.Core.GroupWalletFunding;
 using Savi.Core.Interfaces;
 using Savi.Core.PaystackServices;
 using Savi.Core.Services;
@@ -69,13 +72,16 @@ public class Program
         //builder.Services.AddDbContext<SaviDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SaviContext")));
         builder.Services.AddDbContextAndConfigurations(builder.Environment, builder.Configuration);
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-        builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddTransient<IUserRepository, UserRepository>();
         //builder.Services.AddDbContext<SaviDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SaviContext"),
         //sqlServerOptions => sqlServerOptions.EnableRetryOnFailure()));
         builder.Services.AddTransient<IEmailService, SmtpEmailService>();
         // builder.Services.AddTransient<IPasswordService, PasswordService>();
         builder.Services.AddAppSettingsConfig(builder.Configuration, builder.Environment);
         builder.Services.AddHttpContextAccessor();
+        var config = configuration.GetConnectionString("DefaultConnection");
+        builder.Services.AddHangfire(x => x.UsePostgreSqlStorage(config));
+        builder.Services.AddHangfireServer();
 
         //Entityframework
         //builder.Services.AddDbContext<SaviDbContext>(options =>
@@ -93,6 +99,9 @@ public class Program
         builder.Services.AddScoped<IWalletCreditService, WalletCreditService>();
         builder.Services.AddScoped<IWalletDebitService, WalletDebitService>();
         builder.Services.AddScoped<IGroupsavingsFundingRepository, GroupSavingFundingRepository>();
+        builder.Services.AddScoped<IGroupWalletFundingServices, GroupWalletFundingServices>();
+        builder.Services.AddScoped<IGroupFund, GroupFunding>();
+
 
 
         builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -194,6 +203,13 @@ public class Program
         app.UseHttpsRedirection();
         app.UseCors();
 
+        app.UseHangfireDashboard();
+        RecurringJob.AddOrUpdate<IGroupWalletFundingServices>(
+        "unique_job_identifier",
+        x => x.GroupAuto(),
+        Cron.Minutely // Or use another Cron expression or TimeSpan interval for the schedule
+        );
+
 
         app.UseRouting();
 
@@ -208,6 +224,7 @@ public class Program
 
 
             endpoints.MapControllers();
+
         });
 
         app.Run();

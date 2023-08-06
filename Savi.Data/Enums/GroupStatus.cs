@@ -3,6 +3,7 @@
     public enum GroupStatus
     {
         Ongoing = 1,
-        Completed = 2
+        Running = 2,
+        Completed = 3
     }
 }

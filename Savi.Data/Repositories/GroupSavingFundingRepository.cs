@@ -16,7 +16,7 @@ namespace Savi.Data.Repositories
         {
 
             var entry = await _saviDbContext.GroupSavingsFundings.AddAsync(groupSavingsFunding);
-            int rowsAffected = _saviDbContext.SaveChanges();
+            int rowsAffected = await _saviDbContext.SaveChangesAsync();
 
             if (rowsAffected > 0)
             {

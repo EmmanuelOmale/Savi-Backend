@@ -11,12 +11,14 @@ namespace Savi.Api.Controllers
     {
         private readonly IGroupSavingsServices _groupSavingsServices;
         private readonly IGroupSavingsMemberServices _groupSavingsMemberServices;
+        private readonly IGroupWalletFundingServices _groupWallet;
 
         public GroupSavingsController(IGroupSavingsServices groupSavingsServices,
-            IGroupSavingsMemberServices groupSavingsMemberServices)
+            IGroupSavingsMemberServices groupSavingsMemberServices, IGroupWalletFundingServices groupWallet)
         {
             _groupSavingsServices = groupSavingsServices;
             _groupSavingsMemberServices = groupSavingsMemberServices;
+            _groupWallet = groupWallet;
         }
         [HttpPost("create/groupsavings")]
         public async Task<IActionResult> CreateGroupsavings(GroupSavingsDto groupSavingsDto)
@@ -41,7 +43,7 @@ namespace Savi.Api.Controllers
         [HttpGet("get/groupby/{groupId}")]
         public async Task<IActionResult> GetGroupByIdAsync(string groupId)
         {
-            var group = await _groupSavingsServices.GetUsrByIDAsync(groupId);
+            var group = await _groupSavingsServices.GetUserByIDAsync(groupId);
             if (group.StatusCode == 200)
             {
                 return Ok(group);
@@ -58,6 +60,16 @@ namespace Savi.Api.Controllers
                 return Ok(listofgroup);
             }
             return BadRequest(listofgroup);
+        }
+        [HttpPost("auto/groupsavings")]
+        public async Task<IActionResult> AutomateSavings()
+        {
+            var automate = await _groupWallet.GroupAuto();
+            if (automate)
+            {
+                return Ok(automate);
+            }
+            return BadRequest(automate);
         }
 
     }

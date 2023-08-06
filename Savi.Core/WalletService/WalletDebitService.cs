@@ -30,33 +30,33 @@ namespace Savi.Core.WalletService
                     {
                         newbalance = walletbalance - amount;
                         UserWallet.Balance = newbalance;
-                    };
-                    var walletupdate = await _walletRepository.DebitUser(UserWallet);
-                    var newWalletfunding = new WalletFunding()
+
+                        var walletupdate = await _walletRepository.DebitUser(UserWallet);
+                        var newWalletfunding = new WalletFunding()
+                        {
+                            WalletId = walletId,
+                            Amount = amount,
+                            TransactionType = Data.Enums.TransactionType.Funding,
+                            Description = "Debit",
+                            Cummulative = newbalance
+                        };
+                        var createnewWalletFund = await _walletFunding.CreateFundingWalletAsync(newWalletfunding);
+                        var result31 = new PayStackResponseDto()
+                        {
+                            Status = true,
+                            Message = ($"You have successfully withdraw {amount}, you have {newbalance} left"),
+                            Data = null
+                        };
+                        return result31;
+                    }
+                    var result2 = new PayStackResponseDto()
                     {
-                        WalletId = walletId,
-                        Amount = amount,
-                        TransactionType = Data.Enums.TransactionType.Funding,
-                        Description = "Debit",
-                        Cummulative = newbalance
-                    };
-                    var createnewWalletFund = await _walletFunding.CreateFundingWalletAsync(newWalletfunding);
-                    var result31 = new PayStackResponseDto()
-                    {
-                        Status = true,
-                        Message = ($"You have successfully withdraw {amount}, you have {newbalance} left"),
+                        Status = false,
+                        Message = ("Insufficient balance"),
                         Data = null
                     };
-                    return result31;
-                }
-                var result2 = new PayStackResponseDto()
-                {
-                    Status = false,
-                    Message = ("Insufficient balance"),
-                    Data = null
+                    return result2;
                 };
-                return result2;
-
                 var result3 = new PayStackResponseDto()
                 {
                     Status = false,
@@ -64,6 +64,8 @@ namespace Savi.Core.WalletService
                     Data = null
                 };
                 return result3;
+
+
 
             }
             catch (Exception ex)

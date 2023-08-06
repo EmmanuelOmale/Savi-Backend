@@ -17,11 +17,13 @@ namespace Savi.Data.Domains
 
         public DateTime ActualEndDate { get; set; }
 
-        public int FrequecncyId { get; set; }
+        public int FrequencyId { get; set; }
         public int MemberCount { get; set; } = 5;
 
         public SavingsFrequency Frequency { get; set; }
-        public DateTime Runtime { get; set; }
+        public int Runtime { get; set; }
+
+        public int Count { get; set; }
 
 
         public string PurPoseAndGoal { get; set; }

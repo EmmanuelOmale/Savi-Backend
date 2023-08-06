@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Savi.Data.Context;
 using Savi.Data.Domains;
 using Savi.Data.DTO;
@@ -23,6 +24,17 @@ namespace Savi.Data.Repositories
         {
 
             var newGroupsavings = await _saviDbContext.GroupSavings.AddAsync(groupSaving);
+            var mekon = await _saviDbContext.SaveChangesAsync();
+            if (mekon > 0)
+            {
+                return true;
+            }
+            return false;
+        }
+        public async Task<bool> UpDateGroupSavings(GroupSavings groupSaving)
+        {
+
+            var newGroupsavings = _saviDbContext.GroupSavings.Update(groupSaving);
             var mekon = await _saviDbContext.SaveChangesAsync();
             if (mekon > 0)
             {
@@ -56,9 +68,18 @@ namespace Savi.Data.Repositories
             return success;
 
         }
+        public async Task<GroupSavings> GetGroupById(string Id)
+        {
+            var group = await _saviDbContext.GroupSavings.FindAsync(Id);
+            if (group != null)
+            {
+                return group;
+            }
+            return null;
+        }
         public async Task<ICollection<GroupSavingsRespnseDto>> GetListOfGroupSavingsAsync()
         {
-            var list = _saviDbContext.GroupSavings.ToList();
+            var list = await _saviDbContext.GroupSavings.ToListAsync();
             if (list.Count > 0)
             {
                 var listofGroups = new List<GroupSavingsRespnseDto>();
@@ -73,6 +94,18 @@ namespace Savi.Data.Repositories
 
                 }
                 return listofGroups;
+            }
+            return null;
+
+
+        }
+        public async Task<ICollection<GroupSavings>> GetListOfGroupSavings()
+        {
+            var list = await _saviDbContext.GroupSavings.ToListAsync();
+            if (list.Count > 0)
+            {
+
+                return list;
             }
             return null;
 

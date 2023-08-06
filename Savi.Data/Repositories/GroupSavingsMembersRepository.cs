@@ -19,8 +19,8 @@ namespace Savi.Data.Repositories
         public async Task<bool> CreateSavingsGroupMembersAsync(GroupSavingsMembers groupSavingsMembers)
         {
             var newMember = await _saviDbContext.GroupSavingsMembers.AddAsync(groupSavingsMembers);
-            var result = _saviDbContext.SaveChanges();
-            if (result > 0)
+            var result = await _saviDbContext.SaveChangesAsync();
+            if(result > 0)
             {
                 return true;
 
@@ -31,7 +31,7 @@ namespace Savi.Data.Repositories
         public async Task<int> GetListOfGroupMembersAsync(string GroupId)
         {
             var list = await _saviDbContext.GroupSavingsMembers.Where(x => x.GroupSavingsId == GroupId).ToListAsync();
-            if (list.Count > 0)
+            if(list.Count > 0)
             {
                 return list.Count;
             }
@@ -40,7 +40,7 @@ namespace Savi.Data.Repositories
         public async Task<List<GroupSavingsMembers>> GetListOfGroupMembersAsync2(string GroupId)
         {
             var list = await _saviDbContext.GroupSavingsMembers.Where(x => x.GroupSavingsId == GroupId).ToListAsync();
-            if (list.Count > 0)
+            if(list.Count > 0)
             {
                 return list;
             }
@@ -49,9 +49,9 @@ namespace Savi.Data.Repositories
 
         public async Task<int> GetUserLastUserPosition()
         {
-            int highestPosition = _saviDbContext.GroupSavingsMembers.OrderByDescending(user => user.Positions)
+            int highestPosition = await _saviDbContext.GroupSavingsMembers.OrderByDescending(user => user.Positions)
                               .Select(user => user.Positions)
-                              .FirstOrDefault();
+                              .FirstOrDefaultAsync();
             return highestPosition;
         }
         public async Task<List<int>> GetUserFirstUserPosition()
