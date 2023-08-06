@@ -13,7 +13,7 @@ namespace Savi.Core.Interfaces
         Task<APIResponse> ForgotPasswordAsync(string email);
 
         Task<APIResponse> ResetPasswordAsync(ResetPasswordViewModel model);
-
+        Task<APIResponse> ChangePasswordAsync(string email, string currentPassword, string newPassword);
 
     }
 }
