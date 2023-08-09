@@ -9,6 +9,14 @@ namespace Savi.Data.IRepositories
 
 		public Task<ResponseDto<GroupSavingsRespnseDto>> GetGroupByIdAsync(string Id);
 
-		public Task<ICollection<GroupSavingsRespnseDto>> GetListOfGroupSavingsAsync();
-	}
+        public Task<bool> UpDateGroupSavings(GroupSavings groupSaving);
+        public Task<GroupSavings> GetGroupById(string Id);
+        public Task<ICollection<GroupSavings>> GetListOfGroupSavings();
+
+
+
+
+
+    }
+
 }

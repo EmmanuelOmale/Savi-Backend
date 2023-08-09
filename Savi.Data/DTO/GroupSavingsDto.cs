@@ -8,9 +8,9 @@
 		public DateTime ExpectedstartDate { get; set; }
 		public DateTime ExpectedendDate { get; set; }
 
-		public int SavingsFrequencyId { get; set; }
+        public int FrequencyId { get; set; }
 
-		public DateTime Runtime { get; set; }
+        public int Runtime { get; set; }
 
 		public string PurPoseAndGoal { get; set; }
 

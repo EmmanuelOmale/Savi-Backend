@@ -22,12 +22,12 @@ namespace Savi.Data.Repositories
 		public async Task<ResponseDto<SetTarget>> CreateTarget(SetTarget setTarget, string userId)
 		{
 			var existingTarget = await _dbContext.SetTargets.FirstOrDefaultAsync(t => t.Id == setTarget.Id);
-			if (existingTarget != null)
+			if(existingTarget != null)
 			{
 				setTarget.Id = Guid.NewGuid();
 
 				var newExistingTarget = await _dbContext.SetTargets.FirstOrDefaultAsync(t => t.Id == setTarget.Id);
-				if (newExistingTarget != null)
+				if(newExistingTarget != null)
 				{
 					return new ResponseDto<SetTarget>
 					{
@@ -38,7 +38,8 @@ namespace Savi.Data.Repositories
 				}
 			}
 
-			if (!Enum.IsDefined(typeof(FrequencyType), setTarget.Frequency))
+
+			if(!Enum.IsDefined(typeof(FrequencyType), setTarget.Frequency))
 			{
 				return new ResponseDto<SetTarget>
 				{
@@ -72,11 +73,11 @@ namespace Savi.Data.Repositories
 					Result = targets
 				};
 			}
-			catch (Exception ex)
+			catch(Exception ex)
 			{
 				return new ResponseDto<IEnumerable<SetTarget>>
 				{
-					DisplayMessage = "Failed to retrieve targets.",
+					DisplayMessage = (ex.Message),
 					StatusCode = 500,
 					Result = null
 				};
@@ -95,11 +96,11 @@ namespace Savi.Data.Repositories
 					Result = target
 				};
 			}
-			catch (Exception ex)
+			catch(Exception ex)
 			{
 				return new ResponseDto<SetTarget>
 				{
-					DisplayMessage = "Failed to retrieve the target.",
+					DisplayMessage = (ex.Message),
 					StatusCode = 500,
 					Result = null
 				};
@@ -112,7 +113,7 @@ namespace Savi.Data.Repositories
 			{
 				var existingTarget = await _dbContext.SetTargets.FindAsync(id);
 
-				if (existingTarget == null)
+				if(existingTarget == null)
 				{
 					return new ResponseDto<SetTarget>
 					{
@@ -121,7 +122,7 @@ namespace Savi.Data.Repositories
 						Result = null
 					};
 				}
-				if (!Enum.IsDefined(typeof(FrequencyType), updatedTarget.Frequency))
+				if(!Enum.IsDefined(typeof(FrequencyType), updatedTarget.Frequency))
 				{
 					return new ResponseDto<SetTarget>
 					{
@@ -141,11 +142,11 @@ namespace Savi.Data.Repositories
 					Result = existingTarget
 				};
 			}
-			catch (Exception ex)
+			catch(Exception ex)
 			{
 				return new ResponseDto<SetTarget>
 				{
-					DisplayMessage = "Failed to update the target.",
+					DisplayMessage = (ex.Message),
 					StatusCode = 500,
 					Result = null
 				};
@@ -158,7 +159,7 @@ namespace Savi.Data.Repositories
 			{
 				var target = await _dbContext.SetTargets.FindAsync(id);
 
-				if (target == null)
+				if(target == null)
 				{
 					return new ResponseDto<SetTarget>
 					{
@@ -178,11 +179,11 @@ namespace Savi.Data.Repositories
 					Result = target
 				};
 			}
-			catch (Exception ex)
+			catch(Exception ex)
 			{
 				return new ResponseDto<SetTarget>
 				{
-					DisplayMessage = "Failed to delete the target.",
+					DisplayMessage = (ex.Message),
 					StatusCode = 500,
 					Result = null
 				};

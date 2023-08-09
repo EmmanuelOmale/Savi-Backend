@@ -48,35 +48,38 @@ namespace Savi.Data.Repositories
 			return false;
 		}
 
-		public async Task<Wallet> GetWalletByPhoneNumber(string PhoneNumber)
-		{
-			var entry = _SaviDb.Wallets.FirstOrDefault(x => x.WalletId == PhoneNumber);
-			if (entry != null)
-			{
-				return entry;
-			}
-			return null;
-		}
-
-		public async Task<decimal?> GetBalanceAsync(string Id)
-		{
-			var entry = _SaviDb.Wallets.FirstOrDefault(x => x.WalletId == Id);
-			if (entry != null)
-			{
-				var wallet = new Wallet()
-				{
-					Balance = entry.Balance
-				};
-				return wallet.Balance;
-			}
-			return null;
-		}
-
-		public void UpdateWallet(Wallet wallet)
-		{
-			_SaviDb.Wallets.Update(wallet);
-			_SaviDb.SaveChanges();
-		}
+        public async Task<Wallet> GetWalletByPhoneNumber(string PhoneNumber)
+        {
+            var entry = await _SaviDb.Wallets.FirstOrDefaultAsync(x => x.WalletId == PhoneNumber);
+            if (entry != null)
+            {
+                return entry;
+            }
+            return null;
+        }
+        public async Task<decimal?> GetBalanceAsync(string Id)
+        {
+            var entry = await _SaviDb.Wallets.FirstOrDefaultAsync(x => x.WalletId == Id);
+            if (entry != null)
+            {
+                var wallet = new Wallet()
+                {
+                    Balance = entry.Balance
+                };
+                return wallet.Balance;
+            }
+            return null;
+        }
+        public async Task<bool> UpdateWallet(Wallet wallet)
+        {
+            var updatewallet = _SaviDb.Wallets.Update(wallet);
+            var entry = await _SaviDb.SaveChangesAsync();
+            if (entry > 0)
+            {
+                return true;
+            }
+            return false;
+        }
 
 		public async Task<Wallet> GetUserWalletAsync(string userId)
 		{

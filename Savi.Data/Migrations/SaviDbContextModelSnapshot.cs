@@ -393,6 +393,9 @@ namespace Savi.Data.Migrations
                     b.Property<decimal>("ContributionAmount")
                         .HasColumnType("numeric");
 
+                    b.Property<int>("Count")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
 
@@ -402,10 +405,7 @@ namespace Savi.Data.Migrations
                     b.Property<DateTime>("ExpectedstartDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("FrequecncyId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("FrequencyId")
+                    b.Property<int>("FrequencyId")
                         .HasColumnType("integer");
 
                     b.Property<int>("GroupStatus")
@@ -426,8 +426,8 @@ namespace Savi.Data.Migrations
                     b.Property<string>("PurPoseAndGoal")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("Runtime")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<int>("Runtime")
+                        .HasColumnType("integer");
 
                     b.Property<string>("SaveLandScape")
                         .HasColumnType("text");
@@ -1066,7 +1066,9 @@ namespace Savi.Data.Migrations
                 {
                     b.HasOne("Savi.Data.Domains.SavingsFrequency", "Frequency")
                         .WithMany()
-                        .HasForeignKey("FrequencyId");
+                        .HasForeignKey("FrequencyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Savi.Data.Domains.ApplicationUser", "User")
                         .WithMany()

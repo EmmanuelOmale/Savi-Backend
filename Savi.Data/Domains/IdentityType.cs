@@ -9,7 +9,7 @@ namespace Savi.Data.Domains
 
 		public string IdentificationNumber { get; set; }
 
-		public string? DocumentImageUrl { get; set; } = string.Empty;
+        public string DocumentImageUrl { get; set; } = string.Empty;
 
 		public ICollection<ApplicationUser> Users { get; set; }
 	}

@@ -82,7 +82,27 @@ namespace Savi.Api.Controllers
 				return BadRequest(result);
 			}
 
-			return BadRequest("Some properties are not valid");
-		}
-	}
+            return BadRequest("Some properties are not valid");
+        }
+
+
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _authenticationService.ChangePasswordAsync(model.Email, model.CurrentPassword, model.NewPassword);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(result);
+        }
+
+
+    }
 }

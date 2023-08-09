@@ -15,7 +15,6 @@ namespace Savi.Core.WalletService
 			_walletFunding = walletFundingRepository;
 			_walletRepository = walletRepository;
 		}
-
 		public async Task<PayStackResponseDto> CreditUserFundAsync(decimal amount, string walletId)
 		{
 			try
@@ -37,7 +36,7 @@ namespace Savi.Core.WalletService
 					var createnewWalletFund = await _walletFunding.CreateFundingWalletAsync(newWalletfunding);
 					UserWallet.Balance = newbalance;
 					UserWallet.WalletFundingId = newWalletfunding.Id;
-					_walletRepository.UpdateWallet(UserWallet);
+					await _walletRepository.UpdateWallet(UserWallet);
 					var result31 = new PayStackResponseDto()
 					{
 						Status = true,
@@ -53,6 +52,8 @@ namespace Savi.Core.WalletService
 					Data = null
 				};
 				return result2;
+
+
 			}
 			catch (Exception ex)
 			{
@@ -64,6 +65,7 @@ namespace Savi.Core.WalletService
 				};
 				return result3;
 			}
+
 		}
 	}
 }

@@ -33,29 +33,32 @@ namespace Savi.Core.Services
 			_mapper = mapper;
 		}
 
-		public async Task<ResponseDto<IdentityResult>> RegisterAsync(SignUpDto signUpDto)
-		{
-			try
-			{
-				var findEmail = await _userManager.FindByEmailAsync(signUpDto.Email);
-				var findPhoneNumber = _userRepository.FinduserByPhoneNumber(signUpDto.PhoneNumber);
+        public async Task<ResponseDto<IdentityResult>> RegisterAsync(SignUpDto signUpDto)
+        {
+            try
+            {
+                var findEmail = await _userManager.FindByEmailAsync(signUpDto.Email);
+                var findPhoneNumber = await _userRepository.FinduserByPhoneNumber(signUpDto.PhoneNumber);
 
-				if (findEmail != null || findPhoneNumber != null)
-				{
-					throw new Exception("UserName or phone already exist");
-				}
-				//Create ApplicationUser
-				ApplicationUser user = new ApplicationUser()
-				{
-					UserName = signUpDto.Email,
-					Email = signUpDto.Email,
-					FirstName = signUpDto.FirstName,
-					LastName = signUpDto.LastName,
-					PhoneNumber = signUpDto.PhoneNumber,
-				};
-				var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-				var encodedToken = Encoding.UTF8.GetBytes(token);
-				var validToken = WebEncoders.Base64UrlEncode(encodedToken);
+                if(findEmail != null || findPhoneNumber != null)
+                {
+                    throw new Exception("UserName or phone already exist");
+                }
+                //Create ApplicationUser
+                ApplicationUser user = new ApplicationUser()
+                {
+                    UserName = signUpDto.Email,
+                    Email = signUpDto.Email,
+                    FirstName = signUpDto.FirstName,
+                    LastName = signUpDto.LastName,
+                    PhoneNumber = signUpDto.PhoneNumber,
+
+
+
+                };
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var encodedToken = Encoding.UTF8.GetBytes(token);
+                var validToken = WebEncoders.Base64UrlEncode(encodedToken);
 
 				string url = $"{_configuration["AppUrl"]}/login";
 				string emailSubject = "Verify your email address";
@@ -65,74 +68,80 @@ namespace Savi.Core.Services
                             <p>If you did not register on our platform, please ignore this email.</p>
                             <p>Thank you!</p>";
 
-				//Registering ApplicationUser
-				var regUser = await _userManager.CreateAsync(user, signUpDto.Password);
-				if (regUser.Succeeded)
-				{
-					// Create Wallet for ApplicationUser
-					Wallet wallet = new Wallet();
-					var wa = wallet.SetWalletId(signUpDto.PhoneNumber);
-					wallet.WalletId = wa;
-					wallet.Balance = 0;
-					wallet.Currency = "NGA";
-					wallet.UserId = user.Id;
 
-					// Call the respective repository methods asynchronously to register user wallet
-					var createWalletTask = _walletRepository.CreateWalletAsync(wallet);
-					if (createWalletTask.Result)
-					{
-						user.WalletId = wa;
-						var result = _mapper.Map<UserDTO>(user);
-						await _userRepository.UpdateUser(user.Id, result);
-						await _emailService.SendEmailAsync(user.Email, emailSubject, emailBody);
-						return new ResponseDto<IdentityResult>()
-						{
-							Result = regUser,
-							StatusCode = 200,
-							DisplayMessage = "Your Savi Account Successfully Created, Check your Email for Confirmation."
-						};
-					}
-					return new ResponseDto<IdentityResult>()
-					{
-						Result = regUser,
-						StatusCode = 404,
-						DisplayMessage = "Error trying to Create Wallet",
-					};
-				}
+                //Registering ApplicationUser
+                var regUser = await _userManager.CreateAsync(user, signUpDto.Password);
+                if(regUser.Succeeded)
+                {
+                    // Create Wallet for ApplicationUser
+                    Wallet wallet = new Wallet();
+                    var wa = wallet.SetWalletId(signUpDto.PhoneNumber);
+                    wallet.WalletId = wa;
+                    wallet.Balance = 0;
+                    wallet.Currency = "NGA";
+                    wallet.UserId = user.Id;
 
-				return new ResponseDto<IdentityResult>()
-				{
-					Result = regUser,
-					StatusCode = 404,
-					DisplayMessage = "Error trying to Create Account",
-				};
-			}
-			catch (Exception ex)
-			{
-				return new ResponseDto<IdentityResult>()
-				{
-					Result = null,
-					StatusCode = 500,
-					DisplayMessage = ex.Message
-				};
-			}
-		}
+                    // Call the respective repository methods asynchronously to register user wallet
+                    var createWalletTask = await _walletRepository.CreateWalletAsync(wallet);
+                    if(createWalletTask)
+                    {
+                        user.WalletId = wa;
+                        var result = _mapper.Map<UserDTO>(user);
+                        await _userRepository.UpdateUser(user.Id, result);
+                        //await _emailService.SendEmailAsync(user.Email, emailSubject, emailBody);
+                        return new ResponseDto<IdentityResult>()
+                        {
+                            Result = regUser,
+                            StatusCode = 200,
+                            DisplayMessage = "Your Savi Account Successfully Created, Check your Email for Confirmation."
+                        };
+                    }
+                    return new ResponseDto<IdentityResult>()
+                    {
+                        Result = regUser,
+                        StatusCode = 404,
+                        DisplayMessage = "Error trying to Create Wallet",
+                    };
 
-		public async Task<APIResponse> Login(LoginRequestDTO loginModel)
-		{
-			var user = await _userManager.FindByNameAsync(loginModel.UserName);
-			if (user == null)
-			{
-				return new APIResponse { StatusCode = "Error", Message = "Invalid username or password." };
-			}
 
-			if (await _userManager.CheckPasswordAsync(user, loginModel.Password))
-			{
-				var authClaims = new List<Claim>
-			{
-				new Claim(ClaimTypes.Name, user.UserName),
-				new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-			};
+                }
+
+                return new ResponseDto<IdentityResult>()
+                {
+                    Result = regUser,
+                    StatusCode = 404,
+                    DisplayMessage = "Error trying to Create Account",
+                };
+
+            }
+            catch(Exception ex)
+            {
+                return new ResponseDto<IdentityResult>()
+                {
+                    StatusCode = 500,
+                    DisplayMessage = ex.Message
+                };
+            }
+
+        }
+
+        public async Task<APIResponse> Login(LoginRequestDTO loginModel)
+        {
+            var user = await _userManager.FindByNameAsync(loginModel.UserName);
+            if(user == null)
+            {
+                return new APIResponse { StatusCode = "Error", Message = "Invalid username or password." };
+            }
+
+
+
+            if(await _userManager.CheckPasswordAsync(user, loginModel.Password))
+            {
+                var authClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            };
 
 				var jwtToken = GetToken(authClaims);
 
@@ -157,24 +166,24 @@ namespace Savi.Core.Services
 			return token;
 		}
 
-		public async Task<APIResponse> ForgotPasswordAsync(string email)
-		{
-			if (string.IsNullOrEmpty(email))
-				return new APIResponse
-				{
-					IsSuccess = false,
-					StatusCode = "400",
-					Message = "Email is required",
-				};
+        public async Task<APIResponse> ForgotPasswordAsync(string email)
+        {
+            if(string.IsNullOrEmpty(email))
+                return new APIResponse
+                {
+                    IsSuccess = false,
+                    StatusCode = "400",
+                    Message = "Email is required",
+                };
 
-			var user = await _userManager.FindByEmailAsync(email);
-			if (user == null)
-				return new APIResponse
-				{
-					IsSuccess = false,
-					StatusCode = "404",
-					Message = "No user associated with the provided email",
-				};
+            var user = await _userManager.FindByEmailAsync(email);
+            if(user == null)
+                return new APIResponse
+                {
+                    IsSuccess = false,
+                    StatusCode = "404",
+                    Message = "No user associated with the provided email",
+                };
 
 			var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 			var encodedToken = Encoding.UTF8.GetBytes(token);
@@ -194,40 +203,82 @@ namespace Savi.Core.Services
 			};
 		}
 
-		public async Task<APIResponse> ResetPasswordAsync(ResetPasswordViewModel model)
-		{
-			var user = await _userManager.FindByEmailAsync(model.Email);
-			if (user == null)
-				return new APIResponse
-				{
-					IsSuccess = false,
-					Message = "No user associated with email",
-				};
 
-			if (model.NewPassword != model.ConfirmPassword)
-				return new APIResponse
-				{
-					IsSuccess = false,
-					Message = "Password doesn't match its confirmation",
-				};
+
+
+
+
+        public async Task<APIResponse> ResetPasswordAsync(ResetPasswordViewModel model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if(user == null)
+                return new APIResponse
+                {
+                    IsSuccess = false,
+                    Message = "No user associated with email",
+                };
+
+            if(model.NewPassword != model.ConfirmPassword)
+                return new APIResponse
+                {
+                    IsSuccess = false,
+                    Message = "Password doesn't match its confirmation",
+                };
 
 			var decodedToken = WebEncoders.Base64UrlDecode(model.Token);
 			string normalToken = Encoding.UTF8.GetString(decodedToken);
 
 			var result = await _userManager.ResetPasswordAsync(user, normalToken, model.NewPassword);
 
-			if (result.Succeeded)
-				return new APIResponse
-				{
-					Message = "Password has been reset successfully!",
-					IsSuccess = true,
-				};
+            if(result.Succeeded)
+                return new APIResponse
+                {
+                    Message = "Password has been reset successfully!",
+                    IsSuccess = true,
+                };
 
-			return new APIResponse
-			{
-				Message = "Something went wrong",
-				IsSuccess = false,
-			};
-		}
-	}
+            return new APIResponse
+            {
+                Message = "Something went wrong",
+                IsSuccess = false,
+
+            };
+        }
+
+        public async Task<APIResponse> ChangePasswordAsync(string email, string currentPassword, string newPassword)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return new APIResponse
+                {
+                    StatusCode = "404",
+                    IsSuccess = false,
+                    Message = "User not found."
+                };
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+            if (!result.Succeeded)
+            {
+                var errors = result.Errors.Select(e => e.Description).ToList();
+                return new APIResponse
+                {
+                    StatusCode = "400",
+                    IsSuccess = false,
+                    Message = "Error changing password.",
+                    Result = errors
+                };
+            }
+
+            return new APIResponse
+            {
+                StatusCode = "200",
+                IsSuccess = true,
+                Message = "Password changed successfully."
+            };
+        }
+
+
+    }
 }

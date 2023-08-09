@@ -12,6 +12,6 @@ namespace Savi.Data.DTO
 
 		public IFormFile DocumentImage { get; set; }
 
-		public string? DocumentImageUrl { get; set; } = string.Empty;
-	}
+        public string DocumentImageUrl { get; set; } = string.Empty;
+    }
 }

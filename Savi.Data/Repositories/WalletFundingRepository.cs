@@ -13,10 +13,13 @@ namespace Savi.Data.Repositories
 			_saviDbContext = saviDbContext;
 		}
 
-		public async Task<bool> CreateFundingWalletAsync(WalletFunding walletfunding)
-		{
-			var entry = await _saviDbContext.WalletFundings.AddAsync(walletfunding);
-			int rowsAffected = _saviDbContext.SaveChanges();
+
+
+        public async Task<bool> CreateFundingWalletAsync(WalletFunding walletfunding)
+        {
+
+            var entry = await _saviDbContext.WalletFundings.AddAsync(walletfunding);
+            int rowsAffected = await _saviDbContext.SaveChangesAsync();
 
 			if (rowsAffected > 0)
 			{

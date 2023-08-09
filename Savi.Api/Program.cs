@@ -1,4 +1,6 @@
 using CMS.API.Extensions;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -8,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using Savi.Api.Extensions;
 using Savi.Api.Service;
 using Savi.Core.GroupSaving;
+using Savi.Core.GroupWalletFunding;
 using Savi.Core.Interfaces;
 using Savi.Core.PaystackServices;
 using Savi.Core.Services;
@@ -51,48 +54,54 @@ public class Program
 		var loggerFactory = new SerilogLoggerFactory(Log.Logger);
 		builder.Services.AddSingleton<ILoggerFactory>(loggerFactory);
 
-		builder.Services.AddAuthentication(options =>
-		{
-			options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-			options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-		}).AddCookie()
-		.AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
-		{
-			options.ClientId = "443815310479-9rcoi66q352erfj1udd88au2tqgdmug0.apps.googleusercontent.com";
-			options.ClientSecret = "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";
-		});
-		builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-		builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-		builder.Services.AddScoped<IDocumentUploadService, DocumentUploadService>();
-		builder.Services.AddCloudinaryExtension(builder.Configuration);
-		//builder.Services.AddDbContext<SaviDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SaviContext")));
-		builder.Services.AddDbContextAndConfigurations(builder.Environment, builder.Configuration);
-		AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-		builder.Services.AddScoped<IUserRepository, UserRepository>();
-		//builder.Services.AddDbContext<SaviDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SaviContext"),
-		//sqlServerOptions => sqlServerOptions.EnableRetryOnFailure()));
-		builder.Services.AddTransient<IEmailService, SmtpEmailService>();
-		// builder.Services.AddTransient<IPasswordService, PasswordService>();
-		builder.Services.AddAppSettingsConfig(builder.Configuration, builder.Environment);
-		builder.Services.AddHttpContextAccessor();
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+        }).AddCookie()
+        .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
+        {
+            options.ClientId = "443815310479-9rcoi66q352erfj1udd88au2tqgdmug0.apps.googleusercontent.com";
+            options.ClientSecret = "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";
+        });
+        builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+        builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        builder.Services.AddScoped<IDocumentUploadService, DocumentUploadService>();
+        builder.Services.AddCloudinaryExtension(builder.Configuration);
+        //builder.Services.AddDbContext<SaviDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SaviContext")));
+        builder.Services.AddDbContextAndConfigurations(builder.Environment, builder.Configuration);
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        builder.Services.AddTransient<IUserRepository, UserRepository>();
+        //builder.Services.AddDbContext<SaviDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SaviContext"),
+        //sqlServerOptions => sqlServerOptions.EnableRetryOnFailure()));
+        builder.Services.AddTransient<IEmailService, SmtpEmailService>();
+        // builder.Services.AddTransient<IPasswordService, PasswordService>();
+        builder.Services.AddAppSettingsConfig(builder.Configuration, builder.Environment);
+        builder.Services.AddHttpContextAccessor();
+        var config = configuration.GetConnectionString("DefaultConnection");
+        builder.Services.AddHangfire(x => x.UsePostgreSqlStorage(config));
+        builder.Services.AddHangfireServer();
 
-		//Entityframework
-		//builder.Services.AddDbContext<SaviDbContext>(options =>
-		//options.UseSqlServer(builder.Configuration.GetConnectionString("SAVIBackEnd")));
-		builder.Services.AddScoped<IAuthService, AuthService>();
-		builder.Services.AddScoped<IWalletRepository, WalletRepository>();
-		builder.Services.AddTransient<IPaymentService, PaymentService>();
-		builder.Services.AddScoped<IWalletFundingRepository, WalletFundingRepository>();
-		builder.Services.AddScoped<ISavingsService, SavingsService>();
-		builder.Services.AddScoped<IWalletService, WalletService>();
-		builder.Services.AddScoped<IGroupSavingsRepository, GroupSavingsRepository>();
-		builder.Services.AddScoped<IGroupSavingsServices, GroupSavingsService>();
-		builder.Services.AddScoped<IGroupSavingsMembersRepository, GroupSavingsMembersRepository>();
-		builder.Services.AddScoped<IGroupSavingsMemberServices, GroupSavingsMemberServices>();
-		builder.Services.AddScoped<IWalletCreditService, WalletCreditService>();
-		builder.Services.AddScoped<IWalletDebitService, WalletDebitService>();
-		builder.Services.AddScoped<IGroupsavingsFundingRepository, GroupSavingFundingRepository>();
-		builder.Services.AddScoped<ITransactionHistService, TransactionHistService>();	
+        //Entityframework
+        //builder.Services.AddDbContext<SaviDbContext>(options =>
+        //options.UseSqlServer(builder.Configuration.GetConnectionString("SAVIBackEnd")));
+        builder.Services.AddScoped<IAuthService, AuthService>();
+        builder.Services.AddScoped<IWalletRepository, WalletRepository>();
+        builder.Services.AddTransient<IPaymentService, PaymentService>();
+        builder.Services.AddScoped<IWalletFundingRepository, WalletFundingRepository>();
+        builder.Services.AddScoped<ISavingsService, SavingsService>();
+        builder.Services.AddScoped<IWalletService, WalletService>();
+        builder.Services.AddScoped<IGroupSavingsRepository, GroupSavingsRepository>();
+        builder.Services.AddScoped<IGroupSavingsServices, GroupSavingsService>();
+        builder.Services.AddScoped<IGroupSavingsMembersRepository, GroupSavingsMembersRepository>();
+        builder.Services.AddScoped<IGroupSavingsMemberServices, GroupSavingsMemberServices>();
+        builder.Services.AddScoped<IWalletCreditService, WalletCreditService>();
+        builder.Services.AddScoped<IWalletDebitService, WalletDebitService>();
+        builder.Services.AddScoped<IGroupsavingsFundingRepository, GroupSavingFundingRepository>();
+        builder.Services.AddScoped<IGroupWalletFundingServices, GroupWalletFundingServices>();
+        builder.Services.AddScoped<IGroupFund, GroupFunding>();
+
+
 
 		builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 	   .AddEntityFrameworkStores<SaviDbContext>()
@@ -191,16 +200,28 @@ public class Program
 		app.UseHttpsRedirection();
 		app.UseCors();
 
-		app.UseRouting();
+        app.UseHangfireDashboard();
+        RecurringJob.AddOrUpdate<IGroupWalletFundingServices>(
+        "unique_job_identifier",
+        x => x.GroupAuto(),
+        Cron.Minutely // Or use another Cron expression or TimeSpan interval for the schedule
+        );
+
+
+        app.UseRouting();
 
 		app.UseAuthentication();
 
 		app.UseAuthorization();
 
-		app.UseEndpoints(endpoints =>
-		{
-			endpoints.MapControllers();
-		});
+
+        app.UseEndpoints(endpoints =>
+        {
+
+
+            endpoints.MapControllers();
+
+        });
 
 		app.Run();
 	}
