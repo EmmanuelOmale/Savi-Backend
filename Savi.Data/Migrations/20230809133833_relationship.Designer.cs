@@ -13,12 +13,11 @@ using Savi.Data.Context;
 namespace Savi.Data.Migrations
 {
     [DbContext(typeof(SaviDbContext))]
-    [Migration("20230805103440_models")]
-    partial class models
+    [Migration("20230809133833_relationship")]
+    partial class relationship
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
-#pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "6.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
@@ -1168,7 +1167,7 @@ namespace Savi.Data.Migrations
             modelBuilder.Entity("Savi.Data.Domains.SetTarget", b =>
                 {
                     b.HasOne("Savi.Data.Domains.ApplicationUser", "User")
-                        .WithMany()
+                        .WithMany("SetTargets")
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
@@ -1234,6 +1233,8 @@ namespace Savi.Data.Migrations
                     b.Navigation("Saving");
 
                     b.Navigation("Savings");
+
+                    b.Navigation("SetTargets");
 
                     b.Navigation("UserTransactions");
 

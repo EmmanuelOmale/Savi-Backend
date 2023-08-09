@@ -5,14 +5,14 @@ using Savi.Data.IRepositories;
 
 namespace Savi.Core.Services
 {
-    public class WalletService : IWalletService
-    {
-        private readonly IWalletRepository _walletRepository;
+	public class WalletService : IWalletService
+	{
+		private readonly IWalletRepository _walletRepository;
 
-        public WalletService(IWalletRepository walletRepository)
-        {
-            _walletRepository = walletRepository;
-        }
+		public WalletService(IWalletRepository walletRepository)
+		{
+			_walletRepository = walletRepository;
+		}
 
         public async Task<APIResponse> DebitWallet(string walletId, decimal amount)
         {
@@ -52,10 +52,9 @@ namespace Savi.Core.Services
 
         }
 
-
-        public async Task<ResponseDto<WalletDTO>> GetUserWalletAsync(string userId)
-        {
-            var wallet = await _walletRepository.GetUserWalletAsync(userId);
+		public async Task<ResponseDto<WalletDTO>> GetUserWalletAsync(string userId)
+		{
+			var wallet = await _walletRepository.GetUserWalletAsync(userId);
 
             if(wallet == null)
             {
@@ -67,17 +66,17 @@ namespace Savi.Core.Services
                 };
             }
 
-            // Convert the wallet to WalletDTO
-            var walletDto = new WalletDTO
-            {
-                WalletId = wallet.WalletId,
-                Currency = wallet.Currency,
-                Balance = wallet.Balance,
-                Reference = wallet.Reference,
-                Pin = wallet.Pin,
-                Code = wallet.Code,
-                PaystackCustomerCode = wallet.PaystackCustomerCode,
-            };
+			// Convert the wallet to WalletDTO
+			var walletDto = new WalletDTO
+			{
+				WalletId = wallet.WalletId,
+				Currency = wallet.Currency,
+				Balance = wallet.Balance,
+				Reference = wallet.Reference,
+				Pin = wallet.Pin,
+				Code = wallet.Code,
+				PaystackCustomerCode = wallet.PaystackCustomerCode,
+			};
 
             return new ResponseDto<WalletDTO>()
             {
@@ -101,19 +100,16 @@ namespace Savi.Core.Services
             }
         }
 
-        public List<TransactionDTO> GetUserTransactions(string userId)
-        {
-            var userTransactions = _walletRepository.GetUserTransactions(userId);
-            return userTransactions.Select(ut => new TransactionDTO
-            {
-                TransactionType = ut.TransactionType,
-                Description = ut.Description,
-                Amount = ut.Amount,
-                Reference = ut.Reference
-            }).ToList();
-        }
-
-
-
-    }
+		public List<TransactionDTO> GetUserTransactions(string userId)
+		{
+			var userTransactions = _walletRepository.GetUserTransactions(userId);
+			return userTransactions.Select(ut => new TransactionDTO
+			{
+				TransactionType = ut.TransactionType,
+				Description = ut.Description,
+				Amount = ut.Amount,
+				Reference = ut.Reference
+			}).ToList();
+		}
+	}
 }

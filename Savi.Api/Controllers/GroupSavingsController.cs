@@ -4,9 +4,9 @@ using Savi.Data.DTO;
 
 namespace Savi.Api.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class GroupSavingsController : ControllerBase
+	[Route("api/[controller]")]
+	[ApiController]
+	public class GroupSavingsController : ControllerBase
 
     {
         private readonly IGroupSavingsServices _groupSavingsServices;

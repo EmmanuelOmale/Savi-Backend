@@ -5,14 +5,14 @@ using Savi.Data.IRepositories;
 
 namespace Savi.Data.Repositories
 {
-    public class GroupSavingsMembersRepository : IGroupSavingsMembersRepository
-    {
-        private readonly SaviDbContext _saviDbContext;
+	public class GroupSavingsMembersRepository : IGroupSavingsMembersRepository
+	{
+		private readonly SaviDbContext _saviDbContext;
 
-        public GroupSavingsMembersRepository(SaviDbContext saviDbContext)
-        {
-            _saviDbContext = saviDbContext;
-        }
+		public GroupSavingsMembersRepository(SaviDbContext saviDbContext)
+		{
+			_saviDbContext = saviDbContext;
+		}
 
 
 

@@ -7,11 +7,11 @@ using System.Text.Json;
 
 namespace Savi.Core.PaystackServices
 {
-    public class PaymentService : IPaymentService
-    {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IWalletRepository _walletRepository;
-        private readonly IWalletFundingRepository _walletFunding;
+	public class PaymentService : IPaymentService
+	{
+		private readonly IHttpClientFactory _httpClientFactory;
+		private readonly IWalletRepository _walletRepository;
+		private readonly IWalletFundingRepository _walletFunding;
 
         public PaymentService(IHttpClientFactory httpClientFactory, IWalletRepository walletRepository, SaviDbContext saviDb, IWalletFundingRepository walletFundingRepository)
         {
@@ -30,11 +30,11 @@ namespace Savi.Core.PaystackServices
                     throw new Exception("Please provide a valid reference number");
                 }
 
-                var client = _httpClientFactory.CreateClient("Paystack");
+				var client = _httpClientFactory.CreateClient("Paystack");
 
-                string apiUrl = $"transaction/verify/{reference}";
+				string apiUrl = $"transaction/verify/{reference}";
 
-                var response = await client.GetAsync(apiUrl);
+				var response = await client.GetAsync(apiUrl);
 
                 if(response.IsSuccessStatusCode)
                 {
@@ -52,10 +52,10 @@ namespace Savi.Core.PaystackServices
                         var realAmount = formatedamount.ToString("F2");
                         var Amount = decimal.Parse(realAmount);
 
-                        var walletId = new Wallet();
-                        var UserWalletId = walletId.SetWalletId(phone);
+						var walletId = new Wallet();
+						var UserWalletId = walletId.SetWalletId(phone);
 
-                        // Updating local database with the payment information.
+						// Updating local database with the payment information.
 
                         var entry = await _walletRepository.GetWalletByPhoneNumber(UserWalletId);
                         if(entry != null)
@@ -117,16 +117,14 @@ namespace Savi.Core.PaystackServices
 
                     }
 
-                    var result31 = new PayStackResponseDto()
-                    {
-                        Status = true,
-                        Message = ("Payment Unverified! error trying to deserialize data"),
-                        Data = null
-                    };
-                    return result31;
-
-
-                }
+					var result31 = new PayStackResponseDto()
+					{
+						Status = true,
+						Message = ("Payment Unverified! error trying to deserialize data"),
+						Data = null
+					};
+					return result31;
+				}
 
                 var result3 = new PayStackResponseDto()
                 {

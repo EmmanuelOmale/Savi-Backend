@@ -1166,7 +1166,7 @@ namespace Savi.Data.Migrations
             modelBuilder.Entity("Savi.Data.Domains.SetTarget", b =>
                 {
                     b.HasOne("Savi.Data.Domains.ApplicationUser", "User")
-                        .WithMany()
+                        .WithMany("SetTargets")
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
@@ -1232,6 +1232,8 @@ namespace Savi.Data.Migrations
                     b.Navigation("Saving");
 
                     b.Navigation("Savings");
+
+                    b.Navigation("SetTargets");
 
                     b.Navigation("UserTransactions");
 

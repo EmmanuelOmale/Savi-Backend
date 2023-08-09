@@ -50,7 +50,6 @@
 //            return targets;
 //        }
 
-       
 //        [Fact]
 //        public async Task GetAllTargets_ReturnsOkWithTargets()
 //        {
@@ -72,7 +71,6 @@
 //            Assert.Equal(targets, response.Result);
 //        }
 
-        
 //        [Fact]
 //        public async Task GetTargetById_WithValidId_ReturnsOkWithTarget()
 //        {
@@ -126,14 +124,12 @@
 //            var result = await _controller.CreateTarget(newTarget);
 
 //            // Assert
-//            var createdResult = Assert.IsType<ObjectResult>(result.Result); 
+//            var createdResult = Assert.IsType<ObjectResult>(result.Result);
 //            var response = Assert.IsType<ResponseDto<SetTarget>>(createdResult.Value);
 //            Assert.Equal(201, response.StatusCode);
 //            Assert.Equal(newTarget, response.Result);
 //        }
 
-
-       
 //        [Fact]
 //        public async Task UpdateTarget_WithValidData_ReturnsOkWithUpdatedTarget()
 //        {
@@ -164,7 +160,6 @@
 //            Assert.Equal(updatedTarget, response);
 //        }
 
-        
 //        [Fact]
 //        public async Task DeleteTarget_WithValidId_ReturnsOkWithDeletedTarget()
 //        {
@@ -173,7 +168,7 @@
 //            _mockSetTargetService.Setup(s => s.DeleteTarget(targetId)).ReturnsAsync(new ResponseDto<SetTarget>
 //            {
 //                StatusCode = 200,
-//                Result = null 
+//                Result = null
 //            });
 
 //            // Act
@@ -183,7 +178,7 @@
 //            var okResult = Assert.IsType<OkObjectResult>(result.Result);
 //            var response = Assert.IsType<ResponseDto<SetTarget>>(okResult.Value);
 //            Assert.Equal(200, response.StatusCode);
-//            Assert.Null(response.Result); 
+//            Assert.Null(response.Result);
 //        }
 
 //    }

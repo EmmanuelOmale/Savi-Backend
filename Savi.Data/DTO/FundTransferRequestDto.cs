@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Savi.Data.DTO
+﻿namespace Savi.Data.DTO
 {
-    public class FundTransferRequestDto
-    {
-        public string SourceWalletId { get; set; }
-        public string DestinationWalletId { get; set; }
-        public decimal Amount { get; set; }
-
-    }
+	public class FundTransferRequestDto
+	{
+		public string SourceWalletId { get; set; }
+		public string DestinationWalletId { get; set; }
+		public decimal Amount { get; set; }
+	}
 }

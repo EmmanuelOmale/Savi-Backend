@@ -6,23 +6,23 @@ using Savi.Data.IRepositories;
 
 namespace Savi.Core.GroupSaving
 {
-    public class GroupSavingsMemberServices : IGroupSavingsMemberServices
-    {
-        private readonly IGroupSavingsMembersRepository _groupSavingsMembersRepository;
-        private readonly IUserRepository _userRepository;
-        private readonly IGroupSavingsRepository _groupSavingsRepository;
+	public class GroupSavingsMemberServices : IGroupSavingsMemberServices
+	{
+		private readonly IGroupSavingsMembersRepository _groupSavingsMembersRepository;
+		private readonly IUserRepository _userRepository;
+		private readonly IGroupSavingsRepository _groupSavingsRepository;
 
-        public GroupSavingsMemberServices(IGroupSavingsMembersRepository groupSavingsMembersRepository,
-            IUserRepository userRepository, IGroupSavingsRepository groupSavingsRepository)
-        {
-            _groupSavingsMembersRepository = groupSavingsMembersRepository;
-            _userRepository = userRepository;
-            _groupSavingsRepository = groupSavingsRepository;
-        }
+		public GroupSavingsMemberServices(IGroupSavingsMembersRepository groupSavingsMembersRepository,
+			IUserRepository userRepository, IGroupSavingsRepository groupSavingsRepository)
+		{
+			_groupSavingsMembersRepository = groupSavingsMembersRepository;
+			_userRepository = userRepository;
+			_groupSavingsRepository = groupSavingsRepository;
+		}
 
-        public async Task<ResponseDto<bool>> JoinGroupSavings(string UserId, string GroupId)
-        {
-            var response = new ResponseDto<bool>();
+		public async Task<ResponseDto<bool>> JoinGroupSavings(string UserId, string GroupId)
+		{
+			var response = new ResponseDto<bool>();
 
             try
             {

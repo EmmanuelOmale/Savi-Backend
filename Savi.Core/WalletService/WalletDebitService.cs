@@ -5,16 +5,16 @@ using Savi.Data.IRepositories;
 
 namespace Savi.Core.WalletService
 {
-    public class WalletDebitService : IWalletDebitService
-    {
-        private readonly IWalletFundingRepository _walletFunding;
-        private readonly IWalletRepository _walletRepository;
+	public class WalletDebitService : IWalletDebitService
+	{
+		private readonly IWalletFundingRepository _walletFunding;
+		private readonly IWalletRepository _walletRepository;
 
-        public WalletDebitService(IWalletFundingRepository walletFundingRepository, IWalletRepository walletRepository)
-        {
-            _walletFunding = walletFundingRepository;
-            _walletRepository = walletRepository;
-        }
+		public WalletDebitService(IWalletFundingRepository walletFundingRepository, IWalletRepository walletRepository)
+		{
+			_walletFunding = walletFundingRepository;
+			_walletRepository = walletRepository;
+		}
 
 
         public async Task<PayStackResponseDto> WithdrawUserFundAsync(decimal amount, string walletId)

@@ -1,8 +1,8 @@
 ﻿namespace Savi.Data.Enums
 {
-    public enum IsGroupOwner
-    {
-        Yes,
-        No
-    }
+	public enum IsGroupOwner
+	{
+		Yes,
+		No
+	}
 }

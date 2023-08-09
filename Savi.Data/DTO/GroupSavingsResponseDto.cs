@@ -17,12 +17,12 @@ namespace Savi.Data.DTO
 
         public DateTime ExpectedstartDate { get; set; }
 
-        public DateTime ActualStartDate { get; set; }
-        public int MemberCount { get; set; }
+		public DateTime ActualStartDate { get; set; }
+		public int MemberCount { get; set; }
 
-        public DateTime ActualEndDate { get; set; }
+		public DateTime ActualEndDate { get; set; }
 
-        public int FrequecncyId { get; set; }
+		public int FrequecncyId { get; set; }
 
         public int Runtime { get; set; }
         public string SavePortraitUrl { get; set; }

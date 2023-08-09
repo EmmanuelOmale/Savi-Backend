@@ -8,11 +8,11 @@ using Savi.Data.IRepositories;
 
 namespace Savi.Data.Repositories
 {
-    public class GroupSavingsRepository : IGroupSavingsRepository
-    {
-        private readonly SaviDbContext _saviDbContext;
-        private readonly IUserRepository _userRepository;
-        private readonly IMapper _mapper;
+	public class GroupSavingsRepository : IGroupSavingsRepository
+	{
+		private readonly SaviDbContext _saviDbContext;
+		private readonly IUserRepository _userRepository;
+		private readonly IMapper _mapper;
 
         public GroupSavingsRepository(SaviDbContext saviDbContext, IUserRepository userRepository, IMapper mapper)
         {
