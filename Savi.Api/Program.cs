@@ -75,7 +75,7 @@ public class Program
         //builder.Services.AddDbContext<SaviDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SaviContext"),
         //sqlServerOptions => sqlServerOptions.EnableRetryOnFailure()));
         builder.Services.AddTransient<IEmailService, SmtpEmailService>();
-        // builder.Services.AddTransient<IPasswordService, PasswordService>();
+        builder.Services.AddTransient<ITransactionHistService, TransactionHistService>();
         builder.Services.AddAppSettingsConfig(builder.Configuration, builder.Environment);
         builder.Services.AddHttpContextAccessor();
         var config = configuration.GetConnectionString("DefaultConnection");
