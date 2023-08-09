@@ -1,173 +1,164 @@
 ﻿namespace Savi.Test.Controller
 {
-    //public class WalletControllerTest
-    //{
-    //    [Fact]
-    //    public async Task VerifyPayment_ValidReference_ReturnsOkResult()
-    //    {
-    //        // Arrange
-    //        var paymentServiceMock = new Mock<IPaymentService>();
-    //        var controller = new WalletController(paymentServiceMock.Object);
-    //        var paymentReference = "T470565688084910";
+	//public class WalletControllerTest
+	//{
+	//    [Fact]
+	//    public async Task VerifyPayment_ValidReference_ReturnsOkResult()
+	//    {
+	//        // Arrange
+	//        var paymentServiceMock = new Mock<IPaymentService>();
+	//        var controller = new WalletController(paymentServiceMock.Object);
+	//        var paymentReference = "T470565688084910";
 
-    //        var expectedResult = new PayStackResponseDto
-    //        {
+	//        var expectedResult = new PayStackResponseDto
+	//        {
+	//            Status = true,
+	//            Message = ("Payment Verified!"),
+	//            Data = null
+	//        };
 
-    //            Status = true,
-    //            Message = ("Payment Verified!"),
-    //            Data = null
-    //        };
+	//        paymentServiceMock.Setup(service => service.VerifyPaymentAsync(paymentReference))
+	//            .ReturnsAsync(expectedResult);
 
-    //        paymentServiceMock.Setup(service => service.VerifyPaymentAsync(paymentReference))
-    //            .ReturnsAsync(expectedResult);
+	//        // Act
+	//        var result = await controller.VerifyPayment(paymentReference);
 
-    //        // Act
-    //        var result = await controller.VerifyPayment(paymentReference);
+	//        // Assert
+	//        var okResult = Assert.IsType<OkObjectResult>(result);
+	//        var actualResult = Assert.IsAssignableFrom<PayStackResponseDto>(okResult.Value);
 
-    //        // Assert
-    //        var okResult = Assert.IsType<OkObjectResult>(result);
-    //        var actualResult = Assert.IsAssignableFrom<PayStackResponseDto>(okResult.Value);
+	//        Assert.Equal(expectedResult.Status, actualResult.Status);
+	//        Assert.Equal(expectedResult.Message, actualResult.Message);
+	//        Assert.Equal(expectedResult.Data, actualResult.Data);
 
-    //        Assert.Equal(expectedResult.Status, actualResult.Status);
-    //        Assert.Equal(expectedResult.Message, actualResult.Message);
-    //        Assert.Equal(expectedResult.Data, actualResult.Data);
+	//    }
 
-    //    }
+	//    [Fact]
+	//    public async Task WithdrawFund_ValidAmount_ReturnsOkResult()
+	//    {
+	//        // Arrange
+	//        var paymentServiceMock = new Mock<IPaymentService>();
+	//        var controller = new WalletController(paymentServiceMock.Object);
 
-    //    [Fact]
-    //    public async Task WithdrawFund_ValidAmount_ReturnsOkResult()
-    //    {
-    //        // Arrange
-    //        var paymentServiceMock = new Mock<IPaymentService>();
-    //        var controller = new WalletController(paymentServiceMock.Object);
+	//        decimal Amount = 5000;
+	//        string WalletId = "8136582045";
 
-    //        decimal Amount = 5000;
-    //        string WalletId = "8136582045";
+	//        var expectedResult = new PayStackResponseDto
+	//        {
+	//            Status = true,
+	//            Message = ("Fund Debited Successully!"),
+	//            Data = null
+	//        };
 
-    //        var expectedResult = new PayStackResponseDto
-    //        {
+	//        paymentServiceMock.Setup(service => service.WithdrawFundAsync(Amount, WalletId))
+	//            .ReturnsAsync(expectedResult);
 
-    //            Status = true,
-    //            Message = ("Fund Debited Successully!"),
-    //            Data = null
-    //        };
+	//        // Act
+	//        var result = await controller.WithDrawFund(Amount, WalletId);
 
-    //        paymentServiceMock.Setup(service => service.WithdrawFundAsync(Amount, WalletId))
-    //            .ReturnsAsync(expectedResult);
+	//        // Assert
+	//        var okResult = Assert.IsType<OkObjectResult>(result);
+	//        var actualResult = Assert.IsAssignableFrom<PayStackResponseDto>(okResult.Value);
 
-    //        // Act
-    //        var result = await controller.WithDrawFund(Amount, WalletId);
+	//        Assert.Equal(expectedResult.Status, actualResult.Status);
+	//        Assert.Equal(expectedResult.Message, actualResult.Message);
+	//        Assert.Equal(expectedResult.Data, actualResult.Data);
 
-    //        // Assert
-    //        var okResult = Assert.IsType<OkObjectResult>(result);
-    //        var actualResult = Assert.IsAssignableFrom<PayStackResponseDto>(okResult.Value);
+	//    }
+	//    [Fact]
+	//    public async Task WithdrawFund_AmountLessThanZero__ReturnsBadRequest()
+	//    {
+	//        // Arrange
+	//        var paymentServiceMock = new Mock<IPaymentService>();
+	//        var controller = new WalletController(paymentServiceMock.Object);
 
-    //        Assert.Equal(expectedResult.Status, actualResult.Status);
-    //        Assert.Equal(expectedResult.Message, actualResult.Message);
-    //        Assert.Equal(expectedResult.Data, actualResult.Data);
+	//        decimal Amount = -50;
+	//        string WalletId = "8136582045";
 
-    //    }
-    //    [Fact]
-    //    public async Task WithdrawFund_AmountLessThanZero__ReturnsBadRequest()
-    //    {
-    //        // Arrange
-    //        var paymentServiceMock = new Mock<IPaymentService>();
-    //        var controller = new WalletController(paymentServiceMock.Object);
+	//        var expectedResult = new PayStackResponseDto
+	//        {
+	//            Status = false,
+	//            Message = ("Invalid Amount"),
+	//            Data = null
+	//        };
 
-    //        decimal Amount = -50;
-    //        string WalletId = "8136582045";
+	//        paymentServiceMock.Setup(service => service.WithdrawFundAsync(Amount, WalletId))
+	//            .ReturnsAsync(expectedResult);
 
+	//        // Act
+	//        var result = await controller.WithDrawFund(Amount, WalletId);
 
-    //        var expectedResult = new PayStackResponseDto
-    //        {
+	//        // Assert
+	//        var badResult = Assert.IsType<BadRequestObjectResult>(result);
+	//        var actualResult = Assert.IsAssignableFrom<PayStackResponseDto>(badResult.Value);
 
-    //            Status = false,
-    //            Message = ("Invalid Amount"),
-    //            Data = null
-    //        };
+	//        Assert.Equal(expectedResult.Status, actualResult.Status);
+	//        Assert.Equal(expectedResult.Message, actualResult.Message);
+	//        Assert.Equal(expectedResult.Data, actualResult.Data);
 
-    //        paymentServiceMock.Setup(service => service.WithdrawFundAsync(Amount, WalletId))
-    //            .ReturnsAsync(expectedResult);
+	//    }
+	//    [Fact]
+	//    public async Task WithdrawFund_AmountGreaterThanBalance__ReturnsBadRequest()
+	//    {
+	//        // Arrange
+	//        var paymentServiceMock = new Mock<IPaymentService>();
+	//        var controller = new WalletController(paymentServiceMock.Object);
 
-    //        // Act
-    //        var result = await controller.WithDrawFund(Amount, WalletId);
+	//        decimal Amount = 5000;
+	//        string WalletId = "8136582045";
 
-    //        // Assert
-    //        var badResult = Assert.IsType<BadRequestObjectResult>(result);
-    //        var actualResult = Assert.IsAssignableFrom<PayStackResponseDto>(badResult.Value);
+	//        var expectedResult = new PayStackResponseDto
+	//        {
+	//            Status = false,
+	//            Message = ("Insufficient balance"),
+	//            Data = null
+	//        };
 
-    //        Assert.Equal(expectedResult.Status, actualResult.Status);
-    //        Assert.Equal(expectedResult.Message, actualResult.Message);
-    //        Assert.Equal(expectedResult.Data, actualResult.Data);
+	//        paymentServiceMock.Setup(service => service.WithdrawFundAsync(Amount, WalletId))
+	//            .ReturnsAsync(expectedResult);
 
-    //    }
-    //    [Fact]
-    //    public async Task WithdrawFund_AmountGreaterThanBalance__ReturnsBadRequest()
-    //    {
-    //        // Arrange
-    //        var paymentServiceMock = new Mock<IPaymentService>();
-    //        var controller = new WalletController(paymentServiceMock.Object);
+	//        // Act
+	//        var result = await controller.WithDrawFund(Amount, WalletId);
 
-    //        decimal Amount = 5000;
-    //        string WalletId = "8136582045";
+	//        // Assert
+	//        var badResult = Assert.IsType<BadRequestObjectResult>(result);
+	//        var actualResult = Assert.IsAssignableFrom<PayStackResponseDto>(badResult.Value);
 
+	//        Assert.Equal(expectedResult.Status, actualResult.Status);
+	//        Assert.Equal(expectedResult.Message, actualResult.Message);
+	//        Assert.Equal(expectedResult.Data, actualResult.Data);
 
-    //        var expectedResult = new PayStackResponseDto
-    //        {
+	//    }
+	//    [Fact]
+	//    public async Task WithdrawFund_InvalidWalletIdInput__ReturnsBadRequest()
+	//    {
+	//        // Arrange
+	//        var paymentServiceMock = new Mock<IPaymentService>();
+	//        var controller = new WalletController(paymentServiceMock.Object);
 
-    //            Status = false,
-    //            Message = ("Insufficient balance"),
-    //            Data = null
-    //        };
+	//        decimal Amount = 500;
+	//        string WalletId = "ghjklsssss";
+	//        ;
+	//        var expectedResult = new PayStackResponseDto
+	//        {
+	//            Status = false,
+	//            Message = ("Invalid Credentials"),
+	//            Data = null
+	//        };
 
-    //        paymentServiceMock.Setup(service => service.WithdrawFundAsync(Amount, WalletId))
-    //            .ReturnsAsync(expectedResult);
+	//        paymentServiceMock.Setup(service => service.WithdrawFundAsync(Amount, WalletId))
+	//            .ReturnsAsync(expectedResult);
 
-    //        // Act
-    //        var result = await controller.WithDrawFund(Amount, WalletId);
+	//        // Act
+	//        var result = await controller.WithDrawFund(Amount, WalletId);
 
-    //        // Assert
-    //        var badResult = Assert.IsType<BadRequestObjectResult>(result);
-    //        var actualResult = Assert.IsAssignableFrom<PayStackResponseDto>(badResult.Value);
+	//        // Assert
+	//        var badResult = Assert.IsType<BadRequestObjectResult>(result);
+	//        var actualResult = Assert.IsAssignableFrom<PayStackResponseDto>(badResult.Value);
 
-    //        Assert.Equal(expectedResult.Status, actualResult.Status);
-    //        Assert.Equal(expectedResult.Message, actualResult.Message);
-    //        Assert.Equal(expectedResult.Data, actualResult.Data);
+	//        Assert.Equal(expectedResult.Status, actualResult.Status);
+	//        Assert.Equal(expectedResult.Message, actualResult.Message);
+	//        Assert.Equal(expectedResult.Data, actualResult.Data);
 
-    //    }
-    //    [Fact]
-    //    public async Task WithdrawFund_InvalidWalletIdInput__ReturnsBadRequest()
-    //    {
-    //        // Arrange
-    //        var paymentServiceMock = new Mock<IPaymentService>();
-    //        var controller = new WalletController(paymentServiceMock.Object);
-
-    //        decimal Amount = 500;
-    //        string WalletId = "ghjklsssss";
-    //        ;
-    //        var expectedResult = new PayStackResponseDto
-    //        {
-
-    //            Status = false,
-    //            Message = ("Invalid Credentials"),
-    //            Data = null
-    //        };
-
-    //        paymentServiceMock.Setup(service => service.WithdrawFundAsync(Amount, WalletId))
-    //            .ReturnsAsync(expectedResult);
-
-    //        // Act
-    //        var result = await controller.WithDrawFund(Amount, WalletId);
-
-    //        // Assert
-    //        var badResult = Assert.IsType<BadRequestObjectResult>(result);
-    //        var actualResult = Assert.IsAssignableFrom<PayStackResponseDto>(badResult.Value);
-
-    //        Assert.Equal(expectedResult.Status, actualResult.Status);
-    //        Assert.Equal(expectedResult.Message, actualResult.Message);
-    //        Assert.Equal(expectedResult.Data, actualResult.Data);
-
-    //    }
-
-
+	//    }
 }

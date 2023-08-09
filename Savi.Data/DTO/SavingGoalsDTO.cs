@@ -1,15 +1,9 @@
 ﻿using Savi.Data.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Savi.Data.DTO
 {
 	public class SavingGoalsDTO
 	{
-
 		public string GoalName { get; set; }
 		public decimal TargetAmount { get; set; }
 		public decimal AmountToAddPerTime { get; set; }

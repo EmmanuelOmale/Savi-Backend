@@ -1,9 +1,4 @@
 ﻿using Savi.Data.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Savi.Data.DTO
 {
@@ -15,6 +10,5 @@ namespace Savi.Data.DTO
 		public FrequencyType Frequency { get; set; }
 		public DateTime StartDate { get; set; }
 		public DateTime WithdrawalDate { get; set; }
-
 	}
 }

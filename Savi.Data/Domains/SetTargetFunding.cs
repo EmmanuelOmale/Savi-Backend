@@ -1,9 +1,4 @@
 ﻿using Savi.Data.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Savi.Data.Domains
 {
@@ -16,6 +11,5 @@ namespace Savi.Data.Domains
 
 		public Wallet Wallet { get; set; }
 		public string walletId { get; set; }
-		
 	}
 }

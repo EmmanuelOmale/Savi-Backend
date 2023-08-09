@@ -2,10 +2,8 @@
 
 namespace Savi.Core.Interfaces
 {
-    public interface IWalletCreditService
-    {
-        public Task<PayStackResponseDto> CreditUserFundAsync(decimal amount, string walletId);
-
-
-    }
+	public interface IWalletCreditService
+	{
+		public Task<PayStackResponseDto> CreditUserFundAsync(decimal amount, string walletId);
+	}
 }

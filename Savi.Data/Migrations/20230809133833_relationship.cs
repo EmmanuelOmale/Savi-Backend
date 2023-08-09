@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Savi.Data.Migrations
 {
-    public partial class Modelscreated : Migration
+    public partial class relationship : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

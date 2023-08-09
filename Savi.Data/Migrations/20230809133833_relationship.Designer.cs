@@ -13,8 +13,8 @@ using Savi.Data.Context;
 namespace Savi.Data.Migrations
 {
     [DbContext(typeof(SaviDbContext))]
-    [Migration("20230730122331_Modelscreated")]
-    partial class Modelscreated
+    [Migration("20230809133833_relationship")]
+    partial class relationship
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -1166,7 +1166,7 @@ namespace Savi.Data.Migrations
             modelBuilder.Entity("Savi.Data.Domains.SetTarget", b =>
                 {
                     b.HasOne("Savi.Data.Domains.ApplicationUser", "User")
-                        .WithMany()
+                        .WithMany("SetTargets")
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
@@ -1232,6 +1232,8 @@ namespace Savi.Data.Migrations
                     b.Navigation("Saving");
 
                     b.Navigation("Savings");
+
+                    b.Navigation("SetTargets");
 
                     b.Navigation("UserTransactions");
 

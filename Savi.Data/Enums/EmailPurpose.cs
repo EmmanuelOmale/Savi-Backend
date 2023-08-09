@@ -1,23 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace Savi.Data.Enums
 {
-    public enum EmailPurpose
-    {
-        [Description("Registration")]
-        Registration,
+	public enum EmailPurpose
+	{
+		[Description("Registration")]
+		Registration,
 
-        [Description("PasswordReset")]
-        PasswordReset,
+		[Description("PasswordReset")]
+		PasswordReset,
 
-        [Description("Newsletter")]
-        Newsletter
-    }
-
-
+		[Description("Newsletter")]
+		Newsletter
+	}
 }

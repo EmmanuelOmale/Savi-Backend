@@ -8,7 +8,6 @@ using Savi.Data.IRepositories;
 
 namespace Savi.Data.Repositories
 {
-
 	public class SetTargetRepository : ISetTargetRepository
 	{
 		private readonly SaviDbContext _dbContext;
@@ -22,12 +21,9 @@ namespace Savi.Data.Repositories
 
 		public async Task<ResponseDto<SetTarget>> CreateTarget(SetTarget setTarget, string userId)
 		{
-
-
 			var existingTarget = await _dbContext.SetTargets.FirstOrDefaultAsync(t => t.Id == setTarget.Id);
 			if (existingTarget != null)
 			{
-
 				setTarget.Id = Guid.NewGuid();
 
 				var newExistingTarget = await _dbContext.SetTargets.FirstOrDefaultAsync(t => t.Id == setTarget.Id);
@@ -41,7 +37,6 @@ namespace Savi.Data.Repositories
 					};
 				}
 			}
-
 
 			if (!Enum.IsDefined(typeof(FrequencyType), setTarget.Frequency))
 			{
@@ -63,7 +58,6 @@ namespace Savi.Data.Repositories
 				StatusCode = 200,
 				Result = setTarget
 			};
-
 		}
 
 		public async Task<ResponseDto<IEnumerable<SetTarget>>> GetAllTargets()
@@ -201,9 +195,5 @@ namespace Savi.Data.Repositories
 		   .Where(t => t.UserId == userId)
 		   .ToListAsync();
 		}
-
 	}
 }
-
-
-

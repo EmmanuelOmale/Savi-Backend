@@ -20,7 +20,6 @@ namespace Savi.Data.Repositories
 		private readonly IConfiguration _configuration;
 		private readonly UserManager<ApplicationUser> _userManager;
 
-
 		public UserRepository(SaviDbContext db, IMapper mapper, IConfiguration configuration, UserManager<ApplicationUser> userManager) : base(db)
 		{
 			_saviDbContext = db;
@@ -28,6 +27,7 @@ namespace Savi.Data.Repositories
 			_configuration = configuration;
 			_userManager = userManager;
 		}
+
 		public async Task<ResponseDto<UserDTO>> GetUserByIdAsync(string Id)
 		{
 			var user = await _saviDbContext.Users.FindAsync(Id);
@@ -49,8 +49,8 @@ namespace Savi.Data.Repositories
 				Result = result
 			};
 			return success;
-
 		}
+
 		public async Task<ApplicationUser> GetUserById(string Id)
 		{
 			var user = await _saviDbContext.Users.FindAsync(Id);
@@ -60,8 +60,8 @@ namespace Savi.Data.Repositories
 				return null;
 			}
 			return user;
-
 		}
+
 		public ApplicationUser FinduserByPhoneNumber(string Phonenumber)
 		{
 			var UserPhoneNumber = _saviDbContext.Users.FirstOrDefault(x => x.PhoneNumber == Phonenumber);
@@ -116,7 +116,6 @@ namespace Savi.Data.Repositories
 				throw new Exception("Error while getting the user from the token. " + ex.Message);
 			}
 		}
-
 
 		public async Task<ResponseDto<UserDTO>> UpdateUser(string userId, UserDTO updateUserDto)
 		{
