@@ -6,11 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Savi.Data.Migrations
 {
-<<<<<<<< HEAD:Savi.Data/Migrations/20230809133833_relationship.cs
     public partial class relationship : Migration
-========
-    public partial class models : Migration
->>>>>>>> develop:Savi.Data/Migrations/20230805103440_models.cs
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

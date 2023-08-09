@@ -13,17 +13,11 @@ using Savi.Data.Context;
 namespace Savi.Data.Migrations
 {
     [DbContext(typeof(SaviDbContext))]
-<<<<<<<< HEAD:Savi.Data/Migrations/20230809133833_relationship.Designer.cs
     [Migration("20230809133833_relationship")]
     partial class relationship
-========
-    [Migration("20230805103440_models")]
-    partial class models
->>>>>>>> develop:Savi.Data/Migrations/20230805103440_models.Designer.cs
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
-#pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "6.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
