@@ -1,4 +1,4 @@
-using AutoMapper;
+/*using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -277,4 +277,4 @@ namespace Savi.Test.Controller
 			Assert.Null(apiResponse.Result);
 		}
 	}
-}
+}*/

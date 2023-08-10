@@ -2,10 +2,11 @@
 {
 	public interface IUnitOfWork
 	{
-		IIdentityTypeRepository IdentityTypeRepository { get; }
-		IOccupationRepository OccupationRepository { get; }
+		//IIdentityTypeRepository IdentityTypeRepository { get; }
+		//IOccupationRepository OccupationRepository { get; }
 		IUserRepository UserRepository { get; }
+        IKycRepository KycRepository { get; }
 
-		void Save();
+        void Save();
 	}
 }
