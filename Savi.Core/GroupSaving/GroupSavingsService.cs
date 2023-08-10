@@ -114,6 +114,33 @@ namespace Savi.Core.GroupSaving
             }
 
         }
+        public async Task<ResponseDto<GroupSavingsRespnseDto>> GetUserByUserIDAsync(string UserId)
+        {
+            var response = new ResponseDto<GroupSavingsRespnseDto>();
+
+            try
+            {
+                var result = await _groupSavingsRepository.GetGroupByUserIdAsync(UserId);
+                if(result.Result != null)
+                {
+                    response.StatusCode = 200;
+                    response.DisplayMessage = "Group account Fetched successfully";
+                    response.Result = result.Result;
+                    return response;
+                }
+
+                response.StatusCode = 400;
+                response.DisplayMessage = "No list Available";
+                return response;
+            }
+            catch(Exception ex)
+            {
+                response.StatusCode = 500;
+                response.DisplayMessage = ex.Message;
+                return response;
+            }
+
+        }
         public async Task<GroupSavings> GetGroupByID(string GroupId)
         {
             var group = await _groupSavingsRepository.GetGroupById(GroupId);

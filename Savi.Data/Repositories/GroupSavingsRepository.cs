@@ -8,11 +8,11 @@ using Savi.Data.IRepositories;
 
 namespace Savi.Data.Repositories
 {
-	public class GroupSavingsRepository : IGroupSavingsRepository
-	{
-		private readonly SaviDbContext _saviDbContext;
-		private readonly IUserRepository _userRepository;
-		private readonly IMapper _mapper;
+    public class GroupSavingsRepository : IGroupSavingsRepository
+    {
+        private readonly SaviDbContext _saviDbContext;
+        private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
 
         public GroupSavingsRepository(SaviDbContext saviDbContext, IUserRepository userRepository, IMapper mapper)
         {
@@ -25,7 +25,7 @@ namespace Savi.Data.Repositories
 
             var newGroupsavings = await _saviDbContext.GroupSavings.AddAsync(groupSaving);
             var mekon = await _saviDbContext.SaveChangesAsync();
-            if (mekon > 0)
+            if(mekon > 0)
             {
                 return true;
             }
@@ -36,7 +36,7 @@ namespace Savi.Data.Repositories
 
             var newGroupsavings = _saviDbContext.GroupSavings.Update(groupSaving);
             var mekon = await _saviDbContext.SaveChangesAsync();
-            if (mekon > 0)
+            if(mekon > 0)
             {
                 return true;
             }
@@ -49,7 +49,33 @@ namespace Savi.Data.Repositories
             var mapUser = _mapper.Map<UserDTO>(user);
             var mapGroup = _mapper.Map<GroupSavingsRespnseDto>(group);
             mapGroup.User = mapUser;
-            if (mapGroup == null)
+            if(mapGroup == null)
+            {
+                var notFoundResponse = new ResponseDto<GroupSavingsRespnseDto>
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    DisplayMessage = "User not found"
+                };
+                return notFoundResponse;
+            }
+            var success = new ResponseDto<GroupSavingsRespnseDto>
+            {
+                StatusCode = StatusCodes.Status200OK,
+                DisplayMessage = "Group Exist",
+                Result = mapGroup
+
+            };
+            return success;
+
+        }
+        public async Task<ResponseDto<GroupSavingsRespnseDto>> GetGroupByUserIdAsync(string Id)
+        {
+            var group = await _saviDbContext.GroupSavings.FirstOrDefaultAsync(group => group.UserId == Id);
+            var user = await _userRepository.GetUserById(Id);
+            var mapUser = _mapper.Map<UserDTO>(user);
+            var mapGroup = _mapper.Map<GroupSavingsRespnseDto>(group);
+            mapGroup.User = mapUser;
+            if(mapGroup == null)
             {
                 var notFoundResponse = new ResponseDto<GroupSavingsRespnseDto>
                 {
@@ -71,19 +97,20 @@ namespace Savi.Data.Repositories
         public async Task<GroupSavings> GetGroupById(string Id)
         {
             var group = await _saviDbContext.GroupSavings.FindAsync(Id);
-            if (group != null)
+            if(group != null)
             {
                 return group;
             }
             return null;
         }
+
         public async Task<ICollection<GroupSavingsRespnseDto>> GetListOfGroupSavingsAsync()
         {
             var list = await _saviDbContext.GroupSavings.ToListAsync();
-            if (list.Count > 0)
+            if(list.Count > 0)
             {
                 var listofGroups = new List<GroupSavingsRespnseDto>();
-                foreach (var group in list)
+                foreach(var group in list)
                 {
                     var groupowner = group.UserId;
                     var user = group.User = await _userRepository.GetUserById(groupowner);
@@ -102,7 +129,7 @@ namespace Savi.Data.Repositories
         public async Task<ICollection<GroupSavings>> GetListOfGroupSavings()
         {
             var list = await _saviDbContext.GroupSavings.ToListAsync();
-            if (list.Count > 0)
+            if(list.Count > 0)
             {
 
                 return list;
