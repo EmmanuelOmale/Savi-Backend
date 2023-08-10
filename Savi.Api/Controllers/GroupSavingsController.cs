@@ -4,9 +4,9 @@ using Savi.Data.DTO;
 
 namespace Savi.Api.Controllers
 {
-	[Route("api/[controller]")]
-	[ApiController]
-	public class GroupSavingsController : ControllerBase
+    [Route("api/[controller]")]
+    [ApiController]
+    public class GroupSavingsController : ControllerBase
 
     {
         private readonly IGroupSavingsServices _groupSavingsServices;
@@ -24,7 +24,7 @@ namespace Savi.Api.Controllers
         public async Task<IActionResult> CreateGroupsavings(GroupSavingsDto groupSavingsDto)
         {
             var newGroupSavings = await _groupSavingsServices.CreateGroupSavings(groupSavingsDto);
-            if (newGroupSavings.Status == true)
+            if(newGroupSavings.Status == true)
             {
                 return Ok(newGroupSavings);
             }
@@ -34,7 +34,7 @@ namespace Savi.Api.Controllers
         public async Task<IActionResult> JoinGroupsavings(string UserId, string GroupId)
         {
             var newGroupSavings = await _groupSavingsMemberServices.JoinGroupSavings(UserId, GroupId);
-            if (newGroupSavings.StatusCode == 200)
+            if(newGroupSavings.StatusCode == 200)
             {
                 return Ok(newGroupSavings);
             }
@@ -44,18 +44,28 @@ namespace Savi.Api.Controllers
         public async Task<IActionResult> GetGroupByIdAsync(string groupId)
         {
             var group = await _groupSavingsServices.GetUserByIDAsync(groupId);
-            if (group.StatusCode == 200)
+            if(group.StatusCode == 200)
             {
                 return Ok(group);
             }
             return BadRequest(group);
         }
+        [HttpGet("get/groupbyuserId/{userId}")]
 
+        public async Task<IActionResult> GetGroupByUserIdAsync(string userId)
+        {
+            var group = await _groupSavingsServices.GetUserByUserIDAsync(userId);
+            if(group.StatusCode == 200)
+            {
+                return Ok(group);
+            }
+            return BadRequest(group);
+        }
         [HttpGet("get/list/groupsavings")]
         public async Task<IActionResult> GetListOfGroupSavingsAsync()
         {
             var listofgroup = await _groupSavingsServices.GetListOfSavingsGroupAsync();
-            if (listofgroup.StatusCode == 200)
+            if(listofgroup.StatusCode == 200)
             {
                 return Ok(listofgroup);
             }
@@ -65,7 +75,7 @@ namespace Savi.Api.Controllers
         public async Task<IActionResult> AutomateSavings()
         {
             var automate = await _groupWallet.GroupAuto();
-            if (automate)
+            if(automate)
             {
                 return Ok(automate);
             }
