@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using Savi.Data.Domains;
 using Savi.Data.DTO;
+using Savi.Data.Enums;
 
 namespace Savi.Api.Profiles
 {
-	public class MappingProfiles : Profile
+    public class MappingProfiles : Profile
 	{
 		public MappingProfiles()
 		{
@@ -17,6 +18,8 @@ namespace Savi.Api.Profiles
 			CreateMap<SetTarget, SetTargetDTO>().ReverseMap();
 			CreateMap<GroupSavings, GroupSavingsDto>().ReverseMap();
 			CreateMap<GroupSavings, GroupSavingsRespnseDto>().ReverseMap();
-		}
+            CreateMap<KYC, AddKycDto>().ReverseMap();
+
+        }
 	}
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Savi.Data.Context;
@@ -12,9 +13,10 @@ using Savi.Data.Context;
 namespace Savi.Data.Migrations
 {
     [DbContext(typeof(SaviDbContext))]
-    partial class SaviDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230809232927_kyc")]
+    partial class kyc
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -163,9 +165,18 @@ namespace Savi.Data.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Address")
+                        .HasColumnType("text");
+
+                    b.Property<string>("BVN")
+                        .HasColumnType("text");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -177,6 +188,9 @@ namespace Savi.Data.Migrations
                     b.Property<string>("FirstName")
                         .HasColumnType("text");
 
+                    b.Property<bool>("Gender")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("IdentityTypeId")
                         .HasColumnType("text");
 
@@ -185,6 +199,9 @@ namespace Savi.Data.Migrations
 
                     b.Property<bool>("IsKycComplete")
                         .HasColumnType("boolean");
+
+                    b.Property<int>("KYCLevel")
+                        .HasColumnType("integer");
 
                     b.Property<string>("LastName")
                         .HasColumnType("text");
@@ -214,6 +231,9 @@ namespace Savi.Data.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("ProofOfAddressUrl")
+                        .HasColumnType("text");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
@@ -1067,13 +1087,17 @@ namespace Savi.Data.Migrations
 
             modelBuilder.Entity("Savi.Data.Domains.ApplicationUser", b =>
                 {
-                    b.HasOne("Savi.Data.Domains.IdentityType", null)
+                    b.HasOne("Savi.Data.Domains.IdentityType", "IdentityType")
                         .WithMany("Users")
                         .HasForeignKey("IdentityTypeId");
 
-                    b.HasOne("Savi.Data.Domains.Occupation", null)
+                    b.HasOne("Savi.Data.Domains.Occupation", "Occupation")
                         .WithMany("Users")
                         .HasForeignKey("OccupationId");
+
+                    b.Navigation("IdentityType");
+
+                    b.Navigation("Occupation");
                 });
 
             modelBuilder.Entity("Savi.Data.Domains.CardDetail", b =>

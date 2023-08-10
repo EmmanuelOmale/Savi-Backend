@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Savi.Data.Domains;
+using Savi.Data.Enums;
 
 namespace Savi.Data.Context
 {
-	public class SaviDbContext : IdentityDbContext<ApplicationUser, IdentityRole<string>, string>
+    public class SaviDbContext : IdentityDbContext<ApplicationUser, IdentityRole<string>, string>
 	{
 		public DbSet<UserTransaction> UserTransactions { get; set; }
 		public DbSet<GroupTransaction> GroupTransactions { get; set; }
@@ -27,8 +28,9 @@ namespace Savi.Data.Context
 		public DbSet<GroupSavingsFunding> GroupSavingsFundings { get; set; }
 		public DbSet<SavingsFrequency> SavingFrequencys { get; set; }
 		public DbSet<SetTargetFunding> SetTargetFundings { get; set; }
+        public DbSet<KYC> kYCs { get; set; }
 
-		public SaviDbContext(DbContextOptions<SaviDbContext> Options) : base(Options)
+        public SaviDbContext(DbContextOptions<SaviDbContext> Options) : base(Options)
 		{
 		}
 

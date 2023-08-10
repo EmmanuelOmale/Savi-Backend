@@ -1,9 +1,10 @@
 ﻿using Savi.Data.Context;
 using Savi.Data.Domains;
+using Savi.Data.Enums;
 
 namespace Savi.Data.Seeding
 {
-	public static class Seeder
+    public static class Seeder
 	{
 		public static void SeedData(SaviDbContext dbContext)
 		{

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿/*using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Savi.Data.Domains;
 using Savi.Data.DTO;
@@ -132,4 +132,4 @@ namespace Savi.Api.Controllers
 			return Ok(response);
 		}
 	}
-}
+}*/
