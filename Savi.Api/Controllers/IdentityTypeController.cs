@@ -1,14 +1,15 @@
-﻿using AutoMapper;
+﻿/*using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Savi.Core.Interfaces;
 using Savi.Data.Domains;
 using Savi.Data.DTO;
+using Savi.Data.Enums;
 using Savi.Data.IRepositories;
 
 namespace Savi.Api.Controllers
 {
-	[Route("api/[controller]")]
+    [Route("api/[controller]")]
 	[ApiController]
 	public class IdentityTypeController : ControllerBase
 	{
@@ -169,4 +170,4 @@ namespace Savi.Api.Controllers
 			return Ok(response);
 		}
 	}
-}
+}*/

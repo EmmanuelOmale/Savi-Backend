@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿/*using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -7,12 +7,13 @@ using Savi.Api.Profiles;
 using Savi.Core.Interfaces;
 using Savi.Data.Domains;
 using Savi.Data.DTO;
+using Savi.Data.Enums;
 using Savi.Data.IRepositories;
 using System.Linq.Expressions;
 
 namespace Savi.Test.Controller
 {
-	public class IdentityTypeControllerTest
+    public class IdentityTypeControllerTest
 	{
 		private readonly IMapper _mapper;
 		private readonly Mock<IUnitOfWork> _unitOfWorkMock;
@@ -318,4 +319,4 @@ namespace Savi.Test.Controller
 			Assert.Null(apiResponse.Result);
 		}
 	}
-}
+}*/

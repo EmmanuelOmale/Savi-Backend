@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿/*using Microsoft.EntityFrameworkCore;
 using Savi.Data.Context;
 using Savi.Data.Domains;
 using Savi.Data.IRepositories;
@@ -20,4 +20,4 @@ namespace Savi.Data.Repositories
 			_saviDbContext.SaveChanges();
 		}
 	}
-}
+}*/

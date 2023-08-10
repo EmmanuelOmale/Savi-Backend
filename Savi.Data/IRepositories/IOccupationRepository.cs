@@ -1,4 +1,4 @@
-﻿using Savi.Data.Domains;
+﻿/*using Savi.Data.Domains;
 
 namespace Savi.Data.IRepositories
 {
@@ -6,4 +6,4 @@ namespace Savi.Data.IRepositories
 	{
 		void Update(Occupation occupation);
 	}
-}
+}*/
