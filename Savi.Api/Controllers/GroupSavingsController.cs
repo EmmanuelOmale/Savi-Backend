@@ -81,6 +81,16 @@ namespace Savi.Api.Controllers
             }
             return BadRequest(automate);
         }
+        [HttpGet("list/groupsavings/members/{GroupId}")]
+        public async Task<IActionResult> GetGroupMembers(string GroupId)
+        {
+            var members = await _groupSavingsMemberServices.GetListOFGroupMember(GroupId);
+            if(members.Count > 0)
+            {
+                return Ok(members);
+            }
+            return BadRequest(members);
+        }
 
     }
 }

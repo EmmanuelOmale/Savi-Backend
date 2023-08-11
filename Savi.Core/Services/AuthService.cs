@@ -13,25 +13,25 @@ using System.Text;
 
 namespace Savi.Core.Services
 {
-	public class AuthService : IAuthService
-	{
-		private readonly IUserRepository _userRepository;
-		private readonly IWalletRepository _walletRepository;
-		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly IEmailService _emailService;
-		private readonly IConfiguration _configuration;
-		private readonly IMapper _mapper;
+    public class AuthService : IAuthService
+    {
+        private readonly IUserRepository _userRepository;
+        private readonly IWalletRepository _walletRepository;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IEmailService _emailService;
+        private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
 
-		public AuthService(IUserRepository userRepository, IWalletRepository walletRepository, UserManager<ApplicationUser> userManager,
-						   IEmailService emailService, IConfiguration configuration, IMapper mapper)
-		{
-			_userRepository = userRepository;
-			_walletRepository = walletRepository;
-			_userManager = userManager;
-			_emailService = emailService;
-			_configuration = configuration;
-			_mapper = mapper;
-		}
+        public AuthService(IUserRepository userRepository, IWalletRepository walletRepository, UserManager<ApplicationUser> userManager,
+                           IEmailService emailService, IConfiguration configuration, IMapper mapper)
+        {
+            _userRepository = userRepository;
+            _walletRepository = walletRepository;
+            _userManager = userManager;
+            _emailService = emailService;
+            _configuration = configuration;
+            _mapper = mapper;
+        }
 
         public async Task<ResponseDto<IdentityResult>> RegisterAsync(SignUpDto signUpDto)
         {
@@ -60,9 +60,9 @@ namespace Savi.Core.Services
                 var encodedToken = Encoding.UTF8.GetBytes(token);
                 var validToken = WebEncoders.Base64UrlEncode(encodedToken);
 
-				string url = $"{_configuration["AppUrl"]}/login";
-				string emailSubject = "Verify your email address";
-				string emailBody = $@"
+                string url = $"{_configuration["AppUrl"]}/login";
+                string emailSubject = "Verify your email address";
+                string emailBody = $@"
                             <p>Thank you for registering with us. To complete your registration and verify your email address, please click the link below:</p>
                             <p><a href='{url}?token={validToken}'>Verify Email</a></p>
                             <p>If you did not register on our platform, please ignore this email.</p>
@@ -143,28 +143,28 @@ namespace Savi.Core.Services
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
-				var jwtToken = GetToken(authClaims);
+                var jwtToken = GetToken(authClaims);
 
-				return new APIResponse { StatusCode = "Success", Token = new JwtSecurityTokenHandler().WriteToken(jwtToken), Expiration = jwtToken.ValidTo };
-			}
+                return new APIResponse { StatusCode = "Success", Token = new JwtSecurityTokenHandler().WriteToken(jwtToken), Expiration = jwtToken.ValidTo };
+            }
 
-			return new APIResponse { StatusCode = "Error", Message = "Invalid username or password." };
-		}
+            return new APIResponse { StatusCode = "Error", Message = "Invalid username or password." };
+        }
 
-		public JwtSecurityToken GetToken(List<Claim> authClaims)
-		{
-			var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+        public JwtSecurityToken GetToken(List<Claim> authClaims)
+        {
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
 
-			var token = new JwtSecurityToken(
-				issuer: _configuration["JWT:ValidIssuer"],
-				audience: _configuration["JWT:ValidAudience"],
-				expires: DateTime.Now.AddDays(2),
-				claims: authClaims,
-				signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-			);
+            var token = new JwtSecurityToken(
+                issuer: _configuration["JWT:ValidIssuer"],
+                audience: _configuration["JWT:ValidAudience"],
+                expires: DateTime.Now.AddDays(2),
+                claims: authClaims,
+                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+            );
 
-			return token;
-		}
+            return token;
+        }
 
         public async Task<APIResponse> ForgotPasswordAsync(string email)
         {
@@ -185,23 +185,23 @@ namespace Savi.Core.Services
                     Message = "No user associated with the provided email",
                 };
 
-			var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-			var encodedToken = Encoding.UTF8.GetBytes(token);
-			var validToken = WebEncoders.Base64UrlEncode(encodedToken);
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedToken = Encoding.UTF8.GetBytes(token);
+            var validToken = WebEncoders.Base64UrlEncode(encodedToken);
 
-			string url = $"{_configuration["AppUrl"]}/password-reset2?email={email}&token={validToken}";
+            string url = $"{_configuration["AppUrl"]}/password-reset2?email={email}&token={validToken}";
 
-			await _emailService.SendEmailAsync(email, "Reset Password", "<h1>Follow the instructions to reset your password</h1>" +
-				$"<p>To reset your password <a href='{url}'>Click here</a></p>");
+            await _emailService.SendEmailAsync(email, "Reset Password", "<h1>Follow the instructions to reset your password</h1>" +
+                $"<p>To reset your password <a href='{url}'>Click here</a></p>");
 
-			return new APIResponse
-			{
-				IsSuccess = true,
-				StatusCode = "200",
-				Message = "Reset password URL has been sent to the email successfully!",
-				Token = validToken,
-			};
-		}
+            return new APIResponse
+            {
+                IsSuccess = true,
+                StatusCode = "200",
+                Message = "Reset password URL has been sent to the email successfully!",
+                Token = validToken,
+            };
+        }
 
 
 
@@ -225,10 +225,10 @@ namespace Savi.Core.Services
                     Message = "Password doesn't match its confirmation",
                 };
 
-			var decodedToken = WebEncoders.Base64UrlDecode(model.Token);
-			string normalToken = Encoding.UTF8.GetString(decodedToken);
+            var decodedToken = WebEncoders.Base64UrlDecode(model.Token);
+            string normalToken = Encoding.UTF8.GetString(decodedToken);
 
-			var result = await _userManager.ResetPasswordAsync(user, normalToken, model.NewPassword);
+            var result = await _userManager.ResetPasswordAsync(user, normalToken, model.NewPassword);
 
             if(result.Succeeded)
                 return new APIResponse
@@ -248,7 +248,7 @@ namespace Savi.Core.Services
         public async Task<APIResponse> ChangePasswordAsync(string email, string currentPassword, string newPassword)
         {
             var user = await _userManager.FindByEmailAsync(email);
-            if (user == null)
+            if(user == null)
             {
                 return new APIResponse
                 {
@@ -259,7 +259,7 @@ namespace Savi.Core.Services
             }
 
             var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
-            if (!result.Succeeded)
+            if(!result.Succeeded)
             {
                 var errors = result.Errors.Select(e => e.Description).ToList();
                 return new APIResponse

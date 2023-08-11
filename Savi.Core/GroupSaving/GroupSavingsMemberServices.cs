@@ -27,6 +27,15 @@ namespace Savi.Core.GroupSaving
             try
             {
                 var newMember = await _userRepository.GetUserByIdAsync(UserId);
+                var checkmember = _groupSavingsMembersRepository.Check_If_UserExist(UserId);
+                if(checkmember)
+                {
+                    response.DisplayMessage = $"User with the walletId" +
+                        $" {newMember.Result.WalletId} has already joined the group";
+                    response.Result = false;
+                    response.StatusCode = 401;
+                    return response;
+                }
                 var newGroup = await _groupSavingsRepository.GetGroupById(GroupId);
 
                 if(newMember != null && newGroup != null)
@@ -102,6 +111,25 @@ namespace Savi.Core.GroupSaving
                 response.DisplayMessage = (ex.Message);
                 response.Result = false;
                 return response;
+            }
+
+
+        }
+        public async Task<List<GroupMembersDto>> GetListOFGroupMember(string GroupId)
+        {
+            try
+            {
+                var members = await _groupSavingsMembersRepository.GetListOfGroupMembersAsync3(GroupId);
+                if(members.Count > 0)
+                {
+                    return members;
+                }
+                return null;
+            }
+            catch(Exception ex)
+            {
+
+                throw new Exception(ex.Message);
             }
         }
     }

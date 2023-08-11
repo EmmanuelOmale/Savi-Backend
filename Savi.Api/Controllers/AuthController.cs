@@ -18,20 +18,24 @@ namespace Savi.Api.Controllers
 		[HttpPost("SignUp")]
 		public async Task<IActionResult> Register([FromBody] SignUpDto model)
 		{
-			var result = await _authenticationService.RegisterAsync(model);
+			if(ModelState.IsValid)
+			{
+				var result = await _authenticationService.RegisterAsync(model);
 
-			if (result.StatusCode == 200)
-			{
-				return Ok(result);
+				if(result.StatusCode == 200)
+				{
+					return Ok(result);
+				}
+				else if(result.StatusCode == 404)
+				{
+					return NotFound(result);
+				}
+				else
+				{
+					return BadRequest(result);
+				}
 			}
-			else if (result.StatusCode == 404)
-			{
-				return NotFound(result);
-			}
-			else
-			{
-				return BadRequest(result);
-			}
+			return BadRequest(model);
 		}
 
 		[HttpPost]
@@ -40,11 +44,11 @@ namespace Savi.Api.Controllers
 		{
 			var response = await _authenticationService.Login(loginModel);
 
-			if (response.StatusCode == "Success")
+			if(response.StatusCode == "Success")
 			{
 				return Ok(response);
 			}
-			else if (response.StatusCode == "Error")
+			else if(response.StatusCode == "Error")
 			{
 				return Unauthorized(response);
 			}
@@ -55,15 +59,15 @@ namespace Savi.Api.Controllers
 		[HttpPost("ForgotPassword")]
 		public async Task<IActionResult> ForgotPassword(string email)
 		{
-			if (string.IsNullOrEmpty(email))
+			if(string.IsNullOrEmpty(email))
 				return BadRequest("Email is required");
 
 			var result = await _authenticationService.ForgotPasswordAsync(email);
 
-			if (result.IsSuccess)
+			if(result.IsSuccess)
 				return Ok(result); // 200
 
-			if (result.StatusCode == "404")
+			if(result.StatusCode == "404")
 				return NotFound(result); // 404
 
 			return BadRequest(result); // 400
@@ -72,37 +76,37 @@ namespace Savi.Api.Controllers
 		[HttpPost("ResetPassword")]
 		public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordViewModel model)
 		{
-			if (ModelState.IsValid)
+			if(ModelState.IsValid)
 			{
 				var result = await _authenticationService.ResetPasswordAsync(model);
 
-				if (result.IsSuccess)
+				if(result.IsSuccess)
 					return Ok(result);
 
 				return BadRequest(result);
 			}
 
-            return BadRequest("Some properties are not valid");
-        }
+			return BadRequest("Some properties are not valid");
+		}
 
 
-        [HttpPost("change-password")]
-        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+		[HttpPost("change-password")]
+		public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO model)
+		{
+			if(!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
 
-            var result = await _authenticationService.ChangePasswordAsync(model.Email, model.CurrentPassword, model.NewPassword);
-            if (!result.IsSuccess)
-            {
-                return BadRequest(result);
-            }
+			var result = await _authenticationService.ChangePasswordAsync(model.Email, model.CurrentPassword, model.NewPassword);
+			if(!result.IsSuccess)
+			{
+				return BadRequest(result);
+			}
 
-            return Ok(result);
-        }
+			return Ok(result);
+		}
 
 
-    }
+	}
 }
