@@ -31,6 +31,10 @@ namespace Savi.Core.WalletService
         {
             //Geting all the groups in GroupSavings table
             var listofGroupsavings = await _groupSavingsRepository.GetListOfGroupSavings();
+            if(listofGroupsavings.Count < 1)
+            {
+                return false;
+            }
             foreach(var group in listofGroupsavings)
             {
                 if(group.GroupStatus != GroupStatus.Running || group.NextRunTime != DateTime.Today)//Checking the status and NextRunTime

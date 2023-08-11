@@ -13,7 +13,7 @@ namespace Savi.Data.DTO
 
 		[PasswordPropertyText]
 		public string Password { get; set; }
-
+		[Phone]
 		public string PhoneNumber { get; set; }
 	}
 }
