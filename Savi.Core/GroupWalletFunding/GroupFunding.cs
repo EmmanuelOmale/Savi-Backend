@@ -12,15 +12,12 @@ namespace Savi.Core.GroupWalletFunding
         {
             _groupsavingsFundingRepository = groupsavingsFundingRepository;
         }
-
-
         public async Task<bool> GroupFundingMember(GroupSavingsFunding groupSavings)
         {
             var groupfund = await _groupsavingsFundingRepository.CreateGroupSavingsFundingAsync(groupSavings);
-            if (groupfund)
+            if(groupfund)
             {
                 return true;
-
             }
             return false;
         }

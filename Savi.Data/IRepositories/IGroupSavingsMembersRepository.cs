@@ -16,7 +16,12 @@ namespace Savi.Data.IRepositories
 		public Task<List<int>> GetUserFirstUserPosition();
 
 		public Task<int> GetUserLastUserPosition();
-		public bool Check_If_UserExist(string UserId);
+		public Task<int> GetUserLastUserPosition2(string GrouId);
+
+		Task<bool> Check_If_UserExist(string UserId, string GroupId);
+		Task<List<GroupMembersDto>> GetListOfGroupMembersByUserId(string UserId);
+
+
 
 
 	}

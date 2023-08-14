@@ -19,15 +19,13 @@ namespace Savi.Core.GroupSaving
             _userRepository = userRepository;
             _groupSavingsRepository = groupSavingsRepository;
         }
-
         public async Task<ResponseDto<bool>> JoinGroupSavings(string UserId, string GroupId)
         {
             var response = new ResponseDto<bool>();
-
             try
             {
                 var newMember = await _userRepository.GetUserByIdAsync(UserId);
-                var checkmember = _groupSavingsMembersRepository.Check_If_UserExist(UserId);
+                var checkmember = await _groupSavingsMembersRepository.Check_If_UserExist(UserId, GroupId);
                 if(checkmember)
                 {
                     response.DisplayMessage = $"User with the walletId" +
@@ -42,7 +40,7 @@ namespace Savi.Core.GroupSaving
                 {
 
                     var newGroupMembertoAdd = new GroupSavingsMembers();
-                    var newposition = await _groupSavingsMembersRepository.GetUserLastUserPosition();
+                    var newposition = await _groupSavingsMembersRepository.GetUserLastUserPosition2(GroupId);//Work here.
                     if(newposition == 4)
                     {
                         newGroup.ActualStartDate = DateTime.Now;
@@ -53,19 +51,21 @@ namespace Savi.Core.GroupSaving
                         if(frequency == 1)
                         {
                             newGroup.ActualEndDate = DateTime.Now.AddDays(6);
+                            newGroup.Count = 1;
                             await _groupSavingsRepository.UpDateGroupSavings(newGroup);
 
                         }
                         else if(frequency == 2)
                         {
                             newGroup.ActualEndDate = DateTime.Now.AddDays(34);
+                            newGroup.Count = 1;
                             await _groupSavingsRepository.UpDateGroupSavings(newGroup);
-
 
                         }
                         else if(frequency == 3)
                         {
                             newGroup.ActualEndDate = DateTime.Now.AddDays(174);
+                            newGroup.Count = 1;
                             await _groupSavingsRepository.UpDateGroupSavings(newGroup);
                         }
 
@@ -112,8 +112,6 @@ namespace Savi.Core.GroupSaving
                 response.Result = false;
                 return response;
             }
-
-
         }
         public async Task<List<GroupMembersDto>> GetListOFGroupMember(string GroupId)
         {
@@ -129,6 +127,22 @@ namespace Savi.Core.GroupSaving
             catch(Exception ex)
             {
 
+                throw new Exception(ex.Message);
+            }
+        }
+        public async Task<List<GroupMembersDto>> GetListOFGroupMemberByUserId(string UserId)
+        {
+            try
+            {
+                var members = await _groupSavingsMembersRepository.GetListOfGroupMembersAsync3(UserId);
+                if(members.Count > 0)
+                {
+                    return members;
+                }
+                return null;
+            }
+            catch(Exception ex)
+            {
                 throw new Exception(ex.Message);
             }
         }

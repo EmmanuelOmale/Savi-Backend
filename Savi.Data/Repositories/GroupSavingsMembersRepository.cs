@@ -22,9 +22,6 @@ namespace Savi.Data.Repositories
             _mapper = mapper;
             _groupSavings = groupSavings;
         }
-
-
-
         public async Task<bool> CreateSavingsGroupMembersAsync(GroupSavingsMembers groupSavingsMembers)
         {
             var newMember = await _saviDbContext.GroupSavingsMembers.AddAsync(groupSavingsMembers);
@@ -36,7 +33,6 @@ namespace Savi.Data.Repositories
             }
             return false;
         }
-
         public async Task<int> GetListOfGroupMembersAsync(string GroupId)
         {
             var list = await _saviDbContext.GroupSavingsMembers.Where(x => x.GroupSavingsId == GroupId).ToListAsync();
@@ -55,9 +51,29 @@ namespace Savi.Data.Repositories
             }
             return null;
         }
-        public async Task<List<GroupMembersDto>> GetListOfGroupMembersAsync3(string GroupId)
+        public async Task<List<GroupMembersDto>> GetListOfGroupMembersAsync3(string UserId)
         {
-            var list = await _saviDbContext.GroupSavingsMembers.Where(x => x.GroupSavingsId == GroupId).ToListAsync();
+            var list = await _saviDbContext.GroupSavingsMembers.Where(x => x.UserId == UserId).ToListAsync();
+            var list2 = new List<GroupMembersDto>();
+            if(list.Count > 0)
+            {
+                foreach(var item in list)
+                {
+                    var user = await _userRepository.GetUserById(item.UserId);
+                    var mapUser = _mapper.Map<UserDTO>(user);
+                    var mapGroup = _mapper.Map<GroupMembersDto>(item);
+                    mapGroup.User = mapUser;
+                    list2.Add(mapGroup);
+
+
+                }
+                return list2;
+            }
+            return null;
+        }
+        public async Task<List<GroupMembersDto>> GetListOfGroupMembersByUserId(string UserId)
+        {
+            var list = await _saviDbContext.GroupSavingsMembers.Where(x => x.GroupSavingsId == UserId).ToListAsync();
             var list2 = new List<GroupMembersDto>();
             if(list.Count > 0)
             {
@@ -83,6 +99,14 @@ namespace Savi.Data.Repositories
                               .FirstOrDefaultAsync();
             return highestPosition;
         }
+        public async Task<int> GetUserLastUserPosition2(string GroupId)
+        {
+            var group = await _saviDbContext.GroupSavingsMembers.Where(x => x.GroupSavingsId == GroupId).ToListAsync();
+            int highestPosition = group.OrderByDescending(user => user.Positions)
+                              .Select(user => user.Positions)
+                              .FirstOrDefault();
+            return highestPosition;
+        }
         public async Task<List<int>> GetUserFirstUserPosition()
         {
             var highestPosition = await _saviDbContext.GroupSavingsMembers.OrderByDescending(user => user.Positions)
@@ -90,19 +114,19 @@ namespace Savi.Data.Repositories
                                .ToListAsync();
             return highestPosition;
         }
-        public bool Check_If_UserExist(string UserId)
+        public async Task<bool> Check_If_UserExist(string UserId, string GroupId)
         {
-            var userExist = _saviDbContext.GroupSavingsMembers.FirstOrDefault(x => x.UserId == UserId);
-
-            if(userExist != null)
+            var group = await GetListOfGroupMembersAsync3(GroupId);
+            if(group != null)
             {
-                return true;
+                var userExist = group.FirstOrDefault(x => x.UserId == UserId);
+                if(userExist != null)
+                {
+                    return true;
+                }
+                return false;
             }
             return false;
         }
-
-
-
-
     }
 }

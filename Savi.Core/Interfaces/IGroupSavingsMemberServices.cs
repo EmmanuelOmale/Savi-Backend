@@ -4,8 +4,9 @@ namespace Savi.Core.Interfaces
 {
     public interface IGroupSavingsMemberServices
     {
-        public Task<ResponseDto<bool>> JoinGroupSavings(string UserId, string GroupId);
-        public Task<List<GroupMembersDto>> GetListOFGroupMember(string GroupId);
+        Task<ResponseDto<bool>> JoinGroupSavings(string UserId, string GroupId);
+        Task<List<GroupMembersDto>> GetListOFGroupMember(string GroupId);
+        Task<List<GroupMembersDto>> GetListOFGroupMemberByUserId(string UserId);
 
 
     }

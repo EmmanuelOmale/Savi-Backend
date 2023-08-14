@@ -26,10 +26,10 @@ namespace Savi.Core.Services
 			_userRepository = userRepository;
 		}
 
-		public async Task<APIResponse> FundTargetSavings(Guid id, decimal amount, string userId)
+		public async Task<APIResponse> FundTargetSavings(string id, decimal amount, string userId)
 		{
 			var savings = await _targetRepository.GetTargetById(id);
-			if (savings == null)
+			if(savings == null)
 			{
 				return new APIResponse()
 				{
@@ -40,7 +40,7 @@ namespace Savi.Core.Services
 			}
 			var walletId = await _walletService.GetUserWalletAsync(userId);
 			var debitResult = await _walletService.DebitWallet(walletId.Result.WalletId, amount);
-			if (!debitResult.IsSuccess)
+			if(!debitResult.IsSuccess)
 			{
 				return new APIResponse()
 				{
@@ -50,18 +50,18 @@ namespace Savi.Core.Services
 				};
 			}
 
-			savings.Result.CumulativeAmount += amount;
+			savings.CumulativeAmount += amount;
 
 			var fundingDetails = new SetTargetFunding
 			{
 				Amount = amount,
 				TransactionType = TransactionType.Funding,
-				SetTarget = savings.Result,
-				SetTargetId = savings.Result.Id,
+				SetTarget = savings,
+				SetTargetId = savings.Id,
 				walletId = walletId.Result.WalletId,
 			};
 
-			await _targetRepository.UpdateTarget(id, savings.Result);
+			await _targetRepository.UpdateTarget(savings);
 			return new APIResponse()
 			{
 				IsSuccess = true,
