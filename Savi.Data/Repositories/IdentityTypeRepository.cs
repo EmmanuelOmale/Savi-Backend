@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿/*using Microsoft.EntityFrameworkCore;
 using Savi.Data.Context;
 using Savi.Data.Domains;
+using Savi.Data.Enums;
 using Savi.Data.IRepositories;
 
 namespace Savi.Data.Repositories
 {
-	public class IdentityTypeRepository : RepositoryBase<IdentityType>, IIdentityTypeRepository
+    public class IdentityTypeRepository : RepositoryBase<IdentityType>, IIdentityTypeRepository
 	{
 		private SaviDbContext _saviDbContext;
 		public IdentityTypeRepository(SaviDbContext db) : base(db)
@@ -18,4 +19,4 @@ namespace Savi.Data.Repositories
 			_saviDbContext.SaveChanges();
 		}
 	}
-}
+}*/
