@@ -4,6 +4,6 @@ namespace Savi.Core.Interfaces
 {
 	public interface ISavingsService
 	{
-		Task<APIResponse> FundTargetSavings(Guid id, decimal amount, string userId);
+		Task<APIResponse> FundTargetSavings(string id, decimal amount, string userId);
 	}
 }

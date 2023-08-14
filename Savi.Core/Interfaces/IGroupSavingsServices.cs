@@ -13,6 +13,7 @@ namespace Savi.Core.Interfaces
         public Task<GroupSavings> GetGroupByID(string GroupId);
         public Task<IEnumerable<GroupSavings>> GetListOfSavingsGroups();
         public Task<ResponseDto<GroupSavingsRespnseDto>> GetUserByUserIDAsync(string UserId);
+        Task<ResponseDto<IEnumerable<GroupSavingsRespnseDto>>> GetListOfSavingsGroupByUserIdAsync(string UserId);
 
 
 

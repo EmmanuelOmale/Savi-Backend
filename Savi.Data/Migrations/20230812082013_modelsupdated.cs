@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Savi.Data.Migrations
 {
-    public partial class Models : Migration
+    public partial class modelsupdated : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -432,15 +432,21 @@ namespace Savi.Data.Migrations
                 name: "SetTargets",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Target = table.Column<string>(type: "text", nullable: true),
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    TargetName = table.Column<string>(type: "text", nullable: true),
                     TargetAmount = table.Column<decimal>(type: "numeric", nullable: false),
                     AmountToSave = table.Column<decimal>(type: "numeric", nullable: false),
                     Frequency = table.Column<int>(type: "integer", nullable: false),
                     StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     WithdrawalDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CumulativeAmount = table.Column<decimal>(type: "numeric", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: true)
+                    UserId = table.Column<string>(type: "text", nullable: true),
+                    Runtime = table.Column<int>(type: "integer", nullable: false),
+                    NextRuntime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -596,7 +602,7 @@ namespace Savi.Data.Migrations
                     Id = table.Column<string>(type: "text", nullable: false),
                     Amount = table.Column<decimal>(type: "numeric", nullable: false),
                     TransactionType = table.Column<int>(type: "integer", nullable: false),
-                    SetTargetId = table.Column<Guid>(type: "uuid", nullable: false),
+                    SetTargetId = table.Column<string>(type: "text", nullable: true),
                     walletId = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -609,8 +615,7 @@ namespace Savi.Data.Migrations
                         name: "FK_SetTargetFundings_SetTargets_SetTargetId",
                         column: x => x.SetTargetId,
                         principalTable: "SetTargets",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_SetTargetFundings_Wallets_walletId",
                         column: x => x.walletId,

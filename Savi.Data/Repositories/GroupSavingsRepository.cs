@@ -94,6 +94,36 @@ namespace Savi.Data.Repositories
             return success;
 
         }
+        public async Task<ResponseDto<IEnumerable<GroupSavingsRespnseDto>>> GetListOfGroupByUserIdAsync(string Id)
+        {
+            var listofGroups = new List<GroupSavingsRespnseDto>();
+
+            var group = _saviDbContext.GroupSavings.Where(x => x.UserId == Id).ToList();
+
+            if(group == null)
+            {
+                var notFoundResponse = new ResponseDto<IEnumerable<GroupSavingsRespnseDto>>
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    DisplayMessage = "User not found"
+                };
+                return notFoundResponse;
+            }
+            var success = new ResponseDto<IEnumerable<GroupSavingsRespnseDto>>();
+            foreach(var grp in group)
+            {
+                var user = await _userRepository.GetUserById(Id);
+                var mapUser = _mapper.Map<UserDTO>(user);
+                var mapGroup = _mapper.Map<GroupSavingsRespnseDto>(grp);
+                mapGroup.User = mapUser;
+                listofGroups.Add(mapGroup);
+            }
+
+            success.Result = listofGroups;
+            success.DisplayMessage = "Success";
+            success.StatusCode = 200;
+            return success;
+        }
         public async Task<GroupSavings> GetGroupById(string Id)
         {
             var group = await _saviDbContext.GroupSavings.FindAsync(Id);
@@ -126,7 +156,7 @@ namespace Savi.Data.Repositories
 
 
         }
-        public async Task<ICollection<GroupSavings>> GetListOfGroupSavings()
+        public async Task<List<GroupSavings>> GetListOfGroupSavings()
         {
             var list = await _saviDbContext.GroupSavings.ToListAsync();
             if(list.Count > 0)
@@ -135,9 +165,6 @@ namespace Savi.Data.Repositories
                 return list;
             }
             return null;
-
-
         }
-
     }
 }

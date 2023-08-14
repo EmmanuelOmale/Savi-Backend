@@ -29,113 +29,115 @@ namespace Savi.Core.WalletService
         }
         public async Task<bool> GroupAuto()
         {
+            bool result = true;
             //Geting all the groups in GroupSavings table
             var listofGroupsavings = await _groupSavingsRepository.GetListOfGroupSavings();
             if(listofGroupsavings.Count < 1)
             {
                 return false;
             }
-            foreach(var group in listofGroupsavings)
+            var listOfGroup = new List<GroupSavings>();
+            foreach(var groupSavings in listofGroupsavings)
             {
-                if(group.GroupStatus != GroupStatus.Running || group.NextRunTime != DateTime.Today)//Checking the status and NextRunTime
+                var runtime = DateTime.MinValue.AddHours(groupSavings.Runtime);//Check the stipulated time to run
+                var runNow = DateTime.Now.Hour;
+                if(groupSavings.GroupStatus == GroupStatus.Running && groupSavings.NextRunTime == DateTime.Today
+                    && groupSavings.Count <= groupSavings.MemberCount && runNow == runtime.Hour)
                 {
-                    return false;
+                    listOfGroup.Add(groupSavings);
                 }
-                if(group.Count <= group.MemberCount)//Checking the group is eligible to run again.
-                {
-                    var groupRun = await AutoGroupSavings(group.Id);
-                    if(groupRun.Equals(true))
-                    {
-                        return true;
-                    }
-                    return false;
-                }
-                return false;
 
-            };
-            return true;
+            }
+            if(listOfGroup.Count < 1)
+            {
+                return false;
+            }
+            for(int i = 0; i < listOfGroup.Count; i++)
+            {
+                var group = listOfGroup[i];
+                var groupRun = await AutoGroupSavings(group.Id);
+                if(groupRun)
+                {
+                    group.Count += 1;
+                    await _groupSavingsRepository.UpDateGroupSavings(group);
+                }
+                else
+                {
+                    result = false;
+                }
+            }
+            return result;
         }
 
         public async Task<bool> AutoGroupSavings(string GroupId)
         {
-
             var group = await _groupSavingsRepository.GetGroupById(GroupId);
             var runtime = DateTime.MinValue.AddHours(group.Runtime);//Check the stipulated time to run
             var runNow = DateTime.Now.Hour;
-            if(runtime.Hour == runNow)//Compare runtime and runNow
+            var frequency = group.FrequencyId;
+            var members = await _groupSavingsMembers.GetListOfGroupMembersAsync2(GroupId);
+            int positions = group.Count;
+            var memberCounts = members.Count;
+            var Payment = group.ContributionAmount * (memberCounts - 1);
+            var memberTofund = members.FirstOrDefault(x => x.Positions == positions);
+            var memberwallet = await _userRepository.GetUserById(memberTofund?.UserId);
+            var userwallet = memberwallet.WalletId;
+            var creditmember = await _walletCreditService.CreditUserFundAsync(Payment, userwallet);
+            var groupSavingsFunding = new GroupSavingsFunding()
             {
-                //Finding the Groupmember to credit
-                var frequency = group.FrequencyId;
-                var members = await _groupSavingsMembers.GetListOfGroupMembersAsync2(GroupId);
-                int positions = group.Count;
-                var memberCounts = members.Count;
-                var Payment = group.ContributionAmount * (memberCounts - 1);
-                var memberTofund = members.FirstOrDefault(x => x.Positions == positions);
-                var memberwallet = await _userRepository.GetUserById(memberTofund?.UserId);
-                var userwallet = memberwallet.WalletId;
-                var creditmember = await _walletCreditService.CreditUserFundAsync(Payment, userwallet);
-                var groupSavingsFunding = new GroupSavingsFunding()
+                GroupSavingsId = GroupId,
+                Amount = Payment,
+                UserId = memberTofund?.UserId,
+                TransactionType = TransactionType.Funding
+            };
+            var createFunding = await _groupsavingsFundingRepository.CreateGroupSavingsFundingAsync(groupSavingsFunding);
+            if(memberCounts == group.Count)
+            {
+                group.GroupStatus = GroupStatus.Completed;
+            }
+            if(createFunding)
+            {
+                group.ModifiedAt = DateTime.UtcNow;
+                await _groupSavingsRepository.UpDateGroupSavings(group);//update group
+                for(int i = 0; i < memberCounts; i++)
                 {
-                    GroupSavingsId = GroupId,
-                    Amount = Payment,
-                    UserId = memberTofund?.UserId,
-                    TransactionType = TransactionType.Funding
-                };
-                var createFunding = await _groupsavingsFundingRepository.CreateGroupSavingsFundingAsync(groupSavingsFunding);
-                if(memberCounts == group.Count)
-                {
-                    group.GroupStatus = GroupStatus.Completed;
-                }
-                if(createFunding)
-                {
-                    //If credited then debit the rest members
-                    group.Count += 1;//Increment the group count
-                    group.ModifiedAt = DateTime.UtcNow;
-                    await _groupSavingsRepository.UpDateGroupSavings(group);//update group
-
-                    for(int i = 0; i < memberCounts; i++)
+                    var m = members[i];
+                    if(m.Positions != positions)
                     {
-                        var m = members[i];
-                        if(m.Positions != positions)
+                        var user = await _userRepository.GetUserByIdAsync(m.UserId);
+                        var userWalletId = user.Result.WalletId;
+                        var amountToDebit = group.ContributionAmount;
+                        var debitusers = await _walletDebitService.WithdrawUserFundAsync(amountToDebit, userWalletId);
+                        if(debitusers.Status == true)
                         {
-                            var user = await _userRepository.GetUserByIdAsync(m.UserId);
-                            var userWalletId = user.Result.WalletId;
-                            var amountToDebit = group.ContributionAmount;
-                            var debitusers = await _walletDebitService.WithdrawUserFundAsync(amountToDebit, userWalletId);
-                            if(debitusers.Status == true)
+                            var groupSavingsWithdraw = new GroupSavingsFunding()
                             {
-                                var groupSavingsWithdraw = new GroupSavingsFunding()
-                                {
-                                    GroupSavingsId = GroupId,
-                                    Amount = amountToDebit,
-                                    UserId = m.UserId,
-                                    TransactionType = TransactionType.Withdrawal
-                                };
-                                var debitFund = await _groupFund.GroupFundingMember(groupSavingsWithdraw);
-                            }
+                                GroupSavingsId = GroupId,
+                                Amount = amountToDebit,
+                                UserId = m.UserId,
+                                TransactionType = TransactionType.Withdrawal
+                            };
+                            var debitFund = await _groupFund.GroupFundingMember(groupSavingsWithdraw);
                         }
                     }
-                    //Updating the group next runtime.
-                    if(group.FrequencyId == 1)
-                    {
-                        group.NextRunTime = DateTime.Today;
-                        await _groupSavingsRepository.UpDateGroupSavings(group);
-                        return true;
-                    }
-                    else if(group.FrequencyId == 2)
-                    {
-                        group.NextRunTime = DateTime.Now.AddDays(7);
-                        await _groupSavingsRepository.UpDateGroupSavings(group);
-                        return true;
-
-                    }
-                    group.NextRunTime = DateTime.Now.AddDays(31);
+                }
+                //Updating the group next runtime.
+                if(group.FrequencyId == 1)
+                {
+                    group.NextRunTime = DateTime.Today;
                     await _groupSavingsRepository.UpDateGroupSavings(group);
                     return true;
                 }
-                return false;
+                else if(group.FrequencyId == 2)
+                {
+                    group.NextRunTime = DateTime.Now.AddDays(7);
+                    await _groupSavingsRepository.UpDateGroupSavings(group);
+                    return true;
+                }
+                group.NextRunTime = DateTime.Now.AddDays(31);
+                await _groupSavingsRepository.UpDateGroupSavings(group);
+                return true;
             }
-
             return false;
 
         }

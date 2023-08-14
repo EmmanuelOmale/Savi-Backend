@@ -1,20 +1,19 @@
 ﻿using Savi.Data.Domains;
-using Savi.Data.DTO;
 
 namespace Savi.Data.IRepositories
 {
-	public interface ISetTargetRepository
-	{
-		Task<ResponseDto<SetTarget>> CreateTarget(SetTarget setTarget, string userId);
+    public interface ISetTargetRepository
+    {
+        Task<bool> CreateTarget(SetTarget setTarget);
 
-		Task<ResponseDto<IEnumerable<SetTarget>>> GetAllTargets();
+        Task<IEnumerable<SetTarget>> GetAllTargets();
 
-		Task<ResponseDto<SetTarget>> GetTargetById(Guid id);
+        Task<SetTarget> GetTargetById(string TargetId);
 
-		Task<ResponseDto<SetTarget>> UpdateTarget(Guid id, SetTarget SetTarget);
+        Task<bool> UpdateTarget(SetTarget SetTarget);
 
-		Task<ResponseDto<SetTarget>> DeleteTarget(Guid id);
+        Task<bool> DeleteTarget(string Id);
 
-		Task<List<SetTarget>> GetSetTargetsByUserId(string userId);
-	}
+        Task<List<SetTarget>> GetSetTargetsByUserId(string userId);
+    }
 }

@@ -43,8 +43,8 @@ namespace Savi.Data.Repository
 
             }
 
-			return response;
-		}
+            return response;
+        }
 
         public async Task<ResponseDto<SavingGoalsDTO>> DeleteGoal(int id)
         {
@@ -92,8 +92,8 @@ namespace Savi.Data.Repository
 
             }
 
-			return response;
-		}
+            return response;
+        }
 
         public async Task<ResponseDto<SavingGoalsDTO>> GetGoalById(int id)
         {
@@ -120,9 +120,8 @@ namespace Savi.Data.Repository
                 response.DisplayMessage = (ex.Message);
             }
 
-			return response;
-		}
-
+            return response;
+        }
         public async Task<ResponseDto<SavingGoalsDTO>> UpdateGoal(int goalId, SavingGoal updatedGoal)
         {
             var response = new ResponseDto<SavingGoalsDTO>();
@@ -151,7 +150,7 @@ namespace Savi.Data.Repository
                 response.DisplayMessage = (ex.Message);
             }
 
-			return response;
-		}
-	}
+            return response;
+        }
+    }
 }

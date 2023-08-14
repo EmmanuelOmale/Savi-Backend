@@ -12,7 +12,6 @@ namespace Savi.Api.Controllers
         private readonly IGroupSavingsServices _groupSavingsServices;
         private readonly IGroupSavingsMemberServices _groupSavingsMemberServices;
         private readonly IGroupWalletFundingServices _groupWallet;
-
         public GroupSavingsController(IGroupSavingsServices groupSavingsServices,
             IGroupSavingsMemberServices groupSavingsMemberServices, IGroupWalletFundingServices groupWallet)
         {
@@ -40,7 +39,7 @@ namespace Savi.Api.Controllers
             }
             return BadRequest(newGroupSavings);
         }
-        [HttpGet("get/groupby/{groupId}")]
+        [HttpGet("get/groupsavings-by/{groupId}")]
         public async Task<IActionResult> GetGroupByIdAsync(string groupId)
         {
             var group = await _groupSavingsServices.GetUserByIDAsync(groupId);
@@ -50,8 +49,7 @@ namespace Savi.Api.Controllers
             }
             return BadRequest(group);
         }
-        [HttpGet("get/groupbyuserId/{userId}")]
-
+        [HttpGet("get/groupsavings-created-by-user/{userId}")]
         public async Task<IActionResult> GetGroupByUserIdAsync(string userId)
         {
             var group = await _groupSavingsServices.GetUserByUserIDAsync(userId);
@@ -71,7 +69,17 @@ namespace Savi.Api.Controllers
             }
             return BadRequest(listofgroup);
         }
-        [HttpPost("auto/groupsavings")]
+        [HttpGet("get/list-of-all-groupsavings-created-by-user/{UserId}")]
+        public async Task<IActionResult> GetListOfGroupSavingsAsync(string UserId)
+        {
+            var listofgroup = await _groupSavingsServices.GetListOfSavingsGroupByUserIdAsync(UserId);
+            if(listofgroup.StatusCode == 200)
+            {
+                return Ok(listofgroup);
+            }
+            return BadRequest(listofgroup);
+        }
+        [HttpPost("auto/fund-groupsavings")]
         public async Task<IActionResult> AutomateSavings()
         {
             var automate = await _groupWallet.GroupAuto();
@@ -81,7 +89,7 @@ namespace Savi.Api.Controllers
             }
             return BadRequest(automate);
         }
-        [HttpGet("list/groupsavings/members/{GroupId}")]
+        [HttpGet("list/groupsavingsmembers-in-a-group/{GroupId}")]
         public async Task<IActionResult> GetGroupMembers(string GroupId)
         {
             var members = await _groupSavingsMemberServices.GetListOFGroupMember(GroupId);
@@ -91,6 +99,15 @@ namespace Savi.Api.Controllers
             }
             return BadRequest(members);
         }
-
+        [HttpGet("list/groupsavings-a-user-is-in/{UserId}")]
+        public async Task<IActionResult> GetGroupMembersByUserId(string UserId)
+        {
+            var members = await _groupSavingsMemberServices.GetListOFGroupMemberByUserId(UserId);
+            if(members.Count > 0)
+            {
+                return Ok(members);
+            }
+            return BadRequest(members);
+        }
     }
 }

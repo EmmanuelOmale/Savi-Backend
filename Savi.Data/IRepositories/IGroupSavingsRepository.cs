@@ -11,8 +11,10 @@ namespace Savi.Data.IRepositories
 
         public Task<bool> UpDateGroupSavings(GroupSavings groupSaving);
         public Task<GroupSavings> GetGroupById(string Id);
-        public Task<ICollection<GroupSavings>> GetListOfGroupSavings();
+        public Task<List<GroupSavings>> GetListOfGroupSavings();
         Task<ICollection<GroupSavingsRespnseDto>> GetListOfGroupSavingsAsync();
+        Task<ResponseDto<IEnumerable<GroupSavingsRespnseDto>>> GetListOfGroupByUserIdAsync(string Id);
+
         public Task<ResponseDto<GroupSavingsRespnseDto>> GetGroupByUserIdAsync(string Id);
 
 

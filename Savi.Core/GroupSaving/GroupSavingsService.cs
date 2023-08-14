@@ -65,6 +65,32 @@ namespace Savi.Core.GroupSaving
                     return response;
 
                 }
+                response.StatusCode = 400;
+                response.DisplayMessage = "No list Available";
+                return response;
+            }
+            catch(Exception ex)
+            {
+                response.StatusCode = 200;
+                response.DisplayMessage = ex.Message;
+                return response;
+            }
+        }
+        public async Task<ResponseDto<IEnumerable<GroupSavingsRespnseDto>>> GetListOfSavingsGroupByUserIdAsync(string UserId)
+        {
+            var response = new ResponseDto<IEnumerable<GroupSavingsRespnseDto>>();
+            try
+            {
+                var result = await _groupSavingsRepository.GetListOfGroupByUserIdAsync(UserId);
+                if(result.StatusCode == 200)
+                {
+
+                    response.StatusCode = 200;
+                    response.DisplayMessage = "Group List Fetched successfully";
+                    response.Result = result.Result;
+                    return response;
+
+                }
 
                 response.StatusCode = 400;
                 response.DisplayMessage = "No list Available";
@@ -139,7 +165,6 @@ namespace Savi.Core.GroupSaving
                 response.DisplayMessage = ex.Message;
                 return response;
             }
-
         }
         public async Task<GroupSavings> GetGroupByID(string GroupId)
         {
@@ -151,9 +176,6 @@ namespace Savi.Core.GroupSaving
             return null;
 
         }
-
     }
-
-
 }
 

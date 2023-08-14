@@ -13,8 +13,8 @@ using Savi.Data.Context;
 namespace Savi.Data.Migrations
 {
     [DbContext(typeof(SaviDbContext))]
-    [Migration("20230810021538_Models")]
-    partial class Models
+    [Migration("20230812162559_targetFundingUpdated")]
+    partial class targetFundingUpdated
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -779,27 +779,48 @@ namespace Savi.Data.Migrations
 
             modelBuilder.Entity("Savi.Data.Domains.SetTarget", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("text");
 
                     b.Property<decimal>("AmountToSave")
                         .HasColumnType("numeric");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<decimal>("CumulativeAmount")
                         .HasColumnType("numeric");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("Frequency")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("NextRuntime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("Runtime")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("SetTargetFundingId")
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("Target")
-                        .HasColumnType("text");
-
                     b.Property<decimal>("TargetAmount")
                         .HasColumnType("numeric");
+
+                    b.Property<string>("TargetName")
+                        .HasColumnType("text");
 
                     b.Property<string>("UserId")
                         .HasColumnType("text");
@@ -833,8 +854,8 @@ namespace Savi.Data.Migrations
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("SetTargetId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("SetTargetId")
+                        .HasColumnType("text");
 
                     b.Property<int>("TransactionType")
                         .HasColumnType("integer");
@@ -844,8 +865,7 @@ namespace Savi.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SetTargetId")
-                        .IsUnique();
+                    b.HasIndex("SetTargetId");
 
                     b.HasIndex("walletId");
 
@@ -1177,10 +1197,8 @@ namespace Savi.Data.Migrations
             modelBuilder.Entity("Savi.Data.Domains.SetTargetFunding", b =>
                 {
                     b.HasOne("Savi.Data.Domains.SetTarget", "SetTarget")
-                        .WithOne("SetTargetFunding")
-                        .HasForeignKey("Savi.Data.Domains.SetTargetFunding", "SetTargetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("SetTargetFunding")
+                        .HasForeignKey("SetTargetId");
 
                     b.HasOne("Savi.Data.Domains.Wallet", "Wallet")
                         .WithMany()

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Savi.Data.Context;
@@ -12,9 +13,10 @@ using Savi.Data.Context;
 namespace Savi.Data.Migrations
 {
     [DbContext(typeof(SaviDbContext))]
-    partial class SaviDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230812082013_modelsupdated")]
+    partial class modelsupdated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -808,9 +810,6 @@ namespace Savi.Data.Migrations
                     b.Property<int>("Runtime")
                         .HasColumnType("integer");
 
-                    b.Property<string>("SetTargetFundingId")
-                        .HasColumnType("text");
-
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp without time zone");
 
@@ -863,7 +862,8 @@ namespace Savi.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SetTargetId");
+                    b.HasIndex("SetTargetId")
+                        .IsUnique();
 
                     b.HasIndex("walletId");
 
@@ -1195,8 +1195,8 @@ namespace Savi.Data.Migrations
             modelBuilder.Entity("Savi.Data.Domains.SetTargetFunding", b =>
                 {
                     b.HasOne("Savi.Data.Domains.SetTarget", "SetTarget")
-                        .WithMany("SetTargetFunding")
-                        .HasForeignKey("SetTargetId");
+                        .WithOne("SetTargetFunding")
+                        .HasForeignKey("Savi.Data.Domains.SetTargetFunding", "SetTargetId");
 
                     b.HasOne("Savi.Data.Domains.Wallet", "Wallet")
                         .WithMany()

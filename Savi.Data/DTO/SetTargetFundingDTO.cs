@@ -1,12 +1,16 @@
-﻿using Savi.Data.Enums;
+﻿using Savi.Data.Domains;
+using Savi.Data.Enums;
 
 namespace Savi.Data.DTO
 {
-	public class SetTargetFundingDTO
+	public class SetTargetFundingDTO : BaseEntity
 	{
 		public decimal Amount { get; set; }
-		public decimal CummulativeAmount { get; set; }
 		public TransactionType TransactionType { get; set; }
-		public Guid SetTargetId { get; set; }
+		public SetTargetDTO SetTarget { get; set; }
+		public string SetTargetId { get; set; }
+
+
+
 	}
 }

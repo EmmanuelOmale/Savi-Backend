@@ -1,151 +1,101 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Savi.Api.Service;
-using Savi.Core.Interfaces;
+using Savi.Core.PersonalSaving;
 using Savi.Data.Domains;
 using Savi.Data.DTO;
-using Savi.Data.Enums;
 
 namespace Savi.Api.Controllers
 {
-	[Route("api/[controller]")]
-	[ApiController]
-	public class SetTargetController : ControllerBase
-	{
-		private readonly ISetTargetService _setTargetService;
-		private readonly IMapper _mapper;
-		private readonly ISavingsService _savingsService;
+    [Route("api/[controller]")]
+    [ApiController]
+    public class SetTargetController : ControllerBase
+    {
+        private readonly IMapper _mapper;
+        private readonly IPersonalSavings _personalSavings;
+        private readonly IAutoTargetFund _autoTarget;
+        public SetTargetController(IMapper mapper,
+           IPersonalSavings personalSavings, IAutoTargetFund autoTarget)
+        {
+            _mapper = mapper;
+            _personalSavings = personalSavings;
+            _autoTarget = autoTarget;
+        }
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateTarget([FromBody] SetTargetDTO setTarget)
+        {
+            var target = _mapper.Map<SetTarget>(setTarget);
+            var response = await _personalSavings.SetPersonal_Savings_Target(target);
+            if(response.StatusCode == 200)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
+        }
 
-		public SetTargetController(ISetTargetService setTargetService, IMapper mapper, ISavingsService savingsService)
-		{
-			_setTargetService = setTargetService;
-			_mapper = mapper;
-			_savingsService = savingsService;
-		}
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateTarget([FromBody] UpdatSetTargetDTO updatedTarget)
+        {
 
-		[HttpGet]
-		public async Task<ActionResult<ResponseDto<IEnumerable<SetTargetDTO>>>> GetAllTargets()
-		{
-			var response = await _setTargetService.GetAllTargets();
-			StatusCode(response.StatusCode);
-			return Ok(response);
-		}
+            var response = await _personalSavings.UpPersonal_Savings_Target(updatedTarget);
 
-		[HttpGet("{id}")]
-		public async Task<ActionResult<ResponseDto<SetTargetDTO>>> GetTargetById(Guid id)
-		{
-			try
-			{
-				var response = await _setTargetService.GetTargetById(id);
-				return Ok(response);
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine($"Exception occurred while fetching target by ID: {ex}");
+            if(response.StatusCode == 200)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
+        }
+        [HttpDelete("delete/{TargetId}")]
+        public async Task<IActionResult> DeleteTarget(string TargetId)
+        {
+            var response = await _personalSavings.Delete_Personal_TargetSavings(TargetId);
+            if(response.StatusCode == 200)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
+        }
+        [HttpGet("list/{UserId}")]
+        public async Task<IActionResult> GetAllTargets(string UserId)
+        {
+            var response = await _personalSavings.Get_ListOf_UserTargets(UserId);
+            if(response.StatusCode == 200)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
+        }
+        [HttpGet("list-all-targets")]
+        public async Task<IActionResult> GetlistofAllTargets()
+        {
+            var response = await _personalSavings.Get_ListOfAll_Targets();
+            if(response.StatusCode == 200)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
 
-				var errorResponse = new ResponseDto<SetTargetDTO>
-				{
-					StatusCode = 500,
-					DisplayMessage = "An error occurred while fetching the target. Please try again later.",
-					Result = null,
-				};
+        }
+        [HttpGet("{TargetId}")]
+        public async Task<IActionResult> GetTargetById(string TargetId)
+        {
+            var response = await _personalSavings.GetTargetById(TargetId);
+            if(response.StatusCode == 200)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
 
-				return StatusCode(errorResponse.StatusCode, errorResponse);
-			}
-		}
+        }
+        [HttpPost("autotarget")]
+        public async Task<IActionResult> Autofunding()
+        {
+            var response = await _autoTarget.AutoTarget();
+            if(response)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
 
-		[HttpPost]
-		public async Task<ActionResult<ResponseDto<SetTargetDTO>>> CreateTarget([FromBody] SetTargetDTO setTarget, string userId)
-		{
-			try
-			{
-				var target = _mapper.Map<SetTarget>(setTarget);
-				var response = await _setTargetService.CreateTarget(target, userId);
-				return StatusCode(response.StatusCode, response);
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine($"Exception occurred during target creation: {ex}");
-
-				var errorResponse = new ResponseDto<SetTargetDTO>
-				{
-					StatusCode = 500,
-					DisplayMessage = "An error occurred during target creation. Please try again later.",
-					Result = null,
-				};
-
-				return StatusCode(errorResponse.StatusCode, errorResponse);
-			}
-		}
-
-		[HttpPut("{id}")]
-		public async Task<IActionResult> UpdateTarget(Guid id, [FromBody] SetTarget updatedTarget)
-		{
-			if (id != updatedTarget.Id)
-			{
-				return BadRequest("The provided ID does not match the target ID in the request body.");
-			}
-
-			if (updatedTarget.Frequency > FrequencyType.Daily)
-			{
-				return BadRequest("Frequency cannot be more than Daily");
-			}
-
-			var response = await _setTargetService.UpdateTarget(id, updatedTarget);
-
-			if (response.StatusCode == 200)
-			{
-				return Ok(response.Result);
-			}
-			else if (response.StatusCode == 404)
-			{
-				return NotFound(response.DisplayMessage);
-			}
-			else
-			{
-				return StatusCode(response.StatusCode, response.DisplayMessage);
-			}
-		}
-
-		[HttpDelete("{id}")]
-		public async Task<ActionResult<ResponseDto<SetTargetDTO>>> DeleteTarget(Guid id)
-		{
-			try
-			{
-				var response = await _setTargetService.DeleteTarget(id);
-				return Ok(response);
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine($"Exception occurred while deleting target: {ex}");
-
-				var errorResponse = new ResponseDto<SetTargetDTO>
-				{
-					StatusCode = 500,
-					DisplayMessage = "An error occurred while deleting the target. Please try again later.",
-					Result = null,
-				};
-
-				return StatusCode(errorResponse.StatusCode, errorResponse);
-			}
-		}
-
-		[HttpPost("{id}/fundtarget")]
-		public async Task<ActionResult<APIResponse>> FundTarget(Guid id, decimal amount, string userId)
-		{
-			var saving = await _savingsService.FundTargetSavings(id, amount, userId);
-			if (saving == null)
-			{
-				return NotFound();
-			}
-			return Ok(saving);
-		}
-
-		[HttpGet("user/{userId}/settargets")]
-		public async Task<ActionResult<ResponseDto<SetTargetDTO>>> GetSetTargetsByUserId(string userId)
-		{
-			var setTargets = await _setTargetService.GetSetTargetsByUserId(userId);
-			return Ok(setTargets);
-		}
-	}
+        }
+    }
 }

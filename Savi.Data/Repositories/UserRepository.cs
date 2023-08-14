@@ -22,7 +22,6 @@ namespace Savi.Data.Repositories
         private readonly IConfiguration _configuration;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IServiceScopeFactory _serviceScopeFactory;
-
         public UserRepository(SaviDbContext db, IMapper mapper, IConfiguration configuration,
             UserManager<ApplicationUser> userManager, IServiceScopeFactory serviceScopeFactory) : base(db)
         {
@@ -35,7 +34,7 @@ namespace Savi.Data.Repositories
         public async Task<ResponseDto<UserDTO>> GetUserByIdAsync(string Id)
         {
             var user = await _saviDbContext.Users.FindAsync(Id);
-            if (user == null)
+            if(user == null)
             {
                 var notFoundResponse = new ResponseDto<UserDTO>
                 {
@@ -53,9 +52,7 @@ namespace Savi.Data.Repositories
                 Result = result
             };
             return success;
-
         }
-
         public async Task<ApplicationUser> GetUserById(string Id)
         {
             try
@@ -64,29 +61,27 @@ namespace Savi.Data.Repositories
                 var db = scope.ServiceProvider.GetRequiredService<SaviDbContext>();
                 var user = await db.Users.FirstOrDefaultAsync(x => x.Id == Id);
 
-                if (user == null)
+                if(user == null)
                 {
                     return null;
                 }
                 return user;
             }
-            catch (Exception)
+            catch(Exception)
             {
 
                 throw;
             }
-
         }
         public async Task<ApplicationUser> FinduserByPhoneNumber(string Phonenumber)
         {
             var UserPhoneNumber = await _saviDbContext.Users.FirstOrDefaultAsync(x => x.PhoneNumber == Phonenumber);
-            if (UserPhoneNumber == null)
+            if(UserPhoneNumber == null)
             {
                 return null;
             }
             return UserPhoneNumber;
         }
-
         public async Task<ApplicationUser> GetLoggedInUserByToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -109,46 +104,43 @@ namespace Savi.Data.Repositories
                 var claims = principal.Claims;
 
                 var userName = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
-                if (userName == null)
+                if(userName == null)
                 {
                     throw new Exception("Invalid token. Username not found in token claims.");
                 }
 
                 var user = await _userManager.FindByNameAsync(userName);
-                if (user == null)
+                if(user == null)
                 {
                     throw new Exception("User not found for the provided token.");
                 }
 
                 return user;
             }
-            catch (SecurityTokenValidationException ex)
+            catch(SecurityTokenValidationException ex)
             {
                 throw new Exception("Invalid token. " + ex.Message);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 throw new Exception("Error while getting the user from the token. " + ex.Message);
             }
         }
-
-
         public async Task<ResponseDto<UserDTO>> UpdateUser(string userId, UserDTO updateUserDto)
         {
             try
             {
                 var user = await _userManager.FindByIdAsync(userId);
-                if (user == null)
+                if(user == null)
                 {
                     throw new Exception("User not found for the provided user ID.");
                 }
-
                 user.FirstName = updateUserDto.FirstName;
                 user.LastName = updateUserDto.LastName;
                 user.PhoneNumber = updateUserDto.PhoneNumber;
 
                 var updateResult = await _userManager.UpdateAsync(user);
-                if (!updateResult.Succeeded)
+                if(!updateResult.Succeeded)
                 {
                     throw new Exception("Error while updating user information.");
                 }
@@ -159,7 +151,7 @@ namespace Savi.Data.Repositories
                     DisplayMessage = "User information updated successfully.",
                 };
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 throw new Exception("Error while updating user information. " + ex.Message);
             }

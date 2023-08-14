@@ -4,7 +4,8 @@ namespace Savi.Data.DTO
 {
 	public class SetTargetDTO
 	{
-		public string Target { get; set; }
+		public string UserId { get; set; }
+		public string TargetName { get; set; }
 		public decimal TargetAmount { get; set; }
 		public decimal AmountToSave { get; set; }
 		public FrequencyType Frequency { get; set; }

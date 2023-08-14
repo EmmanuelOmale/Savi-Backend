@@ -13,6 +13,7 @@ using Savi.Core.GroupSaving;
 using Savi.Core.GroupWalletFunding;
 using Savi.Core.Interfaces;
 using Savi.Core.PaystackServices;
+using Savi.Core.PersonalSaving;
 using Savi.Core.Services;
 using Savi.Core.WalletService;
 using Savi.Data.Context;
@@ -30,29 +31,29 @@ using System.Text;
 
 public class Program
 {
-	public static void Main(string[] args)
-	{
-		var builder = WebApplication.CreateBuilder(args);
-		var configuration = builder.Configuration;
+    public static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+        var configuration = builder.Configuration;
 
-		// Add services to the container.
-		// New Comments
-		Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.File("log/SaviLogs.txt", rollingInterval: RollingInterval.Day).CreateLogger();
-		builder.Host.UseSerilog();
+        // Add services to the container.
+        // New Comments
+        Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.File("log/SaviLogs.txt", rollingInterval: RollingInterval.Day).CreateLogger();
+        builder.Host.UseSerilog();
 
-		builder.Services.AddControllers();
+        builder.Services.AddControllers();
 
-		builder.Services.AddScoped<IGoogleSignupService, GoogleSignupService>();
-		builder.Services.AddHttpClient();
+        builder.Services.AddScoped<IGoogleSignupService, GoogleSignupService>();
+        builder.Services.AddHttpClient();
 
-		builder.Services.AddEndpointsApiExplorer();
-		builder.Services.AddSwaggerGen(c =>
-		{
-			c.SwaggerDoc("v1", new OpenApiInfo { Title = "Savi.Api", Version = "v1" });
-		});
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Savi.Api", Version = "v1" });
+        });
 
-		var loggerFactory = new SerilogLoggerFactory(Log.Logger);
-		builder.Services.AddSingleton<ILoggerFactory>(loggerFactory);
+        var loggerFactory = new SerilogLoggerFactory(Log.Logger);
+        builder.Services.AddSingleton<ILoggerFactory>(loggerFactory);
 
         builder.Services.AddAuthentication(options =>
         {
@@ -100,119 +101,128 @@ public class Program
         builder.Services.AddScoped<IGroupsavingsFundingRepository, GroupSavingFundingRepository>();
         builder.Services.AddScoped<IGroupWalletFundingServices, GroupWalletFundingServices>();
         builder.Services.AddScoped<IGroupFund, GroupFunding>();
+        builder.Services.AddScoped<IPersonalSavings, PersonalSavings>();
 
 
 
-		builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-	   .AddEntityFrameworkStores<SaviDbContext>()
-		.AddDefaultTokenProviders();
-		builder.Services.AddScoped<ISavingGoalRepository, SavingGoalRepository>();
-		builder.Services.AddScoped<ISavingGoalService, SavingGoalService>();
-		builder.Services.AddScoped<ISetTargetRepository, SetTargetRepository>();
-		builder.Services.AddScoped<ISetTargetService, SetTargetService>();
+        builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+       .AddEntityFrameworkStores<SaviDbContext>()
+        .AddDefaultTokenProviders();
+        builder.Services.AddScoped<ISavingGoalRepository, SavingGoalRepository>();
+        builder.Services.AddScoped<ISavingGoalService, SavingGoalService>();
+        builder.Services.AddScoped<ISetTargetRepository, SetTargetRepository>();
+        builder.Services.AddScoped<ITargetFundingRepo, SetTargetFundingRepo>();
+        builder.Services.AddScoped<ISetTargetFundingService, SetTargetFundingService>();
+        builder.Services.AddScoped<IAutoTargetFund, AutoTargetFund>();
+        //builder.Services.AddScoped<ISetTargetService, SetTargetService>();
 
-		// Adding Authentication
-		builder.Services.AddAuthentication(options =>
-		{
-			options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-			options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-			options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-		}).AddJwtBearer(options =>
-		{
-			options.SaveToken = true;
-			options.RequireHttpsMetadata = false;
-			options.TokenValidationParameters = new TokenValidationParameters()
-			{
-				ValidateIssuer = true,
-				ValidateAudience = true,
-				ValidAudience = configuration["JWT:ValidAudience"],
-				ValidIssuer = configuration["JWT:ValidIssuer"],
-				IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
-			};
-		});
-		//PayStack
-		builder.Services.AddHttpClient("Paystack", client =>
-		{
-			client.BaseAddress = new Uri($"https://api.paystack.co/");
-			client.DefaultRequestHeaders.Add("Authorization", "Bearer sk_test_be37ad047e6eb09cae4b2b64ba2db3fdc87060f0");
-		}
+        // Adding Authentication
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            options.SaveToken = true;
+            options.RequireHttpsMetadata = false;
+            options.TokenValidationParameters = new TokenValidationParameters()
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidAudience = configuration["JWT:ValidAudience"],
+                ValidIssuer = configuration["JWT:ValidIssuer"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
+            };
+        });
+        //PayStack
+        builder.Services.AddHttpClient("Paystack", client =>
+        {
+            client.BaseAddress = new Uri($"https://api.paystack.co/");
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer sk_test_be37ad047e6eb09cae4b2b64ba2db3fdc87060f0");
+        }
 
-		);
+        );
 
-		builder.Services.AddSwaggerGen(option =>
-		{
-			option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-			{
-				In = ParameterLocation.Header,
-				Description = "Please enter a valid token",
-				Name = "Authorization",
-				Type = SecuritySchemeType.Http,
-				BearerFormat = "JWT",
-				Scheme = "Bearer"
-			});
-			option.AddSecurityRequirement(new OpenApiSecurityRequirement
-	{
-		{
-			new OpenApiSecurityScheme
-			{
-				Reference = new OpenApiReference
-				{
-					Type=ReferenceType.SecurityScheme,
-					Id="Bearer"
-				}
-			},
-			new string[]{}
-		}
-	});
-		});
+        builder.Services.AddSwaggerGen(option =>
+        {
+            option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Please enter a valid token",
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "Bearer"
+            });
+            option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+        });
 
-		builder.Services.AddCors(options =>
-		{
-			options.AddDefaultPolicy(builder =>
-			{
-				builder.WithOrigins("http://localhost:3000")
-					   .AllowAnyHeader()
-					   .AllowAnyMethod();
-			});
-		});
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(builder =>
+            {
+                builder.WithOrigins("http://localhost:3000")
+                       .AllowAnyHeader()
+                       .AllowAnyMethod();
+            });
+        });
 
-		var app = builder.Build();
-		var logger = app.Services.GetRequiredService<ILogger<Program>>();
-		// app.ConfigureExceptionHandler(logger);
-		// Create a scope and resolve the SaviDbContext
-		using (var scope = app.Services.CreateScope())
-		{
-			var dbContext = scope.ServiceProvider.GetRequiredService<SaviDbContext>();
+        var app = builder.Build();
+        var logger = app.Services.GetRequiredService<ILogger<Program>>();
+        // app.ConfigureExceptionHandler(logger);
+        // Create a scope and resolve the SaviDbContext
+        using(var scope = app.Services.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<SaviDbContext>();
 
-			// Seed the data
-			Seeder.SeedData(dbContext);
-		}
-		// Configure the HTTP request pipeline.
-		if (app.Environment.IsDevelopment())
-		{
-			app.UseSwagger();
-			app.UseSwaggerUI(c =>
-			{
-				c.SwaggerEndpoint("/swagger/v1/swagger.json", "Savi.Api v1");
-			});
-		}
+            // Seed the data
+            Seeder.SeedData(dbContext);
+        }
+        // Configure the HTTP request pipeline.
+        if(app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Savi.Api v1");
+            });
+        }
 
-		app.UseHttpsRedirection();
-		app.UseCors();
+        app.UseHttpsRedirection();
+        app.UseCors();
 
         app.UseHangfireDashboard();
         RecurringJob.AddOrUpdate<IGroupWalletFundingServices>(
-        "unique_job_identifier",
+        "Group_Savings",
         x => x.GroupAuto(),
         Cron.Minutely // Or use another Cron expression or TimeSpan interval for the schedule
         );
+        RecurringJob.AddOrUpdate<IAutoTargetFund>(
+       "Personal_Savings",
+       x => x.AutoTarget(),
+       Cron.Minutely // Or use another Cron expression or TimeSpan interval for the schedule
+       );
 
 
         app.UseRouting();
 
-		app.UseAuthentication();
+        app.UseAuthentication();
 
-		app.UseAuthorization();
+        app.UseAuthorization();
 
 
         app.UseEndpoints(endpoints =>
@@ -223,6 +233,6 @@ public class Program
 
         });
 
-		app.Run();
-	}
+        app.Run();
+    }
 }
