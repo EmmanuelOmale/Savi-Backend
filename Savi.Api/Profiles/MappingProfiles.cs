@@ -21,6 +21,9 @@ namespace Savi.Api.Profiles
 			CreateMap<GroupSavingsMembers, GroupMembersDto>().ReverseMap();
 			CreateMap<SetTarget, UpdatSetTargetDTO>().ReverseMap();
 			CreateMap<SetTargetFunding, SetTargetFundingDTO>().ReverseMap();
-      CreateMap<KYC, AddKycDto>().ReverseMap();
+			CreateMap<KYC, AddKycDto>().ReverseMap();
+
+
+		}
 	}
 }

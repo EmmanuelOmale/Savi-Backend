@@ -32,7 +32,7 @@ namespace Savi.Core.WalletService
             bool result = true;
             //Geting all the groups in GroupSavings table
             var listofGroupsavings = await _groupSavingsRepository.GetListOfGroupSavings();
-            if(listofGroupsavings.Count < 1)
+            if(listofGroupsavings?.Count < 1)
             {
                 return false;
             }

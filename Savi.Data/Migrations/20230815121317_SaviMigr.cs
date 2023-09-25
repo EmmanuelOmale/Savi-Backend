@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Savi.Data.Migrations
 {
-    public partial class modelsupdated : Migration
+    public partial class SaviMigr : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -141,16 +141,11 @@ namespace Savi.Data.Migrations
                     Id = table.Column<string>(type: "text", nullable: false),
                     FirstName = table.Column<string>(type: "text", nullable: true),
                     LastName = table.Column<string>(type: "text", nullable: true),
-                    DateOfBirth = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    Gender = table.Column<bool>(type: "boolean", nullable: false),
-                    OccupationId = table.Column<string>(type: "text", nullable: true),
-                    Address = table.Column<string>(type: "text", nullable: true),
-                    BVN = table.Column<string>(type: "text", nullable: true),
-                    IdentityTypeId = table.Column<string>(type: "text", nullable: true),
                     ImageUrl = table.Column<string>(type: "text", nullable: true),
-                    ProofOfAddressUrl = table.Column<string>(type: "text", nullable: true),
-                    KYCLevel = table.Column<int>(type: "integer", nullable: false),
+                    IsKycComplete = table.Column<bool>(type: "boolean", nullable: false),
                     WalletId = table.Column<string>(type: "text", nullable: true),
+                    IdentityTypeId = table.Column<string>(type: "text", nullable: true),
+                    OccupationId = table.Column<string>(type: "text", nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -366,6 +361,32 @@ namespace Savi.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "kYCs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<string>(type: "text", nullable: true),
+                    DateOfBirth = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Gender = table.Column<int>(type: "integer", nullable: false),
+                    Occupation = table.Column<int>(type: "integer", nullable: false),
+                    Address = table.Column<string>(type: "text", nullable: true),
+                    BVN = table.Column<string>(type: "text", nullable: true),
+                    IdentityType = table.Column<int>(type: "integer", nullable: false),
+                    DocumentImageUrl = table.Column<string>(type: "text", nullable: true),
+                    ProofOfAddress = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_kYCs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_kYCs_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OTPs",
                 columns: table => new
                 {
@@ -440,6 +461,7 @@ namespace Savi.Data.Migrations
                     StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     EndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     WithdrawalDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    SetTargetFundingId = table.Column<string>(type: "text", nullable: true),
                     CumulativeAmount = table.Column<decimal>(type: "numeric", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: true),
                     Runtime = table.Column<int>(type: "integer", nullable: false),
@@ -745,6 +767,12 @@ namespace Savi.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_kYCs_UserId",
+                table: "kYCs",
+                column: "UserId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OTPs_ApplicationUserId",
                 table: "OTPs",
                 column: "ApplicationUserId");
@@ -774,8 +802,7 @@ namespace Savi.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_SetTargetFundings_SetTargetId",
                 table: "SetTargetFundings",
-                column: "SetTargetId",
-                unique: true);
+                column: "SetTargetId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SetTargetFundings_walletId",
@@ -835,6 +862,9 @@ namespace Savi.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "GroupTransactions");
+
+            migrationBuilder.DropTable(
+                name: "kYCs");
 
             migrationBuilder.DropTable(
                 name: "OTPs");

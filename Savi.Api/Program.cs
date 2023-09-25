@@ -79,9 +79,9 @@ public class Program
         builder.Services.AddTransient<ITransactionHistService, TransactionHistService>();
         builder.Services.AddAppSettingsConfig(builder.Configuration, builder.Environment);
         builder.Services.AddHttpContextAccessor();
-        var config = configuration.GetConnectionString("DefaultConnection");
-        builder.Services.AddHangfire(x => x.UsePostgreSqlStorage(config));
-        builder.Services.AddHangfireServer();
+        //var config = configuration.GetConnectionString("DefaultConnection");
+        //builder.Services.AddHangfire(x => x.UsePostgreSqlStorage(config));
+        //builder.Services.AddHangfireServer();
 
         //Entityframework
         //builder.Services.AddDbContext<SaviDbContext>(options =>
@@ -205,17 +205,17 @@ public class Program
         app.UseHttpsRedirection();
         app.UseCors();
 
-        app.UseHangfireDashboard();
-        RecurringJob.AddOrUpdate<IGroupWalletFundingServices>(
-        "Group_Savings",
-        x => x.GroupAuto(),
-        Cron.Minutely // Or use another Cron expression or TimeSpan interval for the schedule
-        );
-        RecurringJob.AddOrUpdate<IAutoTargetFund>(
-       "Personal_Savings",
-       x => x.AutoTarget(),
-       Cron.Minutely // Or use another Cron expression or TimeSpan interval for the schedule
-       );
+       // app.UseHangfireDashboard();
+       // RecurringJob.AddOrUpdate<IGroupWalletFundingServices>(
+       // "Group_Savings",
+       // x => x.GroupAuto(),
+       // Cron.Minutely // Or use another Cron expression or TimeSpan interval for the schedule
+       // );
+       // RecurringJob.AddOrUpdate<IAutoTargetFund>(
+       //"Personal_Savings",
+       //x => x.AutoTarget(),
+       //Cron.Minutely // Or use another Cron expression or TimeSpan interval for the schedule
+       //);
 
 
         app.UseRouting();

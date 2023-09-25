@@ -13,8 +13,8 @@ using Savi.Data.Context;
 namespace Savi.Data.Migrations
 {
     [DbContext(typeof(SaviDbContext))]
-    [Migration("20230809232927_kyc")]
-    partial class kyc
+    [Migration("20230815121317_SaviMigr")]
+    partial class SaviMigr
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -165,18 +165,9 @@ namespace Savi.Data.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Address")
-                        .HasColumnType("text");
-
-                    b.Property<string>("BVN")
-                        .HasColumnType("text");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("text");
-
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -188,9 +179,6 @@ namespace Savi.Data.Migrations
                     b.Property<string>("FirstName")
                         .HasColumnType("text");
 
-                    b.Property<bool>("Gender")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("IdentityTypeId")
                         .HasColumnType("text");
 
@@ -199,9 +187,6 @@ namespace Savi.Data.Migrations
 
                     b.Property<bool>("IsKycComplete")
                         .HasColumnType("boolean");
-
-                    b.Property<int>("KYCLevel")
-                        .HasColumnType("integer");
 
                     b.Property<string>("LastName")
                         .HasColumnType("text");
@@ -231,9 +216,6 @@ namespace Savi.Data.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("ProofOfAddressUrl")
-                        .HasColumnType("text");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
@@ -825,27 +807,48 @@ namespace Savi.Data.Migrations
 
             modelBuilder.Entity("Savi.Data.Domains.SetTarget", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("text");
 
                     b.Property<decimal>("AmountToSave")
                         .HasColumnType("numeric");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<decimal>("CumulativeAmount")
                         .HasColumnType("numeric");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("Frequency")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("NextRuntime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("Runtime")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("SetTargetFundingId")
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("Target")
-                        .HasColumnType("text");
-
                     b.Property<decimal>("TargetAmount")
                         .HasColumnType("numeric");
+
+                    b.Property<string>("TargetName")
+                        .HasColumnType("text");
 
                     b.Property<string>("UserId")
                         .HasColumnType("text");
@@ -879,8 +882,8 @@ namespace Savi.Data.Migrations
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("SetTargetId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("SetTargetId")
+                        .HasColumnType("text");
 
                     b.Property<int>("TransactionType")
                         .HasColumnType("integer");
@@ -890,8 +893,7 @@ namespace Savi.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SetTargetId")
-                        .IsUnique();
+                    b.HasIndex("SetTargetId");
 
                     b.HasIndex("walletId");
 
@@ -1087,17 +1089,13 @@ namespace Savi.Data.Migrations
 
             modelBuilder.Entity("Savi.Data.Domains.ApplicationUser", b =>
                 {
-                    b.HasOne("Savi.Data.Domains.IdentityType", "IdentityType")
+                    b.HasOne("Savi.Data.Domains.IdentityType", null)
                         .WithMany("Users")
                         .HasForeignKey("IdentityTypeId");
 
-                    b.HasOne("Savi.Data.Domains.Occupation", "Occupation")
+                    b.HasOne("Savi.Data.Domains.Occupation", null)
                         .WithMany("Users")
                         .HasForeignKey("OccupationId");
-
-                    b.Navigation("IdentityType");
-
-                    b.Navigation("Occupation");
                 });
 
             modelBuilder.Entity("Savi.Data.Domains.CardDetail", b =>
@@ -1232,10 +1230,8 @@ namespace Savi.Data.Migrations
             modelBuilder.Entity("Savi.Data.Domains.SetTargetFunding", b =>
                 {
                     b.HasOne("Savi.Data.Domains.SetTarget", "SetTarget")
-                        .WithOne("SetTargetFunding")
-                        .HasForeignKey("Savi.Data.Domains.SetTargetFunding", "SetTargetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("SetTargetFunding")
+                        .HasForeignKey("SetTargetId");
 
                     b.HasOne("Savi.Data.Domains.Wallet", "Wallet")
                         .WithMany()
